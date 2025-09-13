@@ -14,12 +14,12 @@ public class CommunityController {
 
   private final CommunityPostService postService;
 
-//게시글 생성
+//커뮤니티 생성
   @PostMapping
   public ResponseEntity<CommunityPostCreateResponseDto> createCommunityPost(@RequestBody CommunityPostCreateRequestDto dto) {
     return ResponseEntity.ok(postService.createCommunityPost(dto));
   }
-//게시글 조회
+//커뮤니티 조회
   @GetMapping("/{id}")
   public ResponseEntity<CommunityPostListResponseDto> getPost(@PathVariable Long postId) {
     return ResponseEntity.ok(postService.getCommunityPost(postId));

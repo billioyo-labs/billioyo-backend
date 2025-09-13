@@ -15,12 +15,13 @@ public class CommunityController {
 
   private final CommunityPostService postService;
 
-//커뮤니티 생성
+  //커뮤니티 생성
   @PostMapping
   public ResponseEntity<CommunityPostCreateResponseDto> createCommunityPost(@RequestBody CommunityPostCreateRequestDto dto) {
     return ResponseEntity.ok(postService.createCommunityPost(dto));
   }
-//커뮤니티 조회
+
+  //커뮤니티 조회
   @GetMapping("/{postId}")
   public ResponseEntity<CommunityPostReadResponseDto> getPost(@PathVariable Long postId) {
     return ResponseEntity.ok(postService.getCommunityPost(postId));
@@ -28,27 +29,15 @@ public class CommunityController {
 
   //커뮤니티 수정
   @PutMapping("/{postId}")
-  public ResponseEntity<String>  updatePost(@PathVariable Long postId, @RequestBody CommunityPostUpdateRequestDto dto) {
+  public ResponseEntity<String> updatePost(@PathVariable Long postId, @RequestBody CommunityPostUpdateRequestDto dto) {
     postService.updateCommunityPost(postId, dto);
     return ResponseEntity.ok("게시글 수정 완료");
   }
 
-
-
-//  @GetMapping
-//  public ResponseEntity<List<CommunityDto>> getAll() {
-//    return ResponseEntity.ok(service.getAllPosts());
+  //커뮤니티 삭제
+  @DeleteMapping("/{postId}")
+  public ResponseEntity<String> deletePost(@PathVariable Long postId) {
+    postService.deleteCommunityPost(postId);
+    return ResponseEntity.ok("게시글 삭제 완료");
   }
-
-//  @PutMapping("/{id}")
-//  public ResponseEntity<CommunityDto> update(@PathVariable Long id, @RequestBody CommunityDto dto) {
-//    CommunityDto updated = service.updatePost(id, dto);
-//    return updated != null ? ResponseEntity.ok(updated) : ResponseEntity.notFound().build();
-//  }
-
-//  @DeleteMapping("/{id}")
-//  public ResponseEntity<Void> delete(@PathVariable Long id) {
-//    service.deletePost(id);
-//    return ResponseEntity.noContent().build();
-//  }
-//}
+}

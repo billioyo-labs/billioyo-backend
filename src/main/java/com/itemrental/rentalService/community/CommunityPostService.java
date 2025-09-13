@@ -59,7 +59,8 @@ public class CommunityPostService {
         .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다"));
 
     CommunityPost post = repository.findById(postId)
-        .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));;
+        .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
+    ;
     User postUser = post.getUser();
 
     if (!postUser.getId().equals(currentUser.getId())) {
@@ -69,37 +70,20 @@ public class CommunityPostService {
     post.setContent(dto.getContent());
   }
 
+  @Transactional
+  public void deleteCommunityPost(Long postId) {
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    User currentUser = userRepository.findByUsername(username)
+        .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다"));
 
-//  public CommunityDto createPost(CommunityDto dto) {
-//    CommunityPost post = CommunityPost.builder()
-//      .title(dto.getTitle())
-//      .content(dto.getContent())
-//      .build();
-//    return CommunityDto.fromEntity(repository.save(post));
-//  }
-//
-//  public CommunityDto getPost(Long id) {
-//    return repository.findById(id)
-//      .map(CommunityDto::fromEntity)
-//      .orElse(null);
-//  }
-//
-//  public List<CommunityDto> getAllPosts() {
-//    return repository.findAll().stream()
-//      .map(CommunityDto::fromEntity)
-//      .collect(Collectors.toList());
-//  }
+    CommunityPost post = repository.findById(postId)
+        .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
+    ;
+    User postUser = post.getUser();
 
-//  public CommunityDto updatePost(Long id, CommunityDto dto) {
-//    return repository.findById(id)
-//      .map(post -> {
-//        post.update(dto.getTitle(), dto.getContent());
-//        return CommunityDto.fromEntity(repository.save(post));
-//      })
-//      .orElse(null);
-//  }
-
-   public void deletePost(Long id) {
-    repository.deleteById(id);
-   }
+    if (!postUser.getId().equals(currentUser.getId())) {
+      throw new AccessDeniedException("작성자만 삭제할 수 있습니다.");
+    }
+    repository.delete(post);
+  }
 }

@@ -23,6 +23,7 @@ public class CommunityController {
   @GetMapping("/{id}")
   public ResponseEntity<CommunityPostListResponseDto> getPost(@PathVariable Long postId) {
     return ResponseEntity.ok(postService.getCommunityPost(postId));
+
   }
 
 

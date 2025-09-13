@@ -1,5 +1,6 @@
 package com.itemrental.rentalService.entity;
 
+import com.itemrental.rentalService.community.CommunityPost;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -38,6 +39,9 @@ public class User implements UserDetails {
     @JoinColumn(name = "notificationId")
     private Notification notification;
 
+
+
+    //외래키 관리
     @OneToMany(mappedBy = "user")
     private List<ChattingParticipant> participants;
 
@@ -49,6 +53,12 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user")
     private List<InterestPost> interestPosts;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<CommunityPost> communityPosts;
+
+
+
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default

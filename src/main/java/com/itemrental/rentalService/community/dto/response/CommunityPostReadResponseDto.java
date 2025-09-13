@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
-public class CommunityPostListResponseDto {
+public class CommunityPostReadResponseDto {
   private String username;
   private String title;
   private String content;

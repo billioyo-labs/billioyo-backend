@@ -2,6 +2,7 @@ package com.itemrental.rentalService.community;
 
 import com.itemrental.rentalService.community.dto.request.CommunityPostCreateRequestDto;
 import com.itemrental.rentalService.community.dto.response.CommunityPostCreateResponseDto;
+import com.itemrental.rentalService.community.dto.response.CommunityPostListResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,20 +12,20 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class CommunityController {
 
-  private final CommunityPostService service;
+  private final CommunityPostService postService;
 
-
+//게시글 생성
   @PostMapping
   public ResponseEntity<CommunityPostCreateResponseDto> createCommunityPost(@RequestBody CommunityPostCreateRequestDto dto) {
-    return ResponseEntity.ok(service.createCommunityPost(dto));
+    return ResponseEntity.ok(postService.createCommunityPost(dto));
   }
-//
-//  @GetMapping("/{id}")
-//  public ResponseEntity<CommunityDto> getPost(@PathVariable Long id) {
-//    CommunityDto dto = service.getPost(id);
-//    return dto != null ? ResponseEntity.ok(dto) : ResponseEntity.notFound().build();
-//  }
-//
+//게시글 조회
+  @GetMapping("/{id}")
+  public ResponseEntity<CommunityPostListResponseDto> getPost(@PathVariable Long postId) {
+    return ResponseEntity.ok(postService.getCommunityPost(postId));
+  }
+
+
 //  @GetMapping
 //  public ResponseEntity<List<CommunityDto>> getAll() {
 //    return ResponseEntity.ok(service.getAllPosts());

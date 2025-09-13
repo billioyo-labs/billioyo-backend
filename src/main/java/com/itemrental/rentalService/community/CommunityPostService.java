@@ -2,6 +2,7 @@ package com.itemrental.rentalService.community;
 
 import com.itemrental.rentalService.community.dto.request.CommunityPostCreateRequestDto;
 import com.itemrental.rentalService.community.dto.response.CommunityPostCreateResponseDto;
+import com.itemrental.rentalService.community.dto.response.CommunityPostListResponseDto;
 import com.itemrental.rentalService.entity.User;
 import com.itemrental.rentalService.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,10 +28,24 @@ public class CommunityPostService {
     post.setContent(dto.getContent());
     repository.save(post);
 
-    return new CommunityPostCreateResponseDto("success",post.getTitle(),post.getContent());
+    return new CommunityPostCreateResponseDto(
+        user.getUsername(),
+        post.getTitle(),
+        post.getContent());
   }
 
   //게시글 읽기
+  @Transactional
+  public CommunityPostListResponseDto getCommunityPost(Long postId) {
+    CommunityPost post = repository.findById(postId).get();
+    User user = post.getUser();
+    return new CommunityPostListResponseDto(
+        user.getUsername(),
+        post.getTitle(),
+        post.getContent(),
+        post.getCreatedAt()
+    );
+  }
 
 //  public CommunityDto createPost(CommunityDto dto) {
 //    CommunityPost post = CommunityPost.builder()

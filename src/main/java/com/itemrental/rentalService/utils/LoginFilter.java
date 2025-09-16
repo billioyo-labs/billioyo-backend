@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itemrental.rentalService.dto.CustomUserDetails;
 import com.itemrental.rentalService.entity.RefreshToken;
+import com.itemrental.rentalService.entity.User;
 import com.itemrental.rentalService.repository.RefreshTokenRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.Cookie;
@@ -16,6 +17,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
@@ -55,7 +57,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication){
-        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+        User user = (User) authentication.getPrincipal();
 
 
         String userEmail = authentication.getName();
@@ -70,7 +72,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String refreshToken = jwtTokenProvider.createJwt("refresh",userEmail,86400000L);
 
 
-        addRefreshEntity(customUserDetails.getUserId(),refreshToken);
+        addRefreshEntity(user.getId(),refreshToken);
 
 
         //띄어쓰기 필수

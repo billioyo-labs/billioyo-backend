@@ -25,9 +25,7 @@ public class CustomUserDetails implements UserDetails {
     public String getPassword() {
         return member.getPassword();
     }
-    public String getNickname() {
-        return member.getNickName();
-    }
+
     public Long getUserId(){
         return member.getId();
     }

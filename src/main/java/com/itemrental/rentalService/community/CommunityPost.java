@@ -16,6 +16,7 @@ public class CommunityPost {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Getter
   private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY)

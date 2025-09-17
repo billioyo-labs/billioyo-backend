@@ -33,6 +33,7 @@ public class CommunityPostService {
     repository.save(post);
 
     return new CommunityPostCreateResponseDto(
+        post.getId(),
         user.getUsername(),
         post.getTitle(),
         post.getContent());

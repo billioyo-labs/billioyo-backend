@@ -22,9 +22,7 @@ public class UserService {
     private final BCryptPasswordEncoder passwordEncoder;
 
     public void signUp(SignUpDto signUpDto){
-        if(userRepository.existsByUsername(signUpDto.getName())){
-            throw new DuplicateUsernameException("이미 존재하는 아이디입니다.");
-        }
+        duplicateCheck(signUpDto.getName());
         if(!Objects.equals(signUpDto.getPassword(), signUpDto.getPasswordConfirmation())){
             throw new PasswordMismatchException("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
         }
@@ -32,5 +30,11 @@ public class UserService {
         List<String> roles = new ArrayList<>();
         roles.add("USER");
         userRepository.save(signUpDto.toEntity(encodedPassword, roles));
+    }
+
+    public void duplicateCheck(String username){
+        if(userRepository.existsByUsername(username)){
+            throw new DuplicateUsernameException("이미 존재하는 아이디입니다.");
+        }
     }
 }

@@ -1,18 +1,18 @@
 package com.itemrental.rentalService.controller;
 
+import com.itemrental.rentalService.dto.ApiResponse;
 import com.itemrental.rentalService.dto.SignUpDto;
 import com.itemrental.rentalService.entity.User;
 import com.itemrental.rentalService.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -25,6 +25,12 @@ public class UserController {
     @PostMapping("/sign-up")
     public ResponseEntity<?> signUp(@RequestBody SignUpDto signUpDto) {
         userService.signUp(signUpDto);
-        return ResponseEntity.ok("회원가입 성공");
+        return ResponseEntity.ok(ApiResponse.success("회원가입 성공"));
+    }
+
+    @GetMapping("/duplicate-check")
+    public ResponseEntity<?> duplicateCheck(@RequestParam("username") String username){
+        userService.duplicateCheck(username);
+        return ResponseEntity.ok(ApiResponse.success("사용 가능한 아이디입니다."));
     }
 }

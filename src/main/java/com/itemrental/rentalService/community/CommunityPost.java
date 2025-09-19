@@ -6,12 +6,12 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class CommunityPost {
 
   @Id
@@ -44,5 +44,6 @@ public class CommunityPost {
     this.createdAt = LocalDateTime.now();
   }
 
-
+  @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<CommunityPostImage> images;
 }

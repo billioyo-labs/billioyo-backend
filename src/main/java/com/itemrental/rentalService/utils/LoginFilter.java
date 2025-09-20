@@ -42,7 +42,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(request.getInputStream());
 
-
             userEmail = jsonNode.get("userId").asText();
             password = jsonNode.get("password").asText();
 
@@ -59,7 +58,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication){
         User user = (User) authentication.getPrincipal();
 
-
         String userEmail = authentication.getName();
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
@@ -71,9 +69,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         //24시간
         String refreshToken = jwtTokenProvider.createJwt("refresh",userEmail,86400000L);
 
-
         addRefreshEntity(user.getId(),refreshToken);
-
 
         //띄어쓰기 필수
         //Authorization: Bearer 인증토큰string
@@ -81,7 +77,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         response.setHeader("access",accessToken);
         response.addCookie(createCookie("refresh",refreshToken));
         response.setStatus(HttpStatus.OK.value());
-
 
     }
     private void addRefreshEntity(Long userId, String refreshToken){

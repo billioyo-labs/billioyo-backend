@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 @Entity
 @Builder
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode(of="id")
@@ -29,7 +30,11 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
+    @Column(unique = true)
     private String email;
+
+    @Column(nullable = false)
+    private boolean emailVerified;
 
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)

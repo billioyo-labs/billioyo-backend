@@ -24,8 +24,8 @@ public class UserController {
 
     @PostMapping("/sign-up")
     public ResponseEntity<?> signUp(@RequestBody SignUpDto signUpDto) {
-        userService.signUp(signUpDto);
-        return ResponseEntity.ok(ApiResponse.success("회원가입 성공"));
+        String message = userService.signUp(signUpDto);
+        return ResponseEntity.ok(ApiResponse.success(message));
     }
 
     @GetMapping("/duplicate-check")

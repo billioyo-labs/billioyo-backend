@@ -22,6 +22,7 @@ public class SignUpDto {
                 .username(name)
                 .email(email)
                 .password(encodedPassword)
+                .emailVerified(false)
                 .roles(roles)
                 .build();
     }

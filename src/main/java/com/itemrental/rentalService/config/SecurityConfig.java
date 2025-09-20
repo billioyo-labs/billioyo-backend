@@ -47,7 +47,7 @@ public class SecurityConfig {
         http.addFilterAt(new JwtAuthenticationFilter(jwtTokenProvider, customUserDetailsService), LoginFilter.class);
         // 경로별 인가 작업 설정
         http.authorizeHttpRequests((auth) -> auth
-                .requestMatchers("/login", "/", "/post/list", "/post/search", "/user/**").permitAll() // 누구나 접근가능
+                .requestMatchers("/login", "/", "/post/list", "/post/search", "/user/**", "/auth/**").permitAll() // 누구나 접근가능
                 .requestMatchers("/reissue").permitAll()
                 .anyRequest().authenticated());  //나머지 경로들은 다 인증된 사용자만
 

@@ -45,5 +45,6 @@ public class CommunityPost {
   }
 
   @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+  @Getter
   private List<CommunityPostImage> images;
 }

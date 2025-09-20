@@ -24,6 +24,7 @@ public class CommunityPostImage {
   @Setter
   private String imageUrl;
 
+  @Setter
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "community_post_id", nullable = false)
   private CommunityPost post;

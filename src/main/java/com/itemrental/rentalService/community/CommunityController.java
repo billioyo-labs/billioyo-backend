@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 public class CommunityController {
 
   private final CommunityPostService postService;
+  private final S3Service s3Service;
 
   //커뮤니티 생성
   @PostMapping
@@ -39,5 +40,12 @@ public class CommunityController {
   public ResponseEntity<String> deletePost(@PathVariable Long postId) {
     postService.deleteCommunityPost(postId);
     return ResponseEntity.ok("게시글 삭제 완료");
+  }
+
+  //이미지 링크 생성
+  @GetMapping("/presigned-url")
+  public String getPresignedUrl(@RequestParam String filename) {
+    String result = s3Service.createPresignedUrl("community-image/"+filename);
+    return result;
   }
 }

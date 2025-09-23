@@ -14,4 +14,5 @@ public class CommunityPostReadResponseDto {
   private String content;
   private LocalDateTime createdAt;
   private List<CommunityPostImage> imageUrls;
+  private int LikeCount;
 }

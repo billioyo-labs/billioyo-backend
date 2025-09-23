@@ -56,9 +56,9 @@ public class CommunityController {
   }
 
   @PostMapping("/{postId}/like")
-  public ResponseEntity<String> likePost(@PathVariable Long postId) {
-    likeService.toggleLike(postId);
-    return ResponseEntity.ok("게시글 하트 완료");
+  public ResponseEntity<Integer> likePost(@PathVariable Long postId) {
+    int n = likeService.toggleLike(postId);
+    return ResponseEntity.ok(n);
   }
 
 

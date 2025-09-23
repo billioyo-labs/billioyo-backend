@@ -23,7 +23,7 @@ public class CommunityPostLikeService {
 
   //게시글 좋아요
   @Transactional
-  public void toggleLike(Long postId){
+  public int toggleLike(Long postId){
     String username = SecurityContextHolder.getContext().getAuthentication().getName();
     User user = userRepository.findByUsername(username)
         .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다"));
@@ -34,12 +34,15 @@ public class CommunityPostLikeService {
     if (postLikeRepository.existsByUser_IdAndPost_Id(user.getId(), post.getId())) {
       // 이미 좋아요 → 삭제
       postLikeRepository.deleteByUser_IdAndPost_Id(user.getId(), post.getId());
+      post.setLikeCount(post.getLikeCount() - 1);
     } else {
       // 없으니까 추가
       CommunityPostLike postLike = new CommunityPostLike();
       postLike.setUser(user);
       postLike.setPost(post);
       postLikeRepository.save(postLike);
+      post.setLikeCount(post.getLikeCount() + 1);
     }
+  return post.getLikeCount();
   }
 }

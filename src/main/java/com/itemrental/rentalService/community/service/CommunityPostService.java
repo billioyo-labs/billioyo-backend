@@ -65,7 +65,8 @@ public class CommunityPostService {
         post.getTitle(),
         post.getContent(),
         post.getCreatedAt(),
-        post.getImages()
+        post.getImages(),
+        post.getLikeCount()
     );
   }
 

@@ -26,7 +26,7 @@ public class CommunityController {
     return ResponseEntity.ok(postService.createCommunityPost(dto));
   }
 
-  //커뮤니티 조회
+  //커뮤니티 상세 조회
   @GetMapping("/{postId}")
   public ResponseEntity<CommunityPostReadResponseDto> getPost(@PathVariable Long postId) {
     return ResponseEntity.ok(postService.getCommunityPost(postId));

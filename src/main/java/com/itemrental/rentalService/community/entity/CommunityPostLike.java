@@ -6,11 +6,18 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
 import java.time.LocalDateTime;
 
 @Entity
+@Table(
+    name = "community_post_like",
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"post_id", "user_id"})
+    }
+)
 @AllArgsConstructor
 @NoArgsConstructor
 public class CommunityPostLike {
@@ -23,10 +30,14 @@ public class CommunityPostLike {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id")
+  @Getter
+  @Setter
   private User user;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "post_id")
+  @Getter
+  @Setter
   private CommunityPost post;
 
   @Getter

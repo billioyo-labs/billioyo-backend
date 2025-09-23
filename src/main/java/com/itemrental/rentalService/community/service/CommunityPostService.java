@@ -1,4 +1,4 @@
-package com.itemrental.rentalService.community;
+package com.itemrental.rentalService.community.service;
 
 import com.itemrental.rentalService.community.dto.request.CommunityPostCreateRequestDto;
 import com.itemrental.rentalService.community.dto.request.CommunityPostUpdateRequestDto;

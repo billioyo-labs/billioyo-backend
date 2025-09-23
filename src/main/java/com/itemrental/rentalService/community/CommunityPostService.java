@@ -81,17 +81,6 @@ public class CommunityPostService {
     }
     post.setTitle(dto.getTitle());
     post.setContent(dto.getContent());
-
-    post.getImages().clear();
-
-    if (dto.getImageUrls() != null) {
-      for (String imageUrl : dto.getImageUrls()) {
-        CommunityPostImage image = new CommunityPostImage();
-        image.setPost(post);
-        image.setImageUrl(imageUrl);
-        imageRepository.save(image);
-      }
-    }
   }
 
   @Transactional

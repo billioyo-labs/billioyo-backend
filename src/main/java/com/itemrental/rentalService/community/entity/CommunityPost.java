@@ -57,4 +57,8 @@ public class CommunityPost {
   @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
   @Getter
   private List<CommunityPostLike> likes;
+
+  @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+  @Getter
+  private List<CommunityPostBookmark> bookmarks;
 }

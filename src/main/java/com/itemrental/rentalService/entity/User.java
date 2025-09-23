@@ -1,6 +1,7 @@
 package com.itemrental.rentalService.entity;
 
 import com.itemrental.rentalService.community.entity.CommunityPost;
+import com.itemrental.rentalService.community.entity.CommunityPostBookmark;
 import com.itemrental.rentalService.community.entity.CommunityPostLike;
 import jakarta.persistence.*;
 import lombok.*;
@@ -58,6 +59,10 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<CommunityPostLike> likes;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Getter
+    private List<CommunityPostBookmark> bookmarks;
 
 
 

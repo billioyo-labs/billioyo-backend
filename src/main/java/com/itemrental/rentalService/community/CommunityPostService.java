@@ -4,6 +4,10 @@ import com.itemrental.rentalService.community.dto.request.CommunityPostCreateReq
 import com.itemrental.rentalService.community.dto.request.CommunityPostUpdateRequestDto;
 import com.itemrental.rentalService.community.dto.response.CommunityPostCreateResponseDto;
 import com.itemrental.rentalService.community.dto.response.CommunityPostReadResponseDto;
+import com.itemrental.rentalService.community.entity.CommunityPost;
+import com.itemrental.rentalService.community.entity.CommunityPostImage;
+import com.itemrental.rentalService.community.repository.CommunityPostImageRepository;
+import com.itemrental.rentalService.community.repository.CommunityPostRepository;
 import com.itemrental.rentalService.entity.User;
 import com.itemrental.rentalService.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

@@ -1,5 +1,5 @@
 package com.itemrental.rentalService.community.dto.response;
-import com.itemrental.rentalService.community.CommunityPostImage;
+import com.itemrental.rentalService.community.entity.CommunityPostImage;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

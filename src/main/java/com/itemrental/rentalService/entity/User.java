@@ -1,6 +1,6 @@
 package com.itemrental.rentalService.entity;
 
-import com.itemrental.rentalService.community.CommunityPost;
+import com.itemrental.rentalService.community.entity.CommunityPost;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;

@@ -1,5 +1,5 @@
 
-package com.itemrental.rentalService.community;
+package com.itemrental.rentalService.community.entity;
 
 import com.itemrental.rentalService.entity.User;
 import jakarta.persistence.*;
@@ -47,4 +47,8 @@ public class CommunityPost {
   @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
   @Getter
   private List<CommunityPostImage> images;
+
+  @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+  @Getter
+  private List<CommunityPostLike> likes;
 }

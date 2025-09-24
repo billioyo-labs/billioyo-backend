@@ -1,8 +1,10 @@
 package com.itemrental.rentalService.community.service;
 
 
+import com.itemrental.rentalService.community.dto.response.CommunityPostReadResponseDto;
 import com.itemrental.rentalService.community.entity.CommunityPost;
 import com.itemrental.rentalService.community.entity.CommunityPostBookmark;
+import com.itemrental.rentalService.community.entity.CommunityPostImage;
 import com.itemrental.rentalService.community.entity.CommunityPostLike;
 import com.itemrental.rentalService.community.repository.CommunityPostBookmarkRepository;
 import com.itemrental.rentalService.community.repository.CommunityPostLikeRepository;
@@ -13,6 +15,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -71,4 +76,29 @@ public class CommunityPostInteractionService {
       return "북마크";
     }
   }
+
+  public List<CommunityPostReadResponseDto> getLikedPosts(){
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    User user = userRepository.findByUsername(username)
+        .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다"));
+
+    return likeRepo.findAllByUser(user).stream()
+        .map(like -> {
+          CommunityPost post = like.getPost();
+          return new CommunityPostReadResponseDto(
+              user.getUsername(),
+              post.getTitle(),
+              post.getContent(),
+              post.getCreatedAt(),
+              post.getImages(),
+              post.getViewCount(),
+              post.getLikeCount()
+          );
+        })
+        .toList();
+
+
+  }
+
+
 }

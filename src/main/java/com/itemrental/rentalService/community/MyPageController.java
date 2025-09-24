@@ -23,4 +23,8 @@ public class MyPageController {
   public ResponseEntity<List<CommunityPostReadResponseDto>> getLikePosts() {
     return ResponseEntity.ok(interactionService.getLikedPosts());
   }
+  @GetMapping("/bms")
+  public ResponseEntity<List<CommunityPostReadResponseDto>> getBmPosts() {
+    return ResponseEntity.ok(interactionService.getBmPosts());
+  }
 }

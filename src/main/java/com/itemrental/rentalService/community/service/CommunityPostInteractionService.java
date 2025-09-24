@@ -54,6 +54,7 @@ public class CommunityPostInteractionService {
   return post.getLikeCount();
   }
 
+  //게시글 북마크
   @Transactional
   public String toggleBookmark(Long postId){
     String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -77,28 +78,47 @@ public class CommunityPostInteractionService {
     }
   }
 
-  public List<CommunityPostReadResponseDto> getLikedPosts(){
+  // 좋아요한 게시글
+  @Transactional(readOnly = true)
+  public List<CommunityPostReadResponseDto> getLikedPosts() {
     String username = SecurityContextHolder.getContext().getAuthentication().getName();
     User user = userRepository.findByUsername(username)
         .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다"));
 
     return likeRepo.findAllByUser(user).stream()
-        .map(like -> {
-          CommunityPost post = like.getPost();
-          return new CommunityPostReadResponseDto(
-              user.getUsername(),
-              post.getTitle(),
-              post.getContent(),
-              post.getCreatedAt(),
-              post.getImages(),
-              post.getViewCount(),
-              post.getLikeCount()
-          );
-        })
-        .toList();
+      .map(like -> {
+        CommunityPost post = like.getPost();
+        return new CommunityPostReadResponseDto(
+            user.getUsername(),
+            post.getTitle(),
+            post.getContent(),
+            post.getCreatedAt(),
+            post.getImages(),
+            post.getViewCount(),
+            post.getLikeCount()
+        );
+      }).toList();
+  }
+  //북마크한 게시글
+  @Transactional
+  public List<CommunityPostReadResponseDto> getBmPosts(){
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    User user = userRepository.findByUsername(username)
+      .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다"));
 
+    return bmRepo.findAllByUser(user).stream()
+      .map(bm -> {
+        CommunityPost post = bm.getPost();
+        return new CommunityPostReadResponseDto(
+          user.getUsername(),
+          post.getTitle(),
+          post.getContent(),
+          post.getCreatedAt(),
+          post.getImages(),
+          post.getViewCount(),
+          post.getLikeCount()
+        );
+      }).toList();
 
   }
-
-
 }

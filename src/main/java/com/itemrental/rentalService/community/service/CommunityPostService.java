@@ -57,8 +57,10 @@ public class CommunityPostService {
   //게시글 읽기
   @Transactional
   public CommunityPostReadResponseDto getCommunityPost(Long postId) {
-    CommunityPost post = repository.findById(postId).get();
+    CommunityPost post = repository.findById(postId)
+        .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
     User user = post.getUser();
+    post.setViewCount(post.getViewCount() + 1);
 
     return new CommunityPostReadResponseDto(
         user.getUsername(),
@@ -66,6 +68,7 @@ public class CommunityPostService {
         post.getContent(),
         post.getCreatedAt(),
         post.getImages(),
+        post.getViewCount(),
         post.getLikeCount()
     );
   }

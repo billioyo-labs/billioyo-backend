@@ -39,6 +39,10 @@ public class CommunityPost {
   @Column(nullable = false, updatable = false)
   private LocalDateTime createdAt;
 
+  @Getter
+  @Setter
+  @Column(nullable = false)
+  private int viewCount = 0;
 
   @Getter
   @Setter

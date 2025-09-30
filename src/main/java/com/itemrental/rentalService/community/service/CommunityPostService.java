@@ -65,6 +65,7 @@ public class CommunityPostService {
     User user = post.getUser();
     post.setViewCount(post.getViewCount() + 1);
 
+
     return new CommunityPostReadResponseDto(
         user.getUsername(),
         post.getTitle(),

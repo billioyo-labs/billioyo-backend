@@ -8,6 +8,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CommunityCommentRequestDto {
+public class CommentCreateRequestDto {
   private String comment;
 }

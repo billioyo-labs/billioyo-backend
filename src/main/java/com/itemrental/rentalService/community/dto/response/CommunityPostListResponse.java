@@ -8,10 +8,12 @@ import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
-public class CommunityPostList {
-  private int postId;
+public class CommunityPostListResponse {
+  private Long postId;
   private String title;
-  private LocalDateTime createdAt;
-  private int viewCount;
+  private String authorName;
   private int likeCount;
+  private int viewCount;
+  private LocalDateTime createdAt;
+  private String thumbnailUrl;
 }

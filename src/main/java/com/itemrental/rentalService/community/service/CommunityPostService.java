@@ -3,6 +3,7 @@ package com.itemrental.rentalService.community.service;
 import com.itemrental.rentalService.community.dto.request.CommunityPostCreateRequestDto;
 import com.itemrental.rentalService.community.dto.request.CommunityPostUpdateRequestDto;
 import com.itemrental.rentalService.community.dto.response.CommunityPostCreateResponseDto;
+import com.itemrental.rentalService.community.dto.response.CommunityPostListResponse;
 import com.itemrental.rentalService.community.dto.response.CommunityPostReadResponseDto;
 import com.itemrental.rentalService.community.entity.CommunityPost;
 import com.itemrental.rentalService.community.entity.CommunityPostImage;
@@ -11,11 +12,18 @@ import com.itemrental.rentalService.community.repository.CommunityPostRepository
 import com.itemrental.rentalService.entity.User;
 import com.itemrental.rentalService.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -54,7 +62,7 @@ public class CommunityPostService {
         );
   }
 
-  //게시글 읽기
+  //게시글 상세 조회
   @Transactional
   public CommunityPostReadResponseDto getCommunityPost(Long postId) {
     CommunityPost post = repository.findById(postId)
@@ -73,6 +81,7 @@ public class CommunityPostService {
     );
   }
 
+  //게시글 수정
   @Transactional
   public void updateCommunityPost(Long postId, CommunityPostUpdateRequestDto dto) {
     String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -102,6 +111,7 @@ public class CommunityPostService {
     }
   }
 
+  //게시글 삭제
   @Transactional
   public void deleteCommunityPost(Long postId) {
     String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -118,4 +128,20 @@ public class CommunityPostService {
     }
     repository.delete(post);
   }
+
+  public Page<CommunityPostListResponse> getPostList(Pageable pageable) {
+    Page<CommunityPost> page = repository.findAll(pageable);
+    return page.map(post->
+      new CommunityPostListResponse(
+      post.getId(),
+      post.getTitle(),
+      post.getUser().getUsername(),
+      post.getLikeCount(),
+      post.getViewCount(),
+      post.getCreatedAt(),
+      post.getImages().isEmpty() ? null : post.getImages().get(0).getImageUrl()
+    ));
+  }
 }
+
+

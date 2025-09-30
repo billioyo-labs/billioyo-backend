@@ -71,13 +71,11 @@ public class CommunityController {
     return ResponseEntity.ok(message);
   }
 
+
   @GetMapping("/posts")
   public ResponseEntity<Page<CommunityPostListResponse>> getPosts(
       @PageableDefault(size = 10, sort = "createdAt") Pageable pageable
-  ) {
+  ){
     return ResponseEntity.ok(postService.getPostList(pageable));
   }
-
-
-
 }

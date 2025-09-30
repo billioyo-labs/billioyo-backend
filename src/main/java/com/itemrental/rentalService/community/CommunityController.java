@@ -1,5 +1,6 @@
 package com.itemrental.rentalService.community;
 
+import com.itemrental.rentalService.community.dto.request.CommentCreateRequestDto;
 import com.itemrental.rentalService.community.dto.request.CommunityImagePresignedUrlRequestDto;
 import com.itemrental.rentalService.community.dto.request.CommunityPostCreateRequestDto;
 import com.itemrental.rentalService.community.dto.request.CommunityPostUpdateRequestDto;
@@ -7,6 +8,7 @@ import com.itemrental.rentalService.community.dto.response.CommunityImagePresign
 import com.itemrental.rentalService.community.dto.response.CommunityPostCreateResponseDto;
 import com.itemrental.rentalService.community.dto.response.CommunityPostListResponseDto;
 import com.itemrental.rentalService.community.dto.response.CommunityPostReadResponseDto;
+import com.itemrental.rentalService.community.service.CommunityCommentService;
 import com.itemrental.rentalService.community.service.CommunityPostInteractionService;
 import com.itemrental.rentalService.community.service.CommunityPostService;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,7 @@ public class CommunityController {
   private final CommunityPostService postService;
   private final S3Service s3Service;
   private final CommunityPostInteractionService interactionService;
+  private final CommunityCommentService commentService;
 
   //커뮤니티 생성
   @PostMapping
@@ -78,4 +81,11 @@ public class CommunityController {
   ){
     return ResponseEntity.ok(postService.getPostList(pageable));
   }
+
+  @PostMapping("comment/{postId}")
+  public ResponseEntity<String> creatComment(@RequestBody CommentCreateRequestDto dto, @PathVariable Long postId) {
+    commentService.createCommunityComment(dto, postId);
+    return ResponseEntity.ok("댓글 생성됨");
+  }
+
 }

@@ -1,6 +1,7 @@
 package com.itemrental.rentalService.community.service;
 
 
+import com.itemrental.rentalService.community.dto.response.CommentResponseDto;
 import com.itemrental.rentalService.community.dto.response.CommunityPostReadResponseDto;
 import com.itemrental.rentalService.community.entity.CommunityPost;
 import com.itemrental.rentalService.community.entity.CommunityPostBookmark;
@@ -85,9 +86,17 @@ public class CommunityPostInteractionService {
     User user = userRepository.findByUsername(username)
         .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다"));
 
+
+
     return likeRepo.findAllByUser(user).stream()
       .map(like -> {
         CommunityPost post = like.getPost();
+        List<CommentResponseDto> comments = post.getComments().stream().map(comment -> new CommentResponseDto(
+            comment.getId(),
+            comment.getUser().getUsername(),
+            comment.getComment(),
+            comment.getCreatedAt()
+        )).toList();
         return new CommunityPostReadResponseDto(
             user.getUsername(),
             post.getTitle(),
@@ -95,7 +104,8 @@ public class CommunityPostInteractionService {
             post.getCreatedAt(),
             post.getImages(),
             post.getViewCount(),
-            post.getLikeCount()
+            post.getLikeCount(),
+            comments
         );
       }).toList();
   }
@@ -109,6 +119,12 @@ public class CommunityPostInteractionService {
     return bmRepo.findAllByUser(user).stream()
       .map(bm -> {
         CommunityPost post = bm.getPost();
+        List<CommentResponseDto> comments = post.getComments().stream().map(comment -> new CommentResponseDto(
+            comment.getId(),
+            comment.getUser().getUsername(),
+            comment.getComment(),
+            comment.getCreatedAt()
+        )).toList();
         return new CommunityPostReadResponseDto(
           user.getUsername(),
           post.getTitle(),
@@ -116,7 +132,8 @@ public class CommunityPostInteractionService {
           post.getCreatedAt(),
           post.getImages(),
           post.getViewCount(),
-          post.getLikeCount()
+          post.getLikeCount(),
+          comments
         );
       }).toList();
 

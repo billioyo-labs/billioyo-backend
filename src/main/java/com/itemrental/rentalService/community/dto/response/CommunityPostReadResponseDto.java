@@ -16,4 +16,5 @@ public class CommunityPostReadResponseDto {
   private List<CommunityPostImage> imageUrls;
   private int viewCount;
   private int likeCount;
+  private List<CommentResponseDto> comments;
 }

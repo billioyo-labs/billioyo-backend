@@ -2,9 +2,11 @@ package com.itemrental.rentalService.community.service;
 
 import com.itemrental.rentalService.community.dto.request.CommunityPostCreateRequestDto;
 import com.itemrental.rentalService.community.dto.request.CommunityPostUpdateRequestDto;
+import com.itemrental.rentalService.community.dto.response.CommentResponseDto;
 import com.itemrental.rentalService.community.dto.response.CommunityPostCreateResponseDto;
 import com.itemrental.rentalService.community.dto.response.CommunityPostListResponseDto;
 import com.itemrental.rentalService.community.dto.response.CommunityPostReadResponseDto;
+import com.itemrental.rentalService.community.entity.CommunityComment;
 import com.itemrental.rentalService.community.entity.CommunityPost;
 import com.itemrental.rentalService.community.entity.CommunityPostImage;
 import com.itemrental.rentalService.community.repository.CommunityPostImageRepository;
@@ -19,6 +21,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -65,6 +69,12 @@ public class CommunityPostService {
     User user = post.getUser();
     post.setViewCount(post.getViewCount() + 1);
 
+    List<CommentResponseDto> comments = post.getComments().stream().map(comment -> new CommentResponseDto(
+        comment.getId(),
+        comment.getUser().getUsername(),
+        comment.getComment(),
+        comment.getCreatedAt()
+    )).toList();
 
     return new CommunityPostReadResponseDto(
         user.getUsername(),
@@ -73,7 +83,8 @@ public class CommunityPostService {
         post.getCreatedAt(),
         post.getImages(),
         post.getViewCount(),
-        post.getLikeCount()
+        post.getLikeCount(),
+        comments
     );
   }
 

@@ -3,7 +3,7 @@ package com.itemrental.rentalService.community.service;
 import com.itemrental.rentalService.community.dto.request.CommunityPostCreateRequestDto;
 import com.itemrental.rentalService.community.dto.request.CommunityPostUpdateRequestDto;
 import com.itemrental.rentalService.community.dto.response.CommunityPostCreateResponseDto;
-import com.itemrental.rentalService.community.dto.response.CommunityPostListResponse;
+import com.itemrental.rentalService.community.dto.response.CommunityPostListResponseDto;
 import com.itemrental.rentalService.community.dto.response.CommunityPostReadResponseDto;
 import com.itemrental.rentalService.community.entity.CommunityPost;
 import com.itemrental.rentalService.community.entity.CommunityPostImage;
@@ -124,11 +124,11 @@ public class CommunityPostService {
     repository.delete(post);
   }
 
-  public Page<CommunityPostListResponse> getPostList(Pageable pageable) {
+  public Page<CommunityPostListResponseDto> getPostList(Pageable pageable) {
     Page<CommunityPost> page = repository.findAll(pageable);
 
     return page.map(post->
-      new CommunityPostListResponse(
+      new CommunityPostListResponseDto(
       post.getId(),
       post.getTitle(),
       post.getUser().getUsername(),

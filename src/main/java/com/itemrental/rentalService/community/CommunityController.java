@@ -5,7 +5,7 @@ import com.itemrental.rentalService.community.dto.request.CommunityPostCreateReq
 import com.itemrental.rentalService.community.dto.request.CommunityPostUpdateRequestDto;
 import com.itemrental.rentalService.community.dto.response.CommunityImagePresignedUrlResponseDto;
 import com.itemrental.rentalService.community.dto.response.CommunityPostCreateResponseDto;
-import com.itemrental.rentalService.community.dto.response.CommunityPostListResponse;
+import com.itemrental.rentalService.community.dto.response.CommunityPostListResponseDto;
 import com.itemrental.rentalService.community.dto.response.CommunityPostReadResponseDto;
 import com.itemrental.rentalService.community.service.CommunityPostInteractionService;
 import com.itemrental.rentalService.community.service.CommunityPostService;
@@ -73,7 +73,7 @@ public class CommunityController {
 
 
   @GetMapping("/posts")
-  public ResponseEntity<Page<CommunityPostListResponse>> getPosts(
+  public ResponseEntity<Page<CommunityPostListResponseDto>> getPosts(
       @PageableDefault(size = 10, sort = "createdAt") Pageable pageable
   ){
     return ResponseEntity.ok(postService.getPostList(pageable));

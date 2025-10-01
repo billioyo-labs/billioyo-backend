@@ -5,10 +5,14 @@ import com.itemrental.rentalService.community.dto.request.CommunityPostCreateReq
 import com.itemrental.rentalService.community.dto.request.CommunityPostUpdateRequestDto;
 import com.itemrental.rentalService.community.dto.response.CommunityImagePresignedUrlResponseDto;
 import com.itemrental.rentalService.community.dto.response.CommunityPostCreateResponseDto;
+import com.itemrental.rentalService.community.dto.response.CommunityPostListResponse;
 import com.itemrental.rentalService.community.dto.response.CommunityPostReadResponseDto;
 import com.itemrental.rentalService.community.service.CommunityPostInteractionService;
 import com.itemrental.rentalService.community.service.CommunityPostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +33,7 @@ public class CommunityController {
     return ResponseEntity.ok(postService.createCommunityPost(dto));
   }
 
-  //커뮤니티 조회
+  //커뮤니티 상세 조회
   @GetMapping("/{postId}")
   public ResponseEntity<CommunityPostReadResponseDto> getPost(@PathVariable Long postId) {
     return ResponseEntity.ok(postService.getCommunityPost(postId));
@@ -65,6 +69,13 @@ public class CommunityController {
   public ResponseEntity<String> bmPost(@PathVariable Long postId) {
     String message = interactionService.toggleBookmark(postId);
     return ResponseEntity.ok(message);
+  }
+
+  @GetMapping("/posts")
+  public ResponseEntity<Page<CommunityPostListResponse>> getPosts(
+      @PageableDefault(size = 10, sort = "createdAt") Pageable pageable
+  ) {
+    return ResponseEntity.ok(postService.getPostList(pageable));
   }
 
 

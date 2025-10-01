@@ -90,4 +90,9 @@ public class CommunityController {
     return ResponseEntity.ok("댓글 생성됨");
   }
 
+  @GetMapping("/posts/search")
+  public ResponseEntity<List<CommunityPostListResponseDto>> searchPosts(@RequestParam String keyword) {
+    return ResponseEntity.ok(postService.searchPosts(keyword));
+  }
+
 }

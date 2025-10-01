@@ -14,6 +14,7 @@ public class CommunityPostListResponseDto {
   private String authorName;
   private int likeCount;
   private int viewCount;
+  private int commentCount;
   private LocalDateTime createdAt;
   private String thumbnailUrl;
 }

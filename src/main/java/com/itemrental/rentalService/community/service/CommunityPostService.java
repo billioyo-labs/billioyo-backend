@@ -69,7 +69,8 @@ public class CommunityPostService {
     User user = post.getUser();
     post.setViewCount(post.getViewCount() + 1);
 
-    List<CommentResponseDto> comments = post.getComments().stream().map(comment -> new CommentResponseDto(
+    List<CommentResponseDto> comments = post.getComments().stream().map(
+        comment -> new CommentResponseDto(
         comment.getId(),
         comment.getUser().getUsername(),
         comment.getComment(),
@@ -146,6 +147,7 @@ public class CommunityPostService {
       post.getUser().getUsername(),
       post.getLikeCount(),
       post.getViewCount(),
+      post.getCommentCount(),
       post.getCreatedAt(),
       post.getImages().isEmpty() ? null : post.getImages().get(0).getImageUrl()
     ));

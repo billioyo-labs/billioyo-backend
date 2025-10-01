@@ -14,6 +14,7 @@ import com.itemrental.rentalService.community.service.CommunityPostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -62,6 +63,7 @@ public class CommunityController {
     return ResponseEntity.ok(s3Service.createCommunityImagePresignedUrls(dto.getFileNames()));
   }
 
+
   @PostMapping("/{postId}/like")
   public ResponseEntity<Integer> likePost(@PathVariable Long postId) {
     int likeCount = interactionService.toggleLike(postId);
@@ -77,7 +79,7 @@ public class CommunityController {
 
   @GetMapping("/posts")
   public ResponseEntity<Page<CommunityPostListResponseDto>> getPosts(
-      @PageableDefault(size = 10, sort = "createdAt") Pageable pageable
+      @PageableDefault(size = 10, sort = "createdAt",direction = Sort.Direction.DESC) Pageable pageable
   ){
     return ResponseEntity.ok(postService.getPostList(pageable));
   }

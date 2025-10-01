@@ -33,6 +33,8 @@ public class CommunityCommentService {
     String username = SecurityContextHolder.getContext().getAuthentication().getName();
     User user = userRepository.findByUsername(username).get();
 
+    CommunityPost post = postRepo.findById(postId).get();
+    post.setCommentCount(post.getCommentCount()+1);
     CommunityComment comment = new CommunityComment();
     comment.setUser(user);
     comment.setPost(postRepo.findById(postId).get());
@@ -40,7 +42,7 @@ public class CommunityCommentService {
     commentRepo.save(comment);
   }
 
-  //커뮤니티 댓글 조회
+//  커뮤니티 댓글 조회
 //  @Transactional
 //  public List<CommentResponseDto> getComments(Long postId) {
 //    List<CommunityComment> comments = commentRepo.findByPostIdOrderByCreatedAtDesc(postId);

@@ -49,6 +49,11 @@ public class CommunityPost {
   @Column(nullable = false)
   private int likeCount = 0;
 
+  @Getter
+  @Setter
+  @Column(nullable = false)
+  private int commentCount = 0;
+
   @PrePersist
   protected void onCreate() {
     this.createdAt = LocalDateTime.now();

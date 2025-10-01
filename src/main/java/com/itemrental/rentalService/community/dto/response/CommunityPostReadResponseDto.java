@@ -9,6 +9,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public class CommunityPostReadResponseDto {
+  private String category;
   private String username;
   private String title;
   private String content;
@@ -16,4 +17,5 @@ public class CommunityPostReadResponseDto {
   private List<CommunityPostImage> imageUrls;
   private int viewCount;
   private int likeCount;
+  private List<CommentResponseDto> comments;
 }

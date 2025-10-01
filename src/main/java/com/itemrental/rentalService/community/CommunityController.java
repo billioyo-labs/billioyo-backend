@@ -1,17 +1,20 @@
 package com.itemrental.rentalService.community;
 
+import com.itemrental.rentalService.community.dto.request.CommentCreateRequestDto;
 import com.itemrental.rentalService.community.dto.request.CommunityImagePresignedUrlRequestDto;
 import com.itemrental.rentalService.community.dto.request.CommunityPostCreateRequestDto;
 import com.itemrental.rentalService.community.dto.request.CommunityPostUpdateRequestDto;
 import com.itemrental.rentalService.community.dto.response.CommunityImagePresignedUrlResponseDto;
 import com.itemrental.rentalService.community.dto.response.CommunityPostCreateResponseDto;
-import com.itemrental.rentalService.community.dto.response.CommunityPostListResponse;
+import com.itemrental.rentalService.community.dto.response.CommunityPostListResponseDto;
 import com.itemrental.rentalService.community.dto.response.CommunityPostReadResponseDto;
+import com.itemrental.rentalService.community.service.CommunityCommentService;
 import com.itemrental.rentalService.community.service.CommunityPostInteractionService;
 import com.itemrental.rentalService.community.service.CommunityPostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +29,7 @@ public class CommunityController {
   private final CommunityPostService postService;
   private final S3Service s3Service;
   private final CommunityPostInteractionService interactionService;
+  private final CommunityCommentService commentService;
 
   //커뮤니티 생성
   @PostMapping
@@ -59,6 +63,7 @@ public class CommunityController {
     return ResponseEntity.ok(s3Service.createCommunityImagePresignedUrls(dto.getFileNames()));
   }
 
+
   @PostMapping("/{postId}/like")
   public ResponseEntity<Integer> likePost(@PathVariable Long postId) {
     int likeCount = interactionService.toggleLike(postId);
@@ -71,13 +76,18 @@ public class CommunityController {
     return ResponseEntity.ok(message);
   }
 
+
   @GetMapping("/posts")
-  public ResponseEntity<Page<CommunityPostListResponse>> getPosts(
-      @PageableDefault(size = 10, sort = "createdAt") Pageable pageable
-  ) {
+  public ResponseEntity<Page<CommunityPostListResponseDto>> getPosts(
+      @PageableDefault(size = 10, sort = "createdAt",direction = Sort.Direction.DESC) Pageable pageable
+  ){
     return ResponseEntity.ok(postService.getPostList(pageable));
   }
 
-
+  @PostMapping("comment/{postId}")
+  public ResponseEntity<String> creatComment(@RequestBody CommentCreateRequestDto dto, @PathVariable Long postId) {
+    commentService.createCommunityComment(dto, postId);
+    return ResponseEntity.ok("댓글 생성됨");
+  }
 
 }

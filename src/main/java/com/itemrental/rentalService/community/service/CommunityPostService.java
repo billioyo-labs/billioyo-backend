@@ -140,6 +140,7 @@ public class CommunityPostService {
     repository.delete(post);
   }
 
+  @Transactional(readOnly = true)
   public Page<CommunityPostListResponseDto> getPostList(Pageable pageable) {
     Page<CommunityPost> page = repository.findAll(pageable);
 
@@ -158,6 +159,7 @@ public class CommunityPostService {
   }
 
   //게시글 검색
+  @Transactional(readOnly = true)
   public List<CommunityPostListResponseDto> searchPosts(String keyword) {
 
     return repository.findByTitleContainingOrContentContaining(keyword, keyword).stream().map(

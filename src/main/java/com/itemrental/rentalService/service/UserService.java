@@ -5,6 +5,7 @@ import com.itemrental.rentalService.entity.User;
 import com.itemrental.rentalService.exceptions.DuplicateUsernameException;
 import com.itemrental.rentalService.exceptions.PasswordMismatchException;
 import com.itemrental.rentalService.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,32 +23,41 @@ public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
+    @Transactional
     public String signUp(SignUpDto signUpDto){
         String email = signUpDto.getEmail();
-        Optional<User> user = userRepository.findByEmail(email);
-        if(user.isPresent()){
-            if(user.get().isEmailVerified()){
-                return "이미 가입된 이메일";
-            }else{
-                return "이메일 인증 페이지 이동";
-            }
-        }else{
-            duplicateCheck(signUpDto.getName());
-            if(!Objects.equals(signUpDto.getPassword(), signUpDto.getPasswordConfirmation())){
-                throw new PasswordMismatchException("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
-            }
+        String encodedPassword = passwordEncoder.encode(signUpDto.getPassword());
+        List<String> roles = new ArrayList<>();
+        roles.add("USER");
+        User user = findByEmail(email).orElseThrow(() ->
+                new RuntimeException("이메일에 해당하는 사용자가 없습니다."));
+        User updateUser = signUpDto.toEntity(encodedPassword, roles);
+        updateUser.setId(user.getId());
+        userRepository.save(updateUser);
+        return "사용자 정보 저장 완료";
+    }
 
-            String encodedPassword = passwordEncoder.encode(signUpDto.getPassword());
-            List<String> roles = new ArrayList<>();
-            roles.add("USER");
-            userRepository.save(signUpDto.toEntity(encodedPassword, roles));
-            return "사용자 정보 저장 완료";
+    public void duplicateCheck(String nickName){
+        if(userRepository.existsByNickName(nickName)){
+            throw new DuplicateUsernameException("이미 존재하는 아이디입니다.");
         }
     }
 
-    public void duplicateCheck(String username){
-        if(userRepository.existsByUsername(username)){
-            throw new DuplicateUsernameException("이미 존재하는 아이디입니다.");
+    public String findAccount(String phoneNumber){
+        Optional<User> opUser = userRepository.findByPhoneNumber(phoneNumber);
+        if(opUser.isPresent()){
+            return opUser.get().getEmail();
+        }else{
+            return "해당하는 사용자가 없습니다.";
         }
+    }
+
+    public Optional<User> findByEmail(String email){
+        return userRepository.findByEmail(email);
+    }
+
+    public User makeInitialUser(String email){
+        User user = User.builder().email(email).build();
+        return userRepository.save(user);
     }
 }

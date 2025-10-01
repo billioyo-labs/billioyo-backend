@@ -2,14 +2,13 @@ package com.itemrental.rentalService.community.dto.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
-
 @Getter
+@Setter
 @NoArgsConstructor
-public class CommunityPostUpdateRequestDto {
-  private String title;
-  private String content;
-  private List<String> imageUrls;
+public class CommunityImagePresignedUrlRequestDto {
+  private List<String> fileNames;
 }

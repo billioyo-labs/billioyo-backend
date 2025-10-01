@@ -19,6 +19,7 @@ public class CommunityPostService {
 
   private final CommunityPostRepository repository;
   private final UserRepository userRepository;
+  private final CommunityPostImageRepository imageRepository;
 
   //게시글 생성
   @Transactional
@@ -32,11 +33,21 @@ public class CommunityPostService {
     post.setContent(dto.getContent());
     repository.save(post);
 
+    if (dto.getImageUrls() != null) {
+      for (String imageUrl : dto.getImageUrls()) {
+        CommunityPostImage image = new CommunityPostImage();
+        image.setPost(post);
+        image.setImageUrl(imageUrl);
+        imageRepository.save(image);
+      }
+    }
+
     return new CommunityPostCreateResponseDto(
         post.getId(),
         user.getUsername(),
         post.getTitle(),
-        post.getContent());
+        post.getContent()
+        );
   }
 
   //게시글 읽기
@@ -49,7 +60,8 @@ public class CommunityPostService {
         user.getUsername(),
         post.getTitle(),
         post.getContent(),
-        post.getCreatedAt()
+        post.getCreatedAt(),
+        post.getImages()
     );
   }
 
@@ -69,6 +81,17 @@ public class CommunityPostService {
     }
     post.setTitle(dto.getTitle());
     post.setContent(dto.getContent());
+
+    post.getImages().clear();
+
+    if (dto.getImageUrls() != null) {
+      for (String imageUrl : dto.getImageUrls()) {
+        CommunityPostImage image = new CommunityPostImage();
+        image.setPost(post);
+        image.setImageUrl(imageUrl);
+        imageRepository.save(image);
+      }
+    }
   }
 
   @Transactional

@@ -1,12 +1,16 @@
 package com.itemrental.rentalService.community;
 
+import com.itemrental.rentalService.community.dto.request.CommunityImagePresignedUrlRequestDto;
 import com.itemrental.rentalService.community.dto.request.CommunityPostCreateRequestDto;
 import com.itemrental.rentalService.community.dto.request.CommunityPostUpdateRequestDto;
+import com.itemrental.rentalService.community.dto.response.CommunityImagePresignedUrlResponseDto;
 import com.itemrental.rentalService.community.dto.response.CommunityPostCreateResponseDto;
 import com.itemrental.rentalService.community.dto.response.CommunityPostReadResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/community")
@@ -14,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class CommunityController {
 
   private final CommunityPostService postService;
+  private final S3Service s3Service;
 
   //커뮤니티 생성
   @PostMapping
@@ -39,5 +44,11 @@ public class CommunityController {
   public ResponseEntity<String> deletePost(@PathVariable Long postId) {
     postService.deleteCommunityPost(postId);
     return ResponseEntity.ok("게시글 삭제 완료");
+  }
+
+  // 다중 이미지 링크 생성
+  @PostMapping("/presigned-url")
+  public ResponseEntity<List<CommunityImagePresignedUrlResponseDto>> getPresignedUrls(@RequestBody CommunityImagePresignedUrlRequestDto dto) {
+    return ResponseEntity.ok(s3Service.createCommunityImagePresignedUrls(dto.getFileNames()));
   }
 }

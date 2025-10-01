@@ -21,6 +21,22 @@ spring:
       host: ${REDIS_HOST}
       port: ${REDIS_PORT}
       password: ${REDIS_PW}
+  mail:
+    host: ${SMTP_HOST}
+    port: ${SMTP_PORT}
+    username: ${EMAIL_FROM}
+    password: ${APP_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: ${SMTP_CONNECTION_TIMEOUT}
+          timeout: ${SMTP_TIMEOUT}
+          writetimeout: ${SMTP_WRITE_TIMEOUT}
+      auth-code-expiration-millis: ${SMTP_AUTH_CODE_EXPIRATION}
 logging:
   level:
     org.springframework.security: DEBUG

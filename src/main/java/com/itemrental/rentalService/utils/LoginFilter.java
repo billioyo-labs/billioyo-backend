@@ -3,7 +3,6 @@ package com.itemrental.rentalService.utils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.itemrental.rentalService.dto.CustomUserDetails;
 import com.itemrental.rentalService.entity.RefreshToken;
 import com.itemrental.rentalService.entity.User;
 import com.itemrental.rentalService.repository.RefreshTokenRepository;
@@ -11,13 +10,13 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.boot.autoconfigure.graphql.GraphQlProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
@@ -42,7 +41,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(request.getInputStream());
 
-
             userEmail = jsonNode.get("userId").asText();
             password = jsonNode.get("password").asText();
 
@@ -59,7 +57,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication){
         User user = (User) authentication.getPrincipal();
 
-
         String userEmail = authentication.getName();
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
@@ -71,9 +68,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         //24시간
         String refreshToken = jwtTokenProvider.createJwt("refresh",userEmail,86400000L);
 
-
         addRefreshEntity(user.getId(),refreshToken);
-
 
         //띄어쓰기 필수
         //Authorization: Bearer 인증토큰string
@@ -81,7 +76,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         response.setHeader("access",accessToken);
         response.addCookie(createCookie("refresh",refreshToken));
         response.setStatus(HttpStatus.OK.value());
-
 
     }
     private void addRefreshEntity(Long userId, String refreshToken){
@@ -111,7 +105,4 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         return cookie;
 
     }
-
-
-
 }

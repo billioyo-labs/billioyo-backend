@@ -1,8 +1,10 @@
 package com.itemrental.rentalService.utils;
 
 import com.itemrental.rentalService.dto.ErrorResponse;
+import com.itemrental.rentalService.exceptions.PendingProfileSetupException;
 import com.itemrental.rentalService.exceptions.DuplicateUsernameException;
 import com.itemrental.rentalService.exceptions.PasswordMismatchException;
+import jakarta.mail.MessagingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -19,6 +21,24 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(PasswordMismatchException.class)
     public ResponseEntity<ErrorResponse> handlePasswordMismatchException(PasswordMismatchException ex){
+        ErrorResponse errorResponse = new ErrorResponse("400", ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(PendingProfileSetupException.class)
+    public ResponseEntity<ErrorResponse> handlAlreadyRegisteredEmailException(PendingProfileSetupException ex){
+        ErrorResponse errorResponse = new ErrorResponse("409", ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex){
+        ErrorResponse errorResponse = new ErrorResponse("400", ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MessagingException.class)
+    public ResponseEntity<ErrorResponse> handleMessagingException(MessagingException ex){
         ErrorResponse errorResponse = new ErrorResponse("400", ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }

@@ -9,6 +9,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public class CommunityPostReadResponseDto {
+  private String category;
   private String username;
   private String title;
   private String content;

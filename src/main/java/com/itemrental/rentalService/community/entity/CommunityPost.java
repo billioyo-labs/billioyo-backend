@@ -54,6 +54,13 @@ public class CommunityPost {
   @Column(nullable = false)
   private int commentCount = 0;
 
+
+  @Getter
+  @Setter
+  @Column(nullable = false)
+  private String category = "FREE";
+
+
   @PrePersist
   protected void onCreate() {
     this.createdAt = LocalDateTime.now();

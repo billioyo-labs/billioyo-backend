@@ -98,6 +98,7 @@ public class CommunityPostInteractionService {
             comment.getCreatedAt()
         )).toList();
         return new CommunityPostReadResponseDto(
+            post.getCategory(),
             user.getUsername(),
             post.getTitle(),
             post.getContent(),
@@ -126,6 +127,7 @@ public class CommunityPostInteractionService {
             comment.getCreatedAt()
         )).toList();
         return new CommunityPostReadResponseDto(
+          post.getCategory(),
           user.getUsername(),
           post.getTitle(),
           post.getContent(),

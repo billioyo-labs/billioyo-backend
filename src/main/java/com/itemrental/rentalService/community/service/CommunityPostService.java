@@ -42,6 +42,7 @@ public class CommunityPostService {
     post.setUser(user);
     post.setTitle(dto.getTitle());
     post.setContent(dto.getContent());
+    post.setCategory(dto.getCategory());
     repository.save(post);
 
     if (dto.getImageUrls() != null) {
@@ -55,6 +56,7 @@ public class CommunityPostService {
 
     return new CommunityPostCreateResponseDto(
         post.getId(),
+        post.getCategory(),
         user.getUsername(),
         post.getTitle(),
         post.getContent()
@@ -78,6 +80,7 @@ public class CommunityPostService {
     )).toList();
 
     return new CommunityPostReadResponseDto(
+        post.getCategory(),
         user.getUsername(),
         post.getTitle(),
         post.getContent(),
@@ -143,6 +146,7 @@ public class CommunityPostService {
     return page.map(post->
       new CommunityPostListResponseDto(
       post.getId(),
+      post.getCategory(),
       post.getTitle(),
       post.getUser().getUsername(),
       post.getLikeCount(),

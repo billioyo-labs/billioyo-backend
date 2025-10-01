@@ -1,9 +1,13 @@
-package com.itemrental.rentalService.community;
+package com.itemrental.rentalService.community.service;
 
 import com.itemrental.rentalService.community.dto.request.CommunityPostCreateRequestDto;
 import com.itemrental.rentalService.community.dto.request.CommunityPostUpdateRequestDto;
 import com.itemrental.rentalService.community.dto.response.CommunityPostCreateResponseDto;
 import com.itemrental.rentalService.community.dto.response.CommunityPostReadResponseDto;
+import com.itemrental.rentalService.community.entity.CommunityPost;
+import com.itemrental.rentalService.community.entity.CommunityPostImage;
+import com.itemrental.rentalService.community.repository.CommunityPostImageRepository;
+import com.itemrental.rentalService.community.repository.CommunityPostRepository;
 import com.itemrental.rentalService.entity.User;
 import com.itemrental.rentalService.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -53,15 +57,19 @@ public class CommunityPostService {
   //게시글 읽기
   @Transactional
   public CommunityPostReadResponseDto getCommunityPost(Long postId) {
-    CommunityPost post = repository.findById(postId).get();
+    CommunityPost post = repository.findById(postId)
+        .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
     User user = post.getUser();
+    post.setViewCount(post.getViewCount() + 1);
 
     return new CommunityPostReadResponseDto(
         user.getUsername(),
         post.getTitle(),
         post.getContent(),
         post.getCreatedAt(),
-        post.getImages()
+        post.getImages(),
+        post.getViewCount(),
+        post.getLikeCount()
     );
   }
 

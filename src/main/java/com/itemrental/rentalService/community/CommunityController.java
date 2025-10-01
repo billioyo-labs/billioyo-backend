@@ -6,6 +6,8 @@ import com.itemrental.rentalService.community.dto.request.CommunityPostUpdateReq
 import com.itemrental.rentalService.community.dto.response.CommunityImagePresignedUrlResponseDto;
 import com.itemrental.rentalService.community.dto.response.CommunityPostCreateResponseDto;
 import com.itemrental.rentalService.community.dto.response.CommunityPostReadResponseDto;
+import com.itemrental.rentalService.community.service.CommunityPostInteractionService;
+import com.itemrental.rentalService.community.service.CommunityPostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +21,7 @@ public class CommunityController {
 
   private final CommunityPostService postService;
   private final S3Service s3Service;
+  private final CommunityPostInteractionService interactionService;
 
   //커뮤니티 생성
   @PostMapping
@@ -51,4 +54,19 @@ public class CommunityController {
   public ResponseEntity<List<CommunityImagePresignedUrlResponseDto>> getPresignedUrls(@RequestBody CommunityImagePresignedUrlRequestDto dto) {
     return ResponseEntity.ok(s3Service.createCommunityImagePresignedUrls(dto.getFileNames()));
   }
+
+  @PostMapping("/{postId}/like")
+  public ResponseEntity<Integer> likePost(@PathVariable Long postId) {
+    int likeCount = interactionService.toggleLike(postId);
+    return ResponseEntity.ok(likeCount);
+  }
+
+  @PostMapping("/{postId}/bm")
+  public ResponseEntity<String> bmPost(@PathVariable Long postId) {
+    String message = interactionService.toggleBookmark(postId);
+    return ResponseEntity.ok(message);
+  }
+
+
+
 }

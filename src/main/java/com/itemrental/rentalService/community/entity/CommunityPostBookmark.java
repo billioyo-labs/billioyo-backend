@@ -1,39 +1,44 @@
+package com.itemrental.rentalService.community.entity;
 
-package com.itemrental.rentalService.community;
 
 import com.itemrental.rentalService.entity.User;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
-@Getter
-@NoArgsConstructor
+@Table(
+    name = "community_post_bookmark",
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"post_id", "user_id"})
+    }
+)
 @AllArgsConstructor
-public class CommunityPost {
+@NoArgsConstructor
+public class CommunityPostBookmark {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Getter
   private Long id;
 
+
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name="userId", nullable = false)
+  @JoinColumn(name = "user_id")
   @Getter
   @Setter
   private User user;
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "post_id")
   @Getter
   @Setter
-  @Column(nullable = false)
-  private String title;
-
-  @Getter
-  @Setter
-  @Column(nullable = false, columnDefinition = "TEXT")
-  private String content;
+  private CommunityPost post;
 
   @Getter
   @Column(nullable = false, updatable = false)
@@ -44,7 +49,4 @@ public class CommunityPost {
     this.createdAt = LocalDateTime.now();
   }
 
-  @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-  @Getter
-  private List<CommunityPostImage> images;
 }

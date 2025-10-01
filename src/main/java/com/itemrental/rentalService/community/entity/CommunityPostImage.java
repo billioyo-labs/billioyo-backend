@@ -1,4 +1,4 @@
-package com.itemrental.rentalService.community;
+package com.itemrental.rentalService.community.entity;
 
 
 import jakarta.persistence.*;

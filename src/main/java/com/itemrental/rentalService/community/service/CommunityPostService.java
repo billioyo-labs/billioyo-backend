@@ -140,6 +140,7 @@ public class CommunityPostService {
     repository.delete(post);
   }
 
+  @Transactional(readOnly = true)
   public Page<CommunityPostListResponseDto> getPostList(Pageable pageable) {
     Page<CommunityPost> page = repository.findAll(pageable);
 
@@ -156,6 +157,30 @@ public class CommunityPostService {
       post.getImages().isEmpty() ? null : post.getImages().get(0).getImageUrl()
     ));
   }
+
+  //게시글 검색
+  @Transactional(readOnly = true)
+  public List<CommunityPostListResponseDto> searchPosts(String keyword) {
+
+    return repository.findByTitleContainingOrContentContaining(keyword, keyword).stream().map(
+        post -> new CommunityPostListResponseDto(
+            post.getId(),
+            post.getCategory(),
+            post.getTitle(),
+            post.getUser().getUsername(),
+            post.getLikeCount(),
+            post.getViewCount(),
+            post.getCommentCount(),
+            post.getCreatedAt(),
+            post.getImages().isEmpty() ? null : post.getImages().get(0).getImageUrl()
+    )).toList();
+  }
+
+
+
+
+
+
 }
 
 

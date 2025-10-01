@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 @Entity
 @Builder
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode(of="id")
@@ -24,12 +25,30 @@ public class User implements UserDetails {
     private Long id;
 
     @Column(nullable = false)
-    private String username;
+    @Builder.Default
+    private String username = "guest";
 
     @Column(nullable = false)
-    private String password;
+    @Builder.Default
+    private String nickName = "guest";
 
+    @Column(nullable = false)
+    @Builder.Default
+    private String password = "00000000";
+
+    @Column(nullable = false)
+    @Builder.Default
+    private String birthDate = "000000";
+
+    @Column(nullable = false)
+    @Builder.Default
+    private String phoneNumber = "00";
+
+    @Column(unique = true)
     private String email;
+
+    @Enumerated(EnumType.STRING)
+    private UserState userState = UserState.UNVERIFIED;
 
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
@@ -77,4 +96,12 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    public enum UserState{
+        UNVERIFIED,
+        PENDING_PROFILE_SETUP,
+        ACTIVE
+    }
 }
+
+

@@ -12,7 +12,7 @@ spring:
         show-sql: true
         format-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
   sql:
     init:
       platform: postgres
@@ -56,3 +56,6 @@ jwt:
   secret: ${TOKEN_SECRET}
   accessTokenExpiresIn: ${ACCESSTOKEN_VALIDTIME}
   refreshTokenExpiresIn: ${REFRESHTOKEN_VALIDTIME}
+
+server:
+  port: 8081

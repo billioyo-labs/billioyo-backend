@@ -38,6 +38,8 @@ spring:
           writetimeout: ${SMTP_WRITE_TIMEOUT}
       auth-code-expiration-millis: ${SMTP_AUTH_CODE_EXPIRATION}
 logging:
+  file:
+    name: /var/log/rentalService/rentalService.log
   level:
     org.springframework.security: DEBUG
 

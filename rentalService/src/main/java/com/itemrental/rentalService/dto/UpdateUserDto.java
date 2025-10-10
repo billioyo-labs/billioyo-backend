@@ -16,6 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 public class UpdateUserDto {
+  private String email; // update 불가, user 조회만
   @NotBlank(message = "이름은 필수 입력 항목입니다.")
   private String name;
   @NotBlank(message = "닉네임은 필수 입력 항목입니다.")

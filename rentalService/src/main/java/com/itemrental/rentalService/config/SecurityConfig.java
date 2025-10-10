@@ -56,6 +56,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests((auth) -> auth
                 .requestMatchers("/login", "/", "/post/list", "/post/search", "/user/**", "/auth/**", "/mail/**", "/error").permitAll() // 누구나 접근가능
                 .requestMatchers(HttpMethod.GET, "/community/**").permitAll()
+                .requestMatchers("/community/**").permitAll()
                 .requestMatchers("/reissue").permitAll()
                 .anyRequest().authenticated());  //나머지 경로들은 다 인증된 사용자만
 

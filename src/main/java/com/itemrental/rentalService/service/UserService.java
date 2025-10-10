@@ -60,4 +60,8 @@ public class UserService {
         User user = User.builder().email(email).build();
         return userRepository.save(user);
     }
+
+    //회원정보 수정 기능
+
+
 }

@@ -1,6 +1,7 @@
 package com.itemrental.rentalService.service;
 
 import com.itemrental.rentalService.dto.SignUpDto;
+import com.itemrental.rentalService.dto.UpdateUserDto;
 import com.itemrental.rentalService.entity.User;
 import com.itemrental.rentalService.exceptions.DuplicateUsernameException;
 import com.itemrental.rentalService.exceptions.PasswordMismatchException;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +64,33 @@ public class UserService {
     }
 
     //회원정보 수정 기능
+    @Transactional
+    public String updateUser(UpdateUserDto updateUserDto){
+        User user = userRepository.findByEmail(updateUserDto.getEmail()).get();
+
+        if (StringUtils.hasText(updateUserDto.getNickName()) &&
+            !Objects.equals(user.getNickName(), updateUserDto.getNickName())) {
+            duplicateCheck(updateUserDto.getNickName());
+            user.setNickName(updateUserDto.getNickName());
+        }
+        if (StringUtils.hasText(updateUserDto.getName())) {
+            user.setUsername(updateUserDto.getName());
+        }
+
+        if (StringUtils.hasText(updateUserDto.getPhoneNumber())) {
+            user.setPhoneNumber(updateUserDto.getPhoneNumber());
+        }
+
+        if (StringUtils.hasText(updateUserDto.getBirthDate())) {
+            user.setBirthDate(updateUserDto.getBirthDate());
+        }
+        if (StringUtils.hasText(updateUserDto.getPassword())) {
+            user.setPassword(passwordEncoder.encode(updateUserDto.getPassword()));
+        }
+        userRepository.save(user);
+
+        return "사용자 정보 수정 완료";
+    }
 
 
 }

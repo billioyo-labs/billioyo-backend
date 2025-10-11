@@ -1,9 +1,6 @@
 package com.itemrental.rentalService.controller;
 
-import com.itemrental.rentalService.dto.ApiResponse;
-import com.itemrental.rentalService.dto.FindAccountDto;
-import com.itemrental.rentalService.dto.SignUpDto;
-import com.itemrental.rentalService.dto.UpdateUserDto;
+import com.itemrental.rentalService.dto.*;
 import com.itemrental.rentalService.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +37,12 @@ public class UserController {
     @PatchMapping("/update")
     public ResponseEntity<ApiResponse<Void>> updateUser(@Valid @RequestBody UpdateUserDto updateUserDto) {
         String message = userService.updateUser(updateUserDto);
+        return ResponseEntity.ok(ApiResponse.success(message));
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<ApiResponse<Void>> deleteUser(@Valid @RequestBody DeleteUserDto deleteUserDto) {
+        String message = userService.deleteUser(deleteUserDto);
         return ResponseEntity.ok(ApiResponse.success(message));
     }
 

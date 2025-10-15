@@ -40,9 +40,10 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.success(message));
     }
 
+    //회원정보 삭제
     @DeleteMapping("/delete")
-    public ResponseEntity<ApiResponse<Void>> deleteUser(@Valid @RequestBody DeleteUserDto deleteUserDto) {
-        String message = userService.deleteUser(deleteUserDto);
+    public ResponseEntity<ApiResponse<Void>> deleteUser() {
+        String message = userService.deleteUser();
         return ResponseEntity.ok(ApiResponse.success(message));
     }
 

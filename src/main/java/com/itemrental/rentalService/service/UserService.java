@@ -1,6 +1,5 @@
 package com.itemrental.rentalService.service;
 
-import com.itemrental.rentalService.dto.DeleteUserDto;
 import com.itemrental.rentalService.dto.SignUpDto;
 import com.itemrental.rentalService.dto.UpdateUserDto;
 import com.itemrental.rentalService.entity.User;
@@ -8,8 +7,6 @@ import com.itemrental.rentalService.exceptions.DuplicateUsernameException;
 import com.itemrental.rentalService.exceptions.PasswordMismatchException;
 import com.itemrental.rentalService.repository.UserRepository;
 import jakarta.transaction.Transactional;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -106,12 +103,10 @@ public class UserService {
     }
 
     //회원 삭제
-    public String deleteUser(DeleteUserDto deleteUserDto){
-        User user = userRepository.findByEmail(deleteUserDto.getEmail()).get();
+    public String deleteUser(){
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(username).get();
 
-        if (!passwordEncoder.matches(deleteUserDto.getPassword(), user.getPassword())) {
-            throw new PasswordMismatchException("비밀번호가 일치하지 않습니다.");
-        }
         userRepository.delete(user);
 
         return "회원 탈퇴가 완료되었습니다.";

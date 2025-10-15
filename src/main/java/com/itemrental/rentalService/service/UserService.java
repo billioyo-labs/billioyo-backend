@@ -8,8 +8,11 @@ import com.itemrental.rentalService.exceptions.DuplicateUsernameException;
 import com.itemrental.rentalService.exceptions.PasswordMismatchException;
 import com.itemrental.rentalService.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -64,6 +67,20 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    @Transactional
+    public UpdateUserDto getProfile(){
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(username).get();
+        return new UpdateUserDto(
+            user.getEmail(),
+            username,
+            user.getNickName(),
+            user.getPhoneNumber(),
+            user.getBirthDate()
+        );
+    }
+
+
     //회원정보 수정 기능
     @Transactional
     public String updateUser(UpdateUserDto updateUserDto){
@@ -77,16 +94,11 @@ public class UserService {
         if (StringUtils.hasText(updateUserDto.getName())) {
             user.setUsername(updateUserDto.getName());
         }
-
         if (StringUtils.hasText(updateUserDto.getPhoneNumber())) {
             user.setPhoneNumber(updateUserDto.getPhoneNumber());
         }
-
         if (StringUtils.hasText(updateUserDto.getBirthDate())) {
             user.setBirthDate(updateUserDto.getBirthDate());
-        }
-        if (StringUtils.hasText(updateUserDto.getPassword())) {
-            user.setPassword(passwordEncoder.encode(updateUserDto.getPassword()));
         }
         userRepository.save(user);
 

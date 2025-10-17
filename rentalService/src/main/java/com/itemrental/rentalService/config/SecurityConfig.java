@@ -93,6 +93,7 @@ public class SecurityConfig {
 
         // 5. 클라이언트에 노출할 헤더 설정 (생략 가능)
         // configuration.setExposedHeaders(List.of("X-Auth-Token"));
+        configuration.setExposedHeaders(List.of("access", "Authorization", "Set-Cookie"));
 
         // 6. Preflight 요청의 캐시 시간 (초 단위)
         configuration.setMaxAge(3600L); // 1시간

@@ -34,7 +34,7 @@ public class CommunityPostInteractionService {
   @Transactional
   public int toggleLike(Long postId){
     String username = SecurityContextHolder.getContext().getAuthentication().getName();
-    User user = userRepository.findByUsername(username)
+    User user = userRepository.findByEmail(username)
         .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다"));
 
     CommunityPost post = repository.findById(postId)
@@ -59,7 +59,7 @@ public class CommunityPostInteractionService {
   @Transactional
   public String toggleBookmark(Long postId){
     String username = SecurityContextHolder.getContext().getAuthentication().getName();
-    User user = userRepository.findByUsername(username)
+    User user = userRepository.findByEmail(username)
         .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다"));
 
     CommunityPost post = repository.findById(postId)
@@ -83,7 +83,7 @@ public class CommunityPostInteractionService {
   @Transactional(readOnly = true)
   public List<CommunityPostReadResponseDto> getLikedPosts() {
     String username = SecurityContextHolder.getContext().getAuthentication().getName();
-    User user = userRepository.findByUsername(username)
+    User user = userRepository.findByEmail(username)
         .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다"));
 
 

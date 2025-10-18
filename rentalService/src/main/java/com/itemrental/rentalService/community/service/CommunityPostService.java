@@ -36,7 +36,7 @@ public class CommunityPostService {
   @Transactional
   public CommunityPostCreateResponseDto createCommunityPost(CommunityPostCreateRequestDto dto) {
     String username = SecurityContextHolder.getContext().getAuthentication().getName();
-    User user = userRepository.findByUsername(username).get();
+    User user = userRepository.findByEmail(username).get();
 
     CommunityPost post = new CommunityPost();
     post.setUser(user);
@@ -96,7 +96,8 @@ public class CommunityPostService {
   @Transactional
   public void updateCommunityPost(Long postId, CommunityPostUpdateRequestDto dto) {
     String username = SecurityContextHolder.getContext().getAuthentication().getName();
-    User currentUser = userRepository.findByUsername(username)
+
+    User currentUser = userRepository.findByEmail(username)
         .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다"));
 
     CommunityPost post = repository.findById(postId)
@@ -126,7 +127,7 @@ public class CommunityPostService {
   @Transactional
   public void deleteCommunityPost(Long postId) {
     String username = SecurityContextHolder.getContext().getAuthentication().getName();
-    User currentUser = userRepository.findByUsername(username)
+    User currentUser = userRepository.findByEmail(username)
         .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다"));
 
     CommunityPost post = repository.findById(postId)

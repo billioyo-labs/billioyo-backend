@@ -3,6 +3,7 @@ package com.itemrental.rentalService.entity;
 import com.itemrental.rentalService.community.entity.CommunityPost;
 import com.itemrental.rentalService.community.entity.CommunityPostBookmark;
 import com.itemrental.rentalService.community.entity.CommunityPostLike;
+import com.itemrental.rentalService.dto.LoginSuccessDto;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -119,6 +120,17 @@ public class User implements UserDetails {
         UNVERIFIED,
         PENDING_PROFILE_SETUP,
         ACTIVE
+    }
+
+    public LoginSuccessDto toLoginSuccessDto(){
+        LoginSuccessDto loginSuccessDto = new LoginSuccessDto();
+        loginSuccessDto.setId(this.getId());
+        loginSuccessDto.setEmail(this.getEmail());
+        loginSuccessDto.setUsername(this.getUsername());
+        loginSuccessDto.setBirthDate(this.getBirthDate());
+        loginSuccessDto.setPhoneNumber(this.getPhoneNumber());
+        loginSuccessDto.setNickName(this.getNickName());
+        return loginSuccessDto;
     }
 }
 

@@ -1,17 +1,22 @@
 package com.itemrental.rentalService.utils;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.itemrental.rentalService.dto.LoginSuccessDto;
 import com.itemrental.rentalService.entity.RefreshToken;
 import com.itemrental.rentalService.entity.User;
 import com.itemrental.rentalService.repository.RefreshTokenRepository;
+import com.itemrental.rentalService.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.graphql.GraphQlProperties;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,17 +25,21 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Iterator;
 
+@Slf4j
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
+    private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
-    public LoginFilter(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, RefreshTokenRepository refreshTokenRepository){
+    public LoginFilter(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, RefreshTokenRepository refreshTokenRepository, UserRepository userRepository){
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
         this.refreshTokenRepository = refreshTokenRepository;
+        this.userRepository = userRepository;
     }
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response){
@@ -54,13 +63,19 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication){
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException {
         User user = (User) authentication.getPrincipal();
 
-        String userEmail = authentication.getName();
+        String userEmail = user.getEmail();
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
+
+        LoginSuccessDto loginSuccessDto = userRepository.findByEmail(userEmail).orElseThrow(()->new RuntimeException("이메일에 해당하는 사용자가 없음")).toLoginSuccessDto();
+        log.info(userEmail);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonResponse = objectMapper.writeValueAsString(loginSuccessDto);
 
         String role = auth.getAuthority();
         //10분
@@ -71,11 +86,15 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         addRefreshEntity(user.getId(),refreshToken);
 
         //띄어쓰기 필수
+
         //Authorization: Bearer 인증토큰string
         //response.addHeader("Authorization", "Bearer " + token);
         response.setHeader("access",accessToken);
         response.addCookie(createCookie("refresh",refreshToken));
         response.setStatus(HttpStatus.OK.value());
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+        response.getWriter().write(jsonResponse);
 
     }
     private void addRefreshEntity(Long userId, String refreshToken){

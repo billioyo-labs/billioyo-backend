@@ -31,7 +31,7 @@ public class CommunityCommentService {
   @Transactional
   public void createCommunityComment(CommentCreateRequestDto dto, Long postId) {
     String username = SecurityContextHolder.getContext().getAuthentication().getName();
-    User user = userRepository.findByUsername(username).get();
+    User user = userRepository.findByEmail(username).get();
 
     CommunityPost post = postRepo.findById(postId).get();
     post.setCommentCount(post.getCommentCount()+1);

@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 public class CommunityPostListResponseDto {
-  private Long postId;
+  private Long id;
   private String category;
   private String title;
   private String authorName;

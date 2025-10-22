@@ -1,10 +1,7 @@
 package com.itemrental.rentalService.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,26 +13,45 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Post {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @Getter @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "postId", nullable = false, updatable = false, unique = true)
     private Long id;
+
+    @Getter @Setter @Column(nullable = false)
     private String title;
-    private LocalDateTime registerTime;
-    private Long viewCount;
-    private Long reportCount;
+
+    @Getter @Setter @Column(nullable = false)
+    private LocalDateTime createdAt;
+
+    @Getter @Setter @Column(nullable = false)
+    private Long viewCount = 0L;
+
+    @Getter @Setter @Column(nullable = false)
+    private Long reportCount = 0L;
+
+    @Getter @Setter @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
+
+    @Getter @Setter @Column(nullable = false)
     private Long price;
-    private boolean status;
+
+    @Getter @Setter @Column(nullable = false)
+    private boolean status = true;
 
     @OneToMany(mappedBy = "post")
     private List<Image> iamges = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
+    @Getter @Setter
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "categoryId")
     private Category category;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 }

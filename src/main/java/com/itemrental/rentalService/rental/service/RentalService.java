@@ -1,26 +1,24 @@
 package com.itemrental.rentalService.rental.service;
 
-import com.itemrental.rentalService.community.dto.response.CommentResponseDto;
-import com.itemrental.rentalService.community.dto.response.CommunityPostCreateResponseDto;
-import com.itemrental.rentalService.community.dto.response.CommunityPostReadResponseDto;
 import com.itemrental.rentalService.community.entity.CommunityPost;
 import com.itemrental.rentalService.community.entity.CommunityPostImage;
 import com.itemrental.rentalService.entity.User;
 import com.itemrental.rentalService.rental.dto.RentalPostCreateRequestDto;
 import com.itemrental.rentalService.rental.dto.RentalPostListResponseDto;
 import com.itemrental.rentalService.rental.dto.RentalPostReadResponseDto;
+import com.itemrental.rentalService.rental.dto.RentalPostUpdateRequestDto;
 import com.itemrental.rentalService.rental.entity.Post;
 import com.itemrental.rentalService.rental.repository.PostRepository;
 import com.itemrental.rentalService.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.List;
 
 
 @Service
@@ -86,6 +84,44 @@ public class RentalService {
         post.getCategory()
     );
   }
+
+  //게시글 수정
+  @Transactional
+  public void updateRentalPost(Long postId, RentalPostUpdateRequestDto dto) {
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+    User currentUser = userRepository.findByEmail(username)
+        .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다"));
+
+    Post post = postRepository.findById(postId)
+        .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
+
+    User postUser = post.getUser();
+
+    if (!postUser.getId().equals(currentUser.getId())) {
+      throw new AccessDeniedException("작성자만 수정할 수 있습니다.");
+    }
+
+    post.setTitle(dto.getTitle());
+    post.setDescription(dto.getDescription());
+    post.setPrice(dto.getPrice());
+    post.setLocation(dto.getLocation());
+    post.setCategory(dto.getCategory());
+
+
+//    post.getImages().clear();
+//
+//    if (dto.getImageUrls() != null) {
+//      for (String imageUrl : dto.getImageUrls()) {
+//        CommunityPostImage image = new CommunityPostImage();
+//        image.setPost(post);
+//        image.setImageUrl(imageUrl);
+//        imageRepository.save(image);
+//      }
+    }
+
+
+
 
 
 

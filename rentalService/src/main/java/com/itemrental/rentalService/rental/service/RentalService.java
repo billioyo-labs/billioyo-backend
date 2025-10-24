@@ -92,6 +92,9 @@ public class RentalService {
 
 
 
+
+
+
   //상품목록 조회
   @Transactional(readOnly = true)
   public Page<RentalPostListResponseDto> getPosts(Pageable pageable) {
@@ -107,4 +110,6 @@ public class RentalService {
             post.getCreatedAt()
         ));
   }
+
+
 }

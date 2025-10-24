@@ -1,10 +1,9 @@
-package com.itemrental.rentalService.service;
+package com.itemrental.rentalService.rental.service;
 
 
-import com.itemrental.rentalService.community.dto.response.CommunityPostListResponseDto;
-import com.itemrental.rentalService.dto.response.RentalPostListResponseDto;
-import com.itemrental.rentalService.entity.Post;
-import com.itemrental.rentalService.repository.PostRepository;
+import com.itemrental.rentalService.rental.dto.RentalPostListResponseDto;
+import com.itemrental.rentalService.rental.entity.Post;
+import com.itemrental.rentalService.rental.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

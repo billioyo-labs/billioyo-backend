@@ -1,5 +1,6 @@
 package com.itemrental.rentalService.entity;
 
+import com.itemrental.rentalService.rental.entity.Post;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

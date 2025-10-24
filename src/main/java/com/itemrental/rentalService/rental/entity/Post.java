@@ -13,8 +13,8 @@ import java.util.List;
 
 @Entity
 @Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
+@AllArgsConstructor
 public class Post {
 
     @Id @Getter @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,9 +53,8 @@ public class Post {
     @Getter @Setter
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "categoryId")
-    private Category category;
+    @Getter @Setter @Column(nullable = false)
+    private String category;
 
     @PrePersist
     protected void onCreate() {

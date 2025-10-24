@@ -1,7 +1,6 @@
 package com.itemrental.rentalService.rental;
 
 
-import com.itemrental.rentalService.community.dto.request.CommunityPostUpdateRequestDto;
 import com.itemrental.rentalService.dto.ApiResponse;
 import com.itemrental.rentalService.rental.dto.RentalPostCreateRequestDto;
 import com.itemrental.rentalService.rental.dto.RentalPostListResponseDto;
@@ -40,6 +39,12 @@ public class RentalController {
   public ResponseEntity<ApiResponse<Void>> updateRentalPost(@PathVariable Long postId, @RequestBody RentalPostUpdateRequestDto dto) {
     rentalService.updateRentalPost(postId, dto);
     return ResponseEntity.ok(ApiResponse.success("게시글이 수정되었습니다."));
+  }
+  //대여 게시글 삭제
+  @DeleteMapping("/{postId}")
+  public ResponseEntity<ApiResponse<Void>> deleteRentalPost(@PathVariable Long postId) {
+    rentalService.deleteRentalPost(postId);
+    return ResponseEntity.ok(ApiResponse.success("게시글이 삭제되었습니다"));
   }
 
 

@@ -1,7 +1,5 @@
 package com.itemrental.rentalService.rental.service;
 
-import com.itemrental.rentalService.community.entity.CommunityPost;
-import com.itemrental.rentalService.community.entity.CommunityPostImage;
 import com.itemrental.rentalService.entity.User;
 import com.itemrental.rentalService.rental.dto.RentalPostCreateRequestDto;
 import com.itemrental.rentalService.rental.dto.RentalPostListResponseDto;
@@ -118,7 +116,25 @@ public class RentalService {
 //        image.setImageUrl(imageUrl);
 //        imageRepository.save(image);
 //      }
+  }
+  //게시글 삭제
+  @Transactional
+  public void deleteRentalPost(Long postId) {
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    User currentUser = userRepository.findByEmail(username).get();
+
+    Post post = postRepository.findById(postId)
+        .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
+    ;
+    User postUser = post.getUser();
+
+    if (!postUser.getId().equals(currentUser.getId())) {
+      throw new AccessDeniedException("작성자만 삭제할 수 있습니다.");
     }
+    postRepository.delete(post);
+  }
+
+
 
 
 

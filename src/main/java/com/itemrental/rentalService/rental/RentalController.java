@@ -1,9 +1,8 @@
-package com.itemrental.rentalService.controller;
+package com.itemrental.rentalService.rental;
 
 
-import com.itemrental.rentalService.community.dto.response.CommunityPostListResponseDto;
-import com.itemrental.rentalService.dto.response.RentalPostListResponseDto;
-import com.itemrental.rentalService.service.RentalService;
+import com.itemrental.rentalService.rental.dto.RentalPostListResponseDto;
+import com.itemrental.rentalService.rental.service.RentalService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

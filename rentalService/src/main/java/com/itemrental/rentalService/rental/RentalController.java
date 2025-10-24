@@ -1,10 +1,12 @@
 package com.itemrental.rentalService.rental;
 
 
+import com.itemrental.rentalService.community.dto.request.CommunityPostUpdateRequestDto;
 import com.itemrental.rentalService.dto.ApiResponse;
 import com.itemrental.rentalService.rental.dto.RentalPostCreateRequestDto;
 import com.itemrental.rentalService.rental.dto.RentalPostListResponseDto;
 import com.itemrental.rentalService.rental.dto.RentalPostReadResponseDto;
+import com.itemrental.rentalService.rental.dto.RentalPostUpdateRequestDto;
 import com.itemrental.rentalService.rental.service.RentalService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +35,15 @@ public class RentalController {
   public ResponseEntity<RentalPostReadResponseDto> getRentalPost(@PathVariable Long postId) {
     return ResponseEntity.ok(rentalService.getRentalPost(postId));
   }
+  //대여 게시글 수정
+  @PutMapping("/{postId}")
+  public ResponseEntity<ApiResponse<Void>> updateRentalPost(@PathVariable Long postId, @RequestBody RentalPostUpdateRequestDto dto) {
+    rentalService.updateRentalPost(postId, dto);
+    return ResponseEntity.ok(ApiResponse.success("게시글이 수정되었습니다."));
+  }
+
+
+
 
   @GetMapping
   public ResponseEntity<Page<RentalPostListResponseDto>> getPosts(

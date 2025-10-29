@@ -176,12 +176,6 @@ public class CommunityPostService {
             post.getImages().isEmpty() ? null : post.getImages().get(0).getImageUrl()
     )).toList();
   }
-
-
-
-
-
-
 }
 
 

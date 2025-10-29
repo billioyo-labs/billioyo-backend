@@ -1,5 +1,8 @@
-package com.itemrental.rentalService.entity;
+package com.itemrental.rentalService.rental.entity;
 
+import com.itemrental.rentalService.entity.Category;
+import com.itemrental.rentalService.entity.Image;
+import com.itemrental.rentalService.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,15 +13,28 @@ import java.util.List;
 
 @Entity
 @Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
+@AllArgsConstructor
 public class Post {
+
     @Id @Getter @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "postId", nullable = false, updatable = false, unique = true)
     private Long id;
 
     @Getter @Setter @Column(nullable = false)
     private String title;
+
+    @Getter @Setter @Column(nullable = false, columnDefinition = "TEXT")
+    private String description;
+
+    @Getter @Setter @Column(nullable = false)
+    private Long price;
+
+    @Getter @Setter @Column(nullable = false)
+    private String location;
+
+    @Getter @Setter @Column(nullable = false)
+    private boolean status = true;
 
     @Getter @Setter @Column(nullable = false)
     private LocalDateTime createdAt;
@@ -29,15 +45,6 @@ public class Post {
     @Getter @Setter @Column(nullable = false)
     private Long reportCount = 0L;
 
-    @Getter @Setter @Column(nullable = false, columnDefinition = "TEXT")
-    private String description;
-
-    @Getter @Setter @Column(nullable = false)
-    private Long price;
-
-    @Getter @Setter @Column(nullable = false)
-    private boolean status = true;
-
     @OneToMany(mappedBy = "post")
     private List<Image> iamges = new ArrayList<>();
 
@@ -46,9 +53,8 @@ public class Post {
     @Getter @Setter
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "categoryId")
-    private Category category;
+    @Getter @Setter @Column(nullable = false)
+    private String category;
 
     @PrePersist
     protected void onCreate() {

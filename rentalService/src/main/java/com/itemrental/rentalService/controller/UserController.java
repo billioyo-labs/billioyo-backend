@@ -3,6 +3,7 @@ package com.itemrental.rentalService.controller;
 import com.itemrental.rentalService.dto.ApiResponse;
 import com.itemrental.rentalService.dto.FindAccountDto;
 import com.itemrental.rentalService.dto.SignUpDto;
+import com.itemrental.rentalService.dto.UpdateUserDto;
 import com.itemrental.rentalService.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,4 +35,12 @@ public class UserController {
     public ResponseEntity<ApiResponse<String>> findAccount(@Valid @RequestBody FindAccountDto findAccountDto){
         return ResponseEntity.ok(ApiResponse.success("사용자 아이디" ,userService.findAccount(findAccountDto.getPhoneNumber())));
     }
+
+    //회원정보 수정
+    @PatchMapping("/update")
+    public ResponseEntity<ApiResponse<Void>> updateUser(@Valid @RequestBody UpdateUserDto updateUserDto) {
+        String message = userService.updateUser(updateUserDto);
+        return ResponseEntity.ok(ApiResponse.success(message));
+    }
+
 }

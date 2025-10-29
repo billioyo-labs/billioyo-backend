@@ -121,6 +121,17 @@ public class User implements UserDetails {
         PENDING_PROFILE_SETUP,
         ACTIVE
     }
+
+    public LoginSuccessDto toLoginSuccessDto(){
+        LoginSuccessDto loginSuccessDto = new LoginSuccessDto();
+        loginSuccessDto.setId(this.getId());
+        loginSuccessDto.setEmail(this.getEmail());
+        loginSuccessDto.setUsername(this.getUsername());
+        loginSuccessDto.setBirthDate(this.getBirthDate());
+        loginSuccessDto.setPhoneNumber(this.getPhoneNumber());
+        loginSuccessDto.setNickName(this.getNickName());
+        return loginSuccessDto;
+    }
 }
 
 

@@ -76,7 +76,7 @@ public class MailService {
         String token = UUID.randomUUID().toString();
         VerificationToken verificationToken = new VerificationToken(token, email);
         verificationTokenRepository.save(verificationToken);
-        String verificationLink = "http://13.125.9.165:8081/auth/verify-email?token=" + verificationToken.getToken();
+        String verificationLink = "https://www.billioyo.o-r.kr/auth/verify-email?token=" + verificationToken.getToken();
 
         sendEmailVerificationLinkWithHtmlTemplate(email, "인증을 완료하시려면 링크를 눌러주세요.", verificationLink);
     }

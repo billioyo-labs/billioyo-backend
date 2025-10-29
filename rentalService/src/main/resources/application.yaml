@@ -12,7 +12,7 @@ spring:
         show-sql: true
         format-sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
   sql:
     init:
       platform: postgres
@@ -39,7 +39,7 @@ spring:
       auth-code-expiration-millis: ${SMTP_AUTH_CODE_EXPIRATION}
 logging:
   file:
-    name: /var/log/rentalService/rentalService.log
+    name: logs/rentalService/rentalService.log
   level:
     org.springframework.security: DEBUG
 

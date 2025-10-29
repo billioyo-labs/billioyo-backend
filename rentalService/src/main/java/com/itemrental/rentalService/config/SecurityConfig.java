@@ -1,6 +1,7 @@
 package com.itemrental.rentalService.config;
 
 import com.itemrental.rentalService.repository.RefreshTokenRepository;
+import com.itemrental.rentalService.repository.UserRepository;
 import com.itemrental.rentalService.utils.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -8,10 +9,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
@@ -29,12 +32,14 @@ public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtTokenProvider jwtTokenProvider;
+    private final UserRepository userRepository;
 
-    public SecurityConfig(CustomUserDetailsService customUserDetailsService, AuthenticationConfiguration authenticationConfiguration, RefreshTokenRepository refreshTokenRepository, JwtTokenProvider jwtTokenProvider) {
+    public SecurityConfig(CustomUserDetailsService customUserDetailsService, AuthenticationConfiguration authenticationConfiguration, RefreshTokenRepository refreshTokenRepository, JwtTokenProvider jwtTokenProvider, UserRepository userRepository) {
         this.customUserDetailsService = customUserDetailsService;
         this.authenticationConfiguration = authenticationConfiguration;
         this.refreshTokenRepository = refreshTokenRepository;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.userRepository = userRepository;
     }
 
     @Bean
@@ -63,13 +68,24 @@ public class SecurityConfig {
         //addat은 원하는 자리에 -> usernamepasswordauthenticationfilter 자리에 놓겠다.
         //LoginFilter에게 authentication manager 인스턴스를 주입해줘야 함 -> bean으로 authenticationmanager을 객체를 반환하는 메소드
         //authenticationManager함수 또한 authenticationConfiguration을 인자로 받아야함. -> 생성자 방식으로 주입받아서 전달
-        http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtTokenProvider, refreshTokenRepository), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtTokenProvider, refreshTokenRepository, userRepository), UsernamePasswordAuthenticationFilter.class);
 
 
         //세션 셜정 - 세션사용하지 않겠다.
         http.sessionManagement((session) -> session.sessionCreationPolicy((SessionCreationPolicy.STATELESS)));
 
         return http.build();
+    }
+
+    @Bean
+    public DaoAuthenticationProvider daoAuthenticationProvider(BCryptPasswordEncoder passwordEncoder) {
+
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(customUserDetailsService);
+        provider.setPasswordEncoder(passwordEncoder);
+        provider.setHideUserNotFoundExceptions(false);
+
+        return provider;
     }
 
     @Bean
@@ -88,7 +104,7 @@ public class SecurityConfig {
         // 모든 헤더 허용
         configuration.setAllowedHeaders(List.of("*"));
 
-        // 4. 자격 증명(인증 정보: 쿠키, Authorization 헤더 등) 허용 여부
+        // 4. 자격 증명(인증 정보: 쿠키, Authorization 헤더 등) 허용gd 여부
         // true로 설정하면 setAllowedOrigins에 * (와일드카드)를 사용할 수 없습니다.
         configuration.setAllowCredentials(true);
 

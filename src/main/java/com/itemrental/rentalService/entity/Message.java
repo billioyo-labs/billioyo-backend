@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 
@@ -18,6 +19,7 @@ public class Message {
     @Column(name = "messageId", updatable = false, nullable = false, unique = true)
     private Long id;
     private String content;
+    @CreatedDate
     private LocalDateTime sendTime;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -1,6 +1,5 @@
 package com.itemrental.rentalService.service;
 
-import com.itemrental.rentalService.dto.DeleteUserDto;
 import com.itemrental.rentalService.dto.SignUpDto;
 import com.itemrental.rentalService.dto.UpdateUserDto;
 import com.itemrental.rentalService.entity.User;
@@ -10,6 +9,7 @@ import com.itemrental.rentalService.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -64,6 +64,20 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    @Transactional
+    public UpdateUserDto getProfile(){
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(username).get();
+        return new UpdateUserDto(
+            user.getEmail(),
+            username,
+            user.getNickName(),
+            user.getPhoneNumber(),
+            user.getBirthDate()
+        );
+    }
+
+
     //회원정보 수정 기능
     @Transactional
     public String updateUser(UpdateUserDto updateUserDto){
@@ -77,16 +91,11 @@ public class UserService {
         if (StringUtils.hasText(updateUserDto.getName())) {
             user.setUsername(updateUserDto.getName());
         }
-
         if (StringUtils.hasText(updateUserDto.getPhoneNumber())) {
             user.setPhoneNumber(updateUserDto.getPhoneNumber());
         }
-
         if (StringUtils.hasText(updateUserDto.getBirthDate())) {
             user.setBirthDate(updateUserDto.getBirthDate());
-        }
-        if (StringUtils.hasText(updateUserDto.getPassword())) {
-            user.setPassword(passwordEncoder.encode(updateUserDto.getPassword()));
         }
         userRepository.save(user);
 
@@ -94,12 +103,10 @@ public class UserService {
     }
 
     //회원 삭제
-    public String deleteUser(DeleteUserDto deleteUserDto){
-        User user = userRepository.findByEmail(deleteUserDto.getEmail()).get();
+    public String deleteUser(){
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(username).get();
 
-        if (!passwordEncoder.matches(deleteUserDto.getPassword(), user.getPassword())) {
-            throw new PasswordMismatchException("비밀번호가 일치하지 않습니다.");
-        }
         userRepository.delete(user);
 
         return "회원 탈퇴가 완료되었습니다.";

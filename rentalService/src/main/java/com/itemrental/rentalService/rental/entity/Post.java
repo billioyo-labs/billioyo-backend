@@ -1,11 +1,10 @@
 package com.itemrental.rentalService.rental.entity;
 
-import com.itemrental.rentalService.entity.Category;
+
 import com.itemrental.rentalService.entity.Image;
 import com.itemrental.rentalService.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,4 +59,9 @@ public class Post {
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
     }
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Getter
+    private List<Review> reviews;
+
 }

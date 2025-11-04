@@ -3,6 +3,7 @@ package com.itemrental.rentalService.entity;
 import com.itemrental.rentalService.community.entity.CommunityPost;
 import com.itemrental.rentalService.community.entity.CommunityPostBookmark;
 import com.itemrental.rentalService.community.entity.CommunityPostLike;
+import com.itemrental.rentalService.dto.LoginSuccessDto;
 import com.itemrental.rentalService.rental.entity.Post;
 import jakarta.persistence.*;
 import lombok.*;

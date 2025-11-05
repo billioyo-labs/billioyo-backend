@@ -1,5 +1,6 @@
 package com.itemrental.rentalService.config;
 
+import com.itemrental.rentalService.utils.CustomHandshakeInterceptor;
 import com.itemrental.rentalService.utils.JwtChannelInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -13,12 +14,14 @@ import org.springframework.web.socket.config.annotation.*;
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     private final JwtChannelInterceptor jwtChannelInterceptor;
+    private final CustomHandshakeInterceptor customHandshakeInterceptor;
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry){
         registry.addEndpoint("/ws-stomp")
                 .setAllowedOrigins("*")
-                .withSockJS();
+                .withSockJS()
+                .setInterceptors(customHandshakeInterceptor);
     }
 
     @Override

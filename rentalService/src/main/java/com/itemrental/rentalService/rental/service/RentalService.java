@@ -5,7 +5,9 @@ import com.itemrental.rentalService.rental.dto.RentalPostCreateRequestDto;
 import com.itemrental.rentalService.rental.dto.RentalPostListResponseDto;
 import com.itemrental.rentalService.rental.dto.RentalPostReadResponseDto;
 import com.itemrental.rentalService.rental.dto.RentalPostUpdateRequestDto;
+import com.itemrental.rentalService.rental.entity.Image;
 import com.itemrental.rentalService.rental.entity.Post;
+import com.itemrental.rentalService.rental.repository.PostImageRepository;
 import com.itemrental.rentalService.rental.repository.PostRepository;
 import com.itemrental.rentalService.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ public class RentalService {
 
   private final PostRepository postRepository;
   private final UserRepository userRepository;
+  private final PostImageRepository imageRepository;
 
 
   //대여 게시글 생성
@@ -42,15 +45,15 @@ public class RentalService {
     post.setLocation(dto.getLocation());
     post.setCategory(dto.getCategory());
     postRepository.save(post);
-//
-//    if (dto.getImageUrls() != null) {
-//      for (String imageUrl : dto.getImageUrls()) {
-//        CommunityPostImage image = new CommunityPostImage();
-//        image.setPost(post);
-//        image.setImageUrl(imageUrl);
-//        imageRepository.save(image);
-//      }
-//    }
+
+    if (dto.getImageUrls() != null) {
+      for (String imageUrl : dto.getImageUrls()) {
+        Image image = new Image();
+        image.setPost(post);
+        image.setImageUrl(imageUrl);
+        imageRepository.save(image);
+      }
+    }
     return post.getId();
   }
 
@@ -80,7 +83,8 @@ public class RentalService {
         post.getViewCount(),
         post.getReportCount(),
         post.getUser().getUsername(),
-        post.getCategory()
+        post.getCategory(),
+        post.getImages()
     );
   }
 

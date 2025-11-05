@@ -4,12 +4,15 @@ package com.itemrental.rentalService.rental.dto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @NoArgsConstructor
 public class RentalPostCreateRequestDto {
-  String title;
-  String description;
-  Long price;
-  String location;
-  String category;
+  private String title;
+  private String description;
+  private Long price;
+  private String location;
+  private String category;
+  private List<String> imageUrls;
 }

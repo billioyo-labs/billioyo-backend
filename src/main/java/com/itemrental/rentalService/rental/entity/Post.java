@@ -1,7 +1,6 @@
 package com.itemrental.rentalService.rental.entity;
 
 
-import com.itemrental.rentalService.entity.Image;
 import com.itemrental.rentalService.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -63,5 +62,9 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     @Getter
     private List<Review> reviews;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Getter
+    private List<Image> images;
 
 }

@@ -19,7 +19,7 @@ public class CommunityPostImage {
   @Getter
   private Long id;
 
-  @Column(nullable = false)
+  @Column(nullable = false, length = 1024)
   @Getter
   @Setter
   private String imageUrl;

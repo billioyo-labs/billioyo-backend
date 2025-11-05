@@ -31,6 +31,7 @@ public class RentalService {
   @Transactional
   public Long createRentalPost(RentalPostCreateRequestDto dto) {
     String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    System.out.println(username);
     User user = userRepository.findByEmail(username).get();
 
     Post post = new Post();

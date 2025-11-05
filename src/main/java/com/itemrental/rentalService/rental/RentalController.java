@@ -56,7 +56,8 @@ public class RentalController {
 
 
   //게시글 리뷰 작성
-  public ResponseEntity<ApiResponse<Void>> createPostReview(@RequestBody ReviewCreateRequestDto dto, @RequestParam Long postId) {
+  @PostMapping("review/{postId}")
+  public ResponseEntity<ApiResponse<Void>> createPostReview(@RequestBody ReviewCreateRequestDto dto, @PathVariable Long postId) {
     interactionService.createPostReview(dto, postId);
     return ResponseEntity.ok(ApiResponse.success("리뷰가 등록되었습니다"));
   }

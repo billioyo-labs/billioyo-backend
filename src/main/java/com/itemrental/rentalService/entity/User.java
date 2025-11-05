@@ -84,7 +84,8 @@ public class User implements UserDetails {
     @Getter
     private List<CommunityPostBookmark> bookmarks;
 
-
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FcmToken> fcmTokens = new ArrayList<>();
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
@@ -131,6 +132,11 @@ public class User implements UserDetails {
         loginSuccessDto.setPhoneNumber(this.getPhoneNumber());
         loginSuccessDto.setNickName(this.getNickName());
         return loginSuccessDto;
+    }
+
+    public void addFcmToken(FcmToken token){
+        this.fcmTokens.add(token);
+        token.setUser(this);
     }
 }
 

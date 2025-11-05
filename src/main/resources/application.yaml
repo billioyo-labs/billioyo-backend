@@ -61,3 +61,7 @@ jwt:
 
 server:
   port: 8081
+
+fcm:
+  key:
+    path: ${FCM_KEY_PATH}

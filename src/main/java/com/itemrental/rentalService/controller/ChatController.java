@@ -2,7 +2,6 @@ package com.itemrental.rentalService.controller;
 
 import com.itemrental.rentalService.dto.ChatMessage;
 import com.itemrental.rentalService.service.MessageService;
-import com.itemrental.rentalService.service.PushService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;

@@ -2,10 +2,8 @@ package com.itemrental.rentalService.rental;
 
 
 import com.itemrental.rentalService.dto.ApiResponse;
-import com.itemrental.rentalService.rental.dto.RentalPostCreateRequestDto;
-import com.itemrental.rentalService.rental.dto.RentalPostListResponseDto;
-import com.itemrental.rentalService.rental.dto.RentalPostReadResponseDto;
-import com.itemrental.rentalService.rental.dto.RentalPostUpdateRequestDto;
+import com.itemrental.rentalService.rental.dto.*;
+import com.itemrental.rentalService.rental.service.PostInteractionService;
 import com.itemrental.rentalService.rental.service.RentalService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 public class RentalController {
 
   private final RentalService rentalService;
+  private final PostInteractionService interactionService;
 
   //대여 게시글 생성
   @PostMapping
@@ -48,12 +47,19 @@ public class RentalController {
   }
 
 
-
-
   @GetMapping
   public ResponseEntity<Page<RentalPostListResponseDto>> getPosts(
       @PageableDefault(size = 10, sort = "createdAt",direction = Sort.Direction.DESC) Pageable pageable
   ){
     return ResponseEntity.ok(rentalService.getPosts(pageable));
   }
+
+
+  //게시글 리뷰 작성
+  @PostMapping("review/{postId}")
+  public ResponseEntity<ApiResponse<Void>> createPostReview(@RequestBody ReviewCreateRequestDto dto, @PathVariable Long postId) {
+    interactionService.createPostReview(dto, postId);
+    return ResponseEntity.ok(ApiResponse.success("리뷰가 등록되었습니다"));
+  }
+
 }

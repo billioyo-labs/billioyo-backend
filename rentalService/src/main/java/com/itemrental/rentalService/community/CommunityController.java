@@ -1,16 +1,15 @@
 package com.itemrental.rentalService.community;
 
 import com.itemrental.rentalService.community.dto.request.CommentCreateRequestDto;
-import com.itemrental.rentalService.community.dto.request.CommunityImagePresignedUrlRequestDto;
 import com.itemrental.rentalService.community.dto.request.CommunityPostCreateRequestDto;
 import com.itemrental.rentalService.community.dto.request.CommunityPostUpdateRequestDto;
-import com.itemrental.rentalService.community.dto.response.CommunityImagePresignedUrlResponseDto;
 import com.itemrental.rentalService.community.dto.response.CommunityPostCreateResponseDto;
 import com.itemrental.rentalService.community.dto.response.CommunityPostListResponseDto;
 import com.itemrental.rentalService.community.dto.response.CommunityPostReadResponseDto;
 import com.itemrental.rentalService.community.service.CommunityCommentService;
 import com.itemrental.rentalService.community.service.CommunityPostInteractionService;
 import com.itemrental.rentalService.community.service.CommunityPostService;
+import com.itemrental.rentalService.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -56,13 +55,6 @@ public class CommunityController {
     postService.deleteCommunityPost(postId);
     return ResponseEntity.ok("게시글 삭제 완료");
   }
-
-  // 다중 이미지 링크 생성
-  @PostMapping("/presigned-url")
-  public ResponseEntity<List<CommunityImagePresignedUrlResponseDto>> getPresignedUrls(@RequestBody CommunityImagePresignedUrlRequestDto dto) {
-    return ResponseEntity.ok(s3Service.createCommunityImagePresignedUrls(dto.getFileNames()));
-  }
-
 
   @PostMapping("/{postId}/like")
   public ResponseEntity<Integer> likePost(@PathVariable Long postId) {

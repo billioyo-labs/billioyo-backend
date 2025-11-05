@@ -10,6 +10,8 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.stereotype.Controller;
 
+import java.security.Principal;
+
 @Controller
 @RequiredArgsConstructor
 public class ChatController {
@@ -18,8 +20,10 @@ public class ChatController {
     private final MessageService messageService;
     private final PushService pushService;
 
-    @MessageMapping("/chat.sendMessage")
-    public void sendMessage(@Payload ChatMessage chatMessage){
+    @MessageMapping("/chat/sendMessage")
+    public void sendMessage(@Payload ChatMessage chatMessage, Principal principal){
+        String sender = principal.getName();
+        chatMessage.setSender(sender);
         String receiver = chatMessage.getReceiver();
 
         boolean isUserConnected = checkUserConnected(receiver);

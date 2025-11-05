@@ -1,7 +1,6 @@
 package com.itemrental.rentalService.rental.service;
 
 
-import com.itemrental.rentalService.community.dto.request.CommentCreateRequestDto;
 import com.itemrental.rentalService.entity.User;
 import com.itemrental.rentalService.rental.dto.ReviewCreateRequestDto;
 import com.itemrental.rentalService.rental.entity.Post;
@@ -9,7 +8,6 @@ import com.itemrental.rentalService.rental.entity.Review;
 import com.itemrental.rentalService.rental.repository.PostRepository;
 import com.itemrental.rentalService.rental.repository.PostReviewRepository;
 import com.itemrental.rentalService.repository.UserRepository;
-import com.itemrental.rentalService.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -36,5 +34,8 @@ public class PostInteractionService {
 
     reviewRepository.save(review);
   }
+
+
+
 
 }

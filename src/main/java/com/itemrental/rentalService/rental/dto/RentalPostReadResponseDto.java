@@ -1,8 +1,8 @@
 package com.itemrental.rentalService.rental.dto;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.itemrental.rentalService.dto.UserSummary;
 import com.itemrental.rentalService.rental.entity.Image;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,10 +17,13 @@ public class RentalPostReadResponseDto {
   private Long price;
   private String location;
   private boolean status;
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
   private LocalDateTime createdAt;
   private Long viewCount;
-  private Long reportCount;
   private String username;
   private String category;
   private List<Image> imageUrls;
+  private Long reviewsCount;
+  private double rating;
+  private UserSummary seller;
 }

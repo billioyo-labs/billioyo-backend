@@ -4,6 +4,8 @@ package com.itemrental.rentalService.rental.entity;
 import com.itemrental.rentalService.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,10 +43,11 @@ public class Post {
     private Long viewCount = 0L;
 
     @Getter @Setter @Column(nullable = false)
-    private Long reportCount = 0L;
+    private Long reviewsCount = 0L;
 
-    @OneToMany(mappedBy = "post")
-    private List<Image> iamges = new ArrayList<>();
+    @Getter @Setter @Column(nullable = false)
+    private double rating = 0.0;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")

@@ -45,7 +45,7 @@ public class Post {
     @Getter @Setter @Column(nullable = false)
     private Long reviewsCount = 0L;
 
-    @Getter @Setter @Column(nullable = false, precision = 3, scale = 2)
+    @Getter @Setter @Column(nullable = false)
     private double rating = 0.0;
 
 

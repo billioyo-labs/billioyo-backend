@@ -41,10 +41,7 @@ public class Post {
     private Long viewCount = 0L;
 
     @Getter @Setter @Column(nullable = false)
-    private Long reportCount = 0L;
-
-    @OneToMany(mappedBy = "post")
-    private List<Image> iamges = new ArrayList<>();
+    private Long reviewsCount = 0L;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")

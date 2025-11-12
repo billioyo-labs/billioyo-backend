@@ -25,7 +25,7 @@ public class RentalPostReadResponseDto {
   private String category;
   private List<Image> imageUrls;
   private int reviewsCount;
-  private BigDecimal rating;
+  private double rating;
   private SellerSummary seller;
 
   @Getter @Setter

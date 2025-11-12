@@ -7,9 +7,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class RentalPostUpdateRequestDto {
-  String title;
-  String description;
-  Long price;
-  String location;
-  String category;
+  private String title;
+  private String description;
+  private Long price;
+  private String location;
+  private String category;
 }

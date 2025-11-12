@@ -1,9 +1,11 @@
 package com.itemrental.rentalService.rental.dto;
+import com.itemrental.rentalService.rental.entity.Image;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Getter
@@ -20,4 +22,5 @@ public class RentalPostReadResponseDto {
   private Long reportCount;
   private String username;
   private String category;
+  private List<Image> imageUrls;
 }

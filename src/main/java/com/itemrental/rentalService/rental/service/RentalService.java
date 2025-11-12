@@ -1,5 +1,6 @@
 package com.itemrental.rentalService.rental.service;
 
+import com.itemrental.rentalService.dto.UserSummary;
 import com.itemrental.rentalService.entity.User;
 import com.itemrental.rentalService.rental.dto.RentalPostCreateRequestDto;
 import com.itemrental.rentalService.rental.dto.RentalPostListResponseDto;
@@ -65,6 +66,19 @@ public class RentalService {
 
     post.setViewCount(post.getViewCount() + 1);
 
+    User seller = post.getUser();
+    UserSummary sellerSummary = null;
+
+    if (seller != null) {
+      sellerSummary = UserSummary.builder()
+          .id(seller.getId())
+          .email(seller.getEmail())
+          .name(seller.getUsername())
+          .nickname(seller.getNickName())
+          .build();
+    }
+
+
 //    List<CommentResponseDto> comments = post.getComments().stream().map(
 //        comment -> new CommentResponseDto(
 //            comment.getId(),
@@ -81,10 +95,12 @@ public class RentalService {
         post.isStatus(),
         post.getCreatedAt(),
         post.getViewCount(),
-        post.getReportCount(),
         post.getUser().getUsername(),
         post.getCategory(),
-        post.getImages()
+        post.getImages(),
+        post.getReviewsCount(),
+        post.getRating(),
+        sellerSummary
     );
   }
 

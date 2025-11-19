@@ -173,6 +173,8 @@ public class RentalService {
   public Page<RentalPostListResponseDto> getPosts(Pageable pageable) {
     Page<Post> page = postRepository.findAll(pageable);
 
+
+
     return page.map(post->
         new RentalPostListResponseDto(
             post.getId(),

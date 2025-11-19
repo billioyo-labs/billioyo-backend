@@ -40,8 +40,20 @@ public class PostInteractionService {
     reviewRepository.save(review);
   }
 
+  //같은 seller 상품 조회
+  @Transactional(readOnly = true)
+  public Page<RentalPostListResponseDto> getSellerPosts(Pageable pageable, Long userId) {
+    Page<Post> page = postRepository.findByUserId(userId, pageable);
 
-
-
+    return page.map(post->
+        new RentalPostListResponseDto(
+            post.getId(),
+            post.getUser(),
+            post.getTitle(),
+            post.getPrice(),
+            post.isStatus(),
+            post.getCreatedAt()
+        ));
+  }
 
 }

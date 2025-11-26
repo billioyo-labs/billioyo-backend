@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
   Page<Post> findByUserId(Long userId, Pageable pageable);
+  Page<Post> findTop5ByStatusTrueOrderByLikeCountDescViewCountDescCreatedAtDesc();
 }

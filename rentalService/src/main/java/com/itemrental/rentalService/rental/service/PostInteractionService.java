@@ -45,8 +45,22 @@ public class PostInteractionService {
   @Transactional(readOnly = true)
   public Page<RentalPostListResponseDto> getSellerPosts(Pageable pageable, Long userId) {
     Page<Post> page = postRepository.findByUserId(userId, pageable);
+    return page.map(post->
+        new RentalPostListResponseDto(
+            post.getId(),
+            post.getUser().getNickName(),
+            post.getTitle(),
+            post.getPrice(),
+            post.isStatus(),
+            post.getCreatedAt()
+        ));
+  }
+  @Transactional
+  public Page<RentalPostListResponseDto> getMyPosts(Pageable pageable) {
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    User user = userRepository.findByEmail(username).get();
 
-
+    Page<Post> page = postRepository.findByUserId(user.getId(),pageable);
 
     return page.map(post->
         new RentalPostListResponseDto(
@@ -58,5 +72,4 @@ public class PostInteractionService {
             post.getCreatedAt()
         ));
   }
-
 }

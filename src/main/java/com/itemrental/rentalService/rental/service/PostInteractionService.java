@@ -1,12 +1,15 @@
 package com.itemrental.rentalService.rental.service;
 
 
-import com.itemrental.rentalService.dto.UserSummary;
 import com.itemrental.rentalService.entity.User;
 import com.itemrental.rentalService.rental.dto.RentalPostListResponseDto;
 import com.itemrental.rentalService.rental.dto.ReviewCreateRequestDto;
 import com.itemrental.rentalService.rental.entity.Post;
+import com.itemrental.rentalService.rental.entity.RentalPostBookmark;
+import com.itemrental.rentalService.rental.entity.RentalPostLike;
 import com.itemrental.rentalService.rental.entity.Review;
+import com.itemrental.rentalService.rental.repository.PostBookmarkRepository;
+import com.itemrental.rentalService.rental.repository.PostLikeRepository;
 import com.itemrental.rentalService.rental.repository.PostRepository;
 import com.itemrental.rentalService.rental.repository.PostReviewRepository;
 import com.itemrental.rentalService.repository.UserRepository;
@@ -23,6 +26,8 @@ public class PostInteractionService {
   private final PostRepository postRepository;
   private final UserRepository userRepository;
   private final PostReviewRepository reviewRepository;
+  private final PostBookmarkRepository bmRepo;
+  private final PostLikeRepository likeRepo;
 
 
   @Transactional
@@ -72,4 +77,54 @@ public class PostInteractionService {
             post.getCreatedAt()
         ));
   }
+
+  //게시글 좋아요
+  @Transactional
+  public Long toggleLike(Long postId){
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    User user = userRepository.findByEmail(username)
+        .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다"));
+
+    Post post = postRepository.findById(postId)
+        .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
+    ;
+    if (likeRepo.existsByUser_IdAndPost_Id(user.getId(), post.getId())) {
+      // 이미 좋아요 → 삭제
+      likeRepo.deleteByUser_IdAndPost_Id(user.getId(), post.getId());
+      post.setLikeCount(post.getLikeCount() - 1);
+    } else {
+      // 없으니까 추가
+      RentalPostLike postLike = new RentalPostLike();
+      postLike.setUser(user);
+      postLike.setPost(post);
+      likeRepo.save(postLike);
+      post.setLikeCount(post.getLikeCount() + 1);
+    }
+    return post.getLikeCount();
+  }
+
+  //게시글 북마크
+  @Transactional
+  public String toggleBookmark(Long postId){
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    User user = userRepository.findByEmail(username)
+        .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다"));
+
+    Post post = postRepository.findById(postId)
+        .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
+    ;
+    if (bmRepo.existsByUser_IdAndPost_Id(user.getId(), post.getId())) {
+      // 이미 좋아요 → 삭제
+      bmRepo.deleteByUser_IdAndPost_Id(user.getId(), post.getId());
+      return "북마크 취소";
+    } else {
+      // 없으니까 추가
+      RentalPostBookmark postBm = new RentalPostBookmark();
+      postBm.setUser(user);
+      postBm.setPost(post);
+      bmRepo.save(postBm);
+      return "북마크";
+    }
+  }
+
 }

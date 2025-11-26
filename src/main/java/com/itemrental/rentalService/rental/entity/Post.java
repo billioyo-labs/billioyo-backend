@@ -45,6 +45,10 @@ public class Post {
     @Getter @Setter @Column(nullable = false)
     private double rating = 0.0;
 
+    @Getter @Setter @Column(nullable = false)
+    private Long likeCount = 0L;
+
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")

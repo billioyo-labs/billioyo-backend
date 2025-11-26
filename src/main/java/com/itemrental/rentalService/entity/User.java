@@ -72,9 +72,6 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     private List<Post> posts;
 
-    @OneToMany(mappedBy = "user")
-    private List<InterestPost> interestPosts;
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<CommunityPost> communityPosts;
 

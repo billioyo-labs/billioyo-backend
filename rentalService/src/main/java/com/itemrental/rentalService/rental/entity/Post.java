@@ -71,4 +71,7 @@ public class Post {
     @Getter
     private List<RentalPostBookmark> bookmarks;
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Getter
+    private List<RentalPostLike> likes;
 }

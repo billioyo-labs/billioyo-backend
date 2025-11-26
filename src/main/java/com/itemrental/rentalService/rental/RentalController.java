@@ -62,4 +62,15 @@ public class RentalController {
     return ResponseEntity.ok(ApiResponse.success("리뷰가 등록되었습니다"));
   }
 
+  // 특정 판매자의 상품 목록 조회
+  @GetMapping("/seller/{userId}")
+  public ResponseEntity<ApiResponse<Page<RentalPostListResponseDto>>> getSellerPosts(
+      @PathVariable Long userId,
+      @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+  ) {
+    Page<RentalPostListResponseDto> sellerPosts = interactionService.getSellerPosts(pageable, userId);
+    return ResponseEntity.ok(ApiResponse.success("판매자 상품 목록 조회 성공", sellerPosts));
+  }
+
+
 }

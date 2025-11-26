@@ -174,8 +174,8 @@ public class RentalService {
   }
   //인기글
   @Transactional(readOnly = true)
-  public Page<RentalPostListResponseDto> getPopularPosts() {
-    Page<Post> page = postRepository.findTop5ByStatusTrueOrderByLikeCountDescViewCountDescCreatedAtDesc()
+  public Page<RentalPostListResponseDto> getPopularPosts(Pageable pageable) {
+    Page<Post> page = postRepository.findTop5ByStatusTrueOrderByLikeCountDescViewCountDescCreatedAtDesc(pageable);
 
     return page.map(post ->
         new RentalPostListResponseDto(

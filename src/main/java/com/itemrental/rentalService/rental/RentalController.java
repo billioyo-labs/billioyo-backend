@@ -84,4 +84,11 @@ public class RentalController {
     String message = interactionService.toggleBookmark(postId);
     return ResponseEntity.ok(message);
   }
+
+  //인기글 조회
+  @GetMapping("/popular")
+  public ResponseEntity<ApiResponse<Page<RentalPostListResponseDto>>> getPopularPosts(
+      @PageableDefault(size = 5) Pageable pageable) {
+    return ResponseEntity.ok(ApiResponse.success("인기 게시글 조회 성공", rentalService.getPopularPosts(pageable)));
+  }
 }

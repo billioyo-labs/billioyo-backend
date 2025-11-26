@@ -1,7 +1,9 @@
 package com.itemrental.rentalService.rental.service;
 
 
+import com.itemrental.rentalService.dto.UserSummary;
 import com.itemrental.rentalService.entity.User;
+import com.itemrental.rentalService.rental.dto.RentalPostListResponseDto;
 import com.itemrental.rentalService.rental.dto.ReviewCreateRequestDto;
 import com.itemrental.rentalService.rental.entity.Post;
 import com.itemrental.rentalService.rental.entity.Review;
@@ -9,8 +11,11 @@ import com.itemrental.rentalService.rental.repository.PostRepository;
 import com.itemrental.rentalService.rental.repository.PostReviewRepository;
 import com.itemrental.rentalService.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +25,7 @@ public class PostInteractionService {
   private final PostReviewRepository reviewRepository;
 
 
+  @Transactional
   public void createPostReview(ReviewCreateRequestDto dto, Long postId){
     String username = SecurityContextHolder.getContext().getAuthentication().getName();
     User user = userRepository.findByEmail(username).get();
@@ -35,7 +41,22 @@ public class PostInteractionService {
     reviewRepository.save(review);
   }
 
+  //같은 seller 상품 조회
+  @Transactional(readOnly = true)
+  public Page<RentalPostListResponseDto> getSellerPosts(Pageable pageable, Long userId) {
+    Page<Post> page = postRepository.findByUserId(userId, pageable);
 
 
+
+    return page.map(post->
+        new RentalPostListResponseDto(
+            post.getId(),
+            post.getUser().getNickName(),
+            post.getTitle(),
+            post.getPrice(),
+            post.isStatus(),
+            post.getCreatedAt()
+        ));
+  }
 
 }

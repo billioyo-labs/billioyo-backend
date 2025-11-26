@@ -178,7 +178,7 @@ public class RentalService {
     return page.map(post->
         new RentalPostListResponseDto(
             post.getId(),
-            post.getUser(),
+            post.getUser().getNickName(),
             post.getTitle(),
             post.getPrice(),
             post.isStatus(),

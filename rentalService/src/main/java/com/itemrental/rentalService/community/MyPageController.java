@@ -34,4 +34,7 @@ public class MyPageController {
   public ResponseEntity<UpdateUserDto> getProfile() {
     return ResponseEntity.ok(userService.getProfile());
   }
+
+
+
 }

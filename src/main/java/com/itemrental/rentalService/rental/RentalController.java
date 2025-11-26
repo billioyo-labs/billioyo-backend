@@ -73,4 +73,15 @@ public class RentalController {
   }
 
 
+  @PostMapping("/{postId}/like")
+  public ResponseEntity<Long> likePost(@PathVariable Long postId) {
+    Long likeCount = interactionService.toggleLike(postId);
+    return ResponseEntity.ok(likeCount);
+  }
+
+  @PostMapping("/{postId}/bm")
+  public ResponseEntity<String> bmPost(@PathVariable Long postId) {
+    String message = interactionService.toggleBookmark(postId);
+    return ResponseEntity.ok(message);
+  }
 }

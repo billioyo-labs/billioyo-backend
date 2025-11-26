@@ -155,19 +155,6 @@ public class RentalService {
     postRepository.delete(post);
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
   //상품목록 조회
   @Transactional(readOnly = true)
   public Page<RentalPostListResponseDto> getPosts(Pageable pageable) {
@@ -176,6 +163,21 @@ public class RentalService {
 
 
     return page.map(post->
+        new RentalPostListResponseDto(
+            post.getId(),
+            post.getUser().getNickName(),
+            post.getTitle(),
+            post.getPrice(),
+            post.isStatus(),
+            post.getCreatedAt()
+        ));
+  }
+  //인기글
+  @Transactional(readOnly = true)
+  public Page<RentalPostListResponseDto> getPopularPosts() {
+    Page<Post> page = postRepository.findTop5ByStatusTrueOrderByLikeCountDescViewCountDescCreatedAtDesc()
+
+    return page.map(post ->
         new RentalPostListResponseDto(
             post.getId(),
             post.getUser().getNickName(),

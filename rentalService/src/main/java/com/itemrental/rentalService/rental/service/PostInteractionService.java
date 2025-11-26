@@ -1,6 +1,7 @@
 package com.itemrental.rentalService.rental.service;
 
 
+import com.itemrental.rentalService.dto.UserSummary;
 import com.itemrental.rentalService.entity.User;
 import com.itemrental.rentalService.rental.dto.RentalPostListResponseDto;
 import com.itemrental.rentalService.rental.dto.ReviewCreateRequestDto;
@@ -45,10 +46,12 @@ public class PostInteractionService {
   public Page<RentalPostListResponseDto> getSellerPosts(Pageable pageable, Long userId) {
     Page<Post> page = postRepository.findByUserId(userId, pageable);
 
+
+
     return page.map(post->
         new RentalPostListResponseDto(
             post.getId(),
-            post.getUser(),
+            post.getUser().getNickName(),
             post.getTitle(),
             post.getPrice(),
             post.isStatus(),

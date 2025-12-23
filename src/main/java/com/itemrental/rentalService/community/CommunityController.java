@@ -2,10 +2,12 @@ package com.itemrental.rentalService.community;
 
 import com.itemrental.rentalService.community.dto.request.CommentCreateRequestDto;
 import com.itemrental.rentalService.community.dto.request.CommunityPostCreateRequestDto;
+import com.itemrental.rentalService.community.dto.request.CommunityPostReportRequestDto;
 import com.itemrental.rentalService.community.dto.request.CommunityPostUpdateRequestDto;
 import com.itemrental.rentalService.community.dto.response.CommunityPostCreateResponseDto;
 import com.itemrental.rentalService.community.dto.response.CommunityPostListResponseDto;
 import com.itemrental.rentalService.community.dto.response.CommunityPostReadResponseDto;
+import com.itemrental.rentalService.community.repository.CommunityReportRepository;
 import com.itemrental.rentalService.community.service.CommunityCommentService;
 import com.itemrental.rentalService.community.service.CommunityPostInteractionService;
 import com.itemrental.rentalService.community.service.CommunityPostService;
@@ -76,7 +78,7 @@ public class CommunityController {
     return ResponseEntity.ok(postService.getPostList(pageable));
   }
 
-  @PostMapping("comment/{postId}")
+  @PostMapping("/comment/{postId}")
   public ResponseEntity<String> creatComment(@RequestBody CommentCreateRequestDto dto, @PathVariable Long postId) {
     commentService.createCommunityComment(dto, postId);
     return ResponseEntity.ok("댓글 생성됨");
@@ -85,6 +87,14 @@ public class CommunityController {
   @GetMapping("/posts/search")
   public ResponseEntity<List<CommunityPostListResponseDto>> searchPosts(@RequestParam String keyword) {
     return ResponseEntity.ok(postService.searchPosts(keyword));
+  }
+
+  @PostMapping("/{postId}/report")
+  public ResponseEntity<String> reportPost(@RequestBody CommunityPostReportRequestDto dto, @PathVariable Long postId) {
+    interactionService.reportPost(postId, dto);
+    return ResponseEntity.ok("게시글 신고 완료");
+
+
   }
 
 }

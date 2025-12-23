@@ -1,20 +1,18 @@
 package com.itemrental.rentalService.utils;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.itemrental.rentalService.dto.LoginSuccessDto;
-import com.itemrental.rentalService.entity.RefreshToken;
-import com.itemrental.rentalService.entity.User;
-import com.itemrental.rentalService.repository.RefreshTokenRepository;
-import com.itemrental.rentalService.repository.UserRepository;
+import com.itemrental.rentalService.user.dto.LoginSuccessDto;
+import com.itemrental.rentalService.user.entity.RefreshToken;
+import com.itemrental.rentalService.user.entity.User;
+import com.itemrental.rentalService.user.repository.RefreshTokenRepository;
+import com.itemrental.rentalService.user.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.graphql.GraphQlProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;

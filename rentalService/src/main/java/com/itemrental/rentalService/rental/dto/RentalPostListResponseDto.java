@@ -1,7 +1,5 @@
 package com.itemrental.rentalService.rental.dto;
 
-import com.itemrental.rentalService.dto.UserSummary;
-import com.itemrental.rentalService.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

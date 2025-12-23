@@ -1,7 +1,7 @@
 package com.itemrental.rentalService.rental;
 
 
-import com.itemrental.rentalService.dto.ApiResponse;
+import com.itemrental.rentalService.user.dto.ApiResponse;
 import com.itemrental.rentalService.rental.dto.*;
 import com.itemrental.rentalService.rental.service.PostInteractionService;
 import com.itemrental.rentalService.rental.service.RentalService;

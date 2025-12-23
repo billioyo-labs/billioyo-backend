@@ -5,19 +5,17 @@ import com.itemrental.rentalService.community.dto.response.CommentResponseDto;
 import com.itemrental.rentalService.community.dto.response.CommunityPostReadResponseDto;
 import com.itemrental.rentalService.community.entity.CommunityPost;
 import com.itemrental.rentalService.community.entity.CommunityPostBookmark;
-import com.itemrental.rentalService.community.entity.CommunityPostImage;
 import com.itemrental.rentalService.community.entity.CommunityPostLike;
 import com.itemrental.rentalService.community.repository.CommunityPostBookmarkRepository;
 import com.itemrental.rentalService.community.repository.CommunityPostLikeRepository;
 import com.itemrental.rentalService.community.repository.CommunityPostRepository;
-import com.itemrental.rentalService.entity.User;
-import com.itemrental.rentalService.repository.UserRepository;
+import com.itemrental.rentalService.user.entity.User;
+import com.itemrental.rentalService.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service

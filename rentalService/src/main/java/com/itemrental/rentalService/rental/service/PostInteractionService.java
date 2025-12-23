@@ -1,7 +1,7 @@
 package com.itemrental.rentalService.rental.service;
 
 
-import com.itemrental.rentalService.entity.User;
+import com.itemrental.rentalService.user.entity.User;
 import com.itemrental.rentalService.rental.dto.RentalPostListResponseDto;
 import com.itemrental.rentalService.rental.dto.ReviewCreateRequestDto;
 import com.itemrental.rentalService.rental.entity.Post;
@@ -12,7 +12,7 @@ import com.itemrental.rentalService.rental.repository.PostBookmarkRepository;
 import com.itemrental.rentalService.rental.repository.PostLikeRepository;
 import com.itemrental.rentalService.rental.repository.PostRepository;
 import com.itemrental.rentalService.rental.repository.PostReviewRepository;
-import com.itemrental.rentalService.repository.UserRepository;
+import com.itemrental.rentalService.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

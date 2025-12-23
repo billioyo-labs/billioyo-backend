@@ -1,9 +1,8 @@
 package com.itemrental.rentalService.config;
 
-import com.itemrental.rentalService.repository.RefreshTokenRepository;
-import com.itemrental.rentalService.repository.UserRepository;
+import com.itemrental.rentalService.user.repository.RefreshTokenRepository;
+import com.itemrental.rentalService.user.repository.UserRepository;
 import com.itemrental.rentalService.utils.*;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;

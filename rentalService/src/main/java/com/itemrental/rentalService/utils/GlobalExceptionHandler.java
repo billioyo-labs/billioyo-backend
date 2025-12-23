@@ -1,6 +1,6 @@
 package com.itemrental.rentalService.utils;
 
-import com.itemrental.rentalService.dto.ErrorResponse;
+import com.itemrental.rentalService.user.dto.ErrorResponse;
 import com.itemrental.rentalService.exceptions.PendingProfileSetupException;
 import com.itemrental.rentalService.exceptions.DuplicateUsernameException;
 import com.itemrental.rentalService.exceptions.PasswordMismatchException;

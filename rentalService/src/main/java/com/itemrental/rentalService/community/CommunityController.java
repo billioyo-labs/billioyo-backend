@@ -9,7 +9,7 @@ import com.itemrental.rentalService.community.dto.response.CommunityPostReadResp
 import com.itemrental.rentalService.community.service.CommunityCommentService;
 import com.itemrental.rentalService.community.service.CommunityPostInteractionService;
 import com.itemrental.rentalService.community.service.CommunityPostService;
-import com.itemrental.rentalService.service.S3Service;
+import com.itemrental.rentalService.user.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

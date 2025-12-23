@@ -1,6 +1,6 @@
 package com.itemrental.rentalService.rental.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.itemrental.rentalService.dto.UserSummary;
+import com.itemrental.rentalService.user.dto.UserSummary;
 import com.itemrental.rentalService.rental.entity.Image;
 import lombok.*;
 

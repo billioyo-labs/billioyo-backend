@@ -1,7 +1,6 @@
 package com.itemrental.rentalService.community.repository;
 import com.itemrental.rentalService.community.entity.CommunityPostBookmark;
-import com.itemrental.rentalService.community.entity.CommunityPostLike;
-import com.itemrental.rentalService.entity.User;
+import com.itemrental.rentalService.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

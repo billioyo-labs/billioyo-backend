@@ -1,6 +1,6 @@
 package com.itemrental.rentalService.utils;
 
-import com.itemrental.rentalService.repository.RefreshTokenRepository;
+import com.itemrental.rentalService.user.repository.RefreshTokenRepository;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;

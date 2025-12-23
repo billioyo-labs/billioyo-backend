@@ -1,7 +1,7 @@
 package com.itemrental.rentalService.utils;
 
-import com.itemrental.rentalService.entity.User;
-import com.itemrental.rentalService.repository.UserRepository;
+import com.itemrental.rentalService.user.entity.User;
+import com.itemrental.rentalService.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UserDetails;

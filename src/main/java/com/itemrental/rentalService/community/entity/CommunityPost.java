@@ -1,7 +1,7 @@
 
 package com.itemrental.rentalService.community.entity;
 
-import com.itemrental.rentalService.entity.User;
+import com.itemrental.rentalService.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 

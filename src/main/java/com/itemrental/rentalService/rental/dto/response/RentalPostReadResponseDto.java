@@ -1,4 +1,4 @@
-package com.itemrental.rentalService.rental.dto;
+package com.itemrental.rentalService.rental.dto.response;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.itemrental.rentalService.user.dto.UserSummary;
 import com.itemrental.rentalService.rental.entity.Image;

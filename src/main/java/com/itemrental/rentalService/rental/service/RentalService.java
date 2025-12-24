@@ -2,10 +2,10 @@ package com.itemrental.rentalService.rental.service;
 
 import com.itemrental.rentalService.user.dto.UserSummary;
 import com.itemrental.rentalService.user.entity.User;
-import com.itemrental.rentalService.rental.dto.RentalPostCreateRequestDto;
-import com.itemrental.rentalService.rental.dto.RentalPostListResponseDto;
-import com.itemrental.rentalService.rental.dto.RentalPostReadResponseDto;
-import com.itemrental.rentalService.rental.dto.RentalPostUpdateRequestDto;
+import com.itemrental.rentalService.rental.dto.request.RentalPostCreateRequestDto;
+import com.itemrental.rentalService.rental.dto.response.RentalPostListResponseDto;
+import com.itemrental.rentalService.rental.dto.response.RentalPostReadResponseDto;
+import com.itemrental.rentalService.rental.dto.request.RentalPostUpdateRequestDto;
 import com.itemrental.rentalService.rental.entity.Image;
 import com.itemrental.rentalService.rental.entity.Post;
 import com.itemrental.rentalService.rental.repository.PostImageRepository;

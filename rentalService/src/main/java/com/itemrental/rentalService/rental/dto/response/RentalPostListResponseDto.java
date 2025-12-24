@@ -1,4 +1,4 @@
-package com.itemrental.rentalService.rental.dto;
+package com.itemrental.rentalService.rental.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

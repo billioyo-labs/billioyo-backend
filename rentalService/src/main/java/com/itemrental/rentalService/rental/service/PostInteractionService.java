@@ -2,8 +2,8 @@ package com.itemrental.rentalService.rental.service;
 
 
 import com.itemrental.rentalService.user.entity.User;
-import com.itemrental.rentalService.rental.dto.RentalPostListResponseDto;
-import com.itemrental.rentalService.rental.dto.ReviewCreateRequestDto;
+import com.itemrental.rentalService.rental.dto.response.RentalPostListResponseDto;
+import com.itemrental.rentalService.rental.dto.request.ReviewCreateRequestDto;
 import com.itemrental.rentalService.rental.entity.Post;
 import com.itemrental.rentalService.rental.entity.RentalPostBookmark;
 import com.itemrental.rentalService.rental.entity.RentalPostLike;

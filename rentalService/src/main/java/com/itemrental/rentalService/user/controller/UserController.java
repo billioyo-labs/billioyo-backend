@@ -1,10 +1,7 @@
 package com.itemrental.rentalService.user.controller;
 
+import com.itemrental.rentalService.user.dto.*;
 import com.itemrental.rentalService.user.service.UserService;
-import com.itemrental.rentalService.user.dto.ApiResponse;
-import com.itemrental.rentalService.user.dto.FindAccountDto;
-import com.itemrental.rentalService.user.dto.SignUpDto;
-import com.itemrental.rentalService.user.dto.UpdateUserDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +19,11 @@ public class UserController {
     @PostMapping("/sign-up")
     public ResponseEntity<ApiResponse<Void>> signUp(@Valid @RequestBody SignUpDto signUpDto) {
         String message = userService.signUp(signUpDto);
+        return ResponseEntity.ok(ApiResponse.success(message));
+    }
+    @PostMapping("/sign-up/admin")
+    public ResponseEntity<ApiResponse<Void>> signUpAdmin(@Valid @RequestBody AdminSignUpRequestDto signUpDto) {
+        String message = userService.signUpAdmin(signUpDto.getSignUpDto(), signUpDto.getAdminSecret());
         return ResponseEntity.ok(ApiResponse.success(message));
     }
 

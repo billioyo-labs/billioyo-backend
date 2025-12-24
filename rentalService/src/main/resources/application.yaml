@@ -59,5 +59,9 @@ jwt:
   accessTokenExpiresIn: ${ACCESSTOKEN_VALIDTIME}
   refreshTokenExpiresIn: ${REFRESHTOKEN_VALIDTIME}
 
+admin:
+  signup-secret: ${ADMIN_SIGNUP_SECRET}
+
+
 server:
   port: 8081

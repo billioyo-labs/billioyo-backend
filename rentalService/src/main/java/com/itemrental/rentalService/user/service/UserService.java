@@ -8,6 +8,7 @@ import com.itemrental.rentalService.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,10 @@ public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
+    @Value("${admin.signup-secret}")
+    private String adminSignupSecret;
+
+
     @Transactional
     public String signUp(SignUpDto signUpDto){
         String email = signUpDto.getEmail();
@@ -38,6 +43,30 @@ public class UserService {
         userRepository.save(updateUser);
         return "사용자 정보 저장 완료";
     }
+
+    //관리자 가입
+    public void validateAdminSignupSecret(String adminSecret){
+        if(!Objects.equals(adminSecret, adminSignupSecret)){
+            throw new RuntimeException("관리자 가입 코드가 올바르지 않습니다.");
+        }
+    }
+    @Transactional
+    public String signUpAdmin(SignUpDto signUpDto, String adminSecret){
+        validateAdminSignupSecret(adminSecret);
+        String email = signUpDto.getEmail();
+        String encodedPassword = passwordEncoder.encode(signUpDto.getPassword());
+        List<String> roles = new ArrayList<>();
+        roles.add("ADMIN");
+        User user = findByEmail(email).orElseThrow(() ->
+            new RuntimeException("이메일에 해당하는 사용자가 없습니다."));
+        User updateUser = signUpDto.toEntity(encodedPassword, roles);
+        updateUser.setId(user.getId());
+        userRepository.save(updateUser);
+        return "관리자 정보 저장 완료";
+    }
+
+
+
 
     public void duplicateCheck(String nickName){
         if(userRepository.existsByNickName(nickName)){

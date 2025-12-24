@@ -1,8 +1,12 @@
 package com.itemrental.rentalService.rental;
 
 
+import com.itemrental.rentalService.rental.dto.request.RentalPostCreateRequestDto;
+import com.itemrental.rentalService.rental.dto.request.RentalPostUpdateRequestDto;
+import com.itemrental.rentalService.rental.dto.request.ReviewCreateRequestDto;
+import com.itemrental.rentalService.rental.dto.response.RentalPostListResponseDto;
+import com.itemrental.rentalService.rental.dto.response.RentalPostReadResponseDto;
 import com.itemrental.rentalService.user.dto.ApiResponse;
-import com.itemrental.rentalService.rental.dto.*;
 import com.itemrental.rentalService.rental.service.PostInteractionService;
 import com.itemrental.rentalService.rental.service.RentalService;
 import lombok.RequiredArgsConstructor;

@@ -4,7 +4,7 @@ package com.itemrental.rentalService.community;
 import com.itemrental.rentalService.community.dto.response.CommunityPostReadResponseDto;
 import com.itemrental.rentalService.community.service.CommunityPostInteractionService;
 import com.itemrental.rentalService.user.dto.UpdateUserDto;
-import com.itemrental.rentalService.rental.dto.RentalPostListResponseDto;
+import com.itemrental.rentalService.rental.dto.response.RentalPostListResponseDto;
 import com.itemrental.rentalService.rental.service.PostInteractionService;
 import com.itemrental.rentalService.user.service.UserService;
 import lombok.RequiredArgsConstructor;

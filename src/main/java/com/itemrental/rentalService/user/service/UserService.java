@@ -140,4 +140,16 @@ public class UserService {
         return "회원 탈퇴가 완료되었습니다.";
     }
 
+    //관리자 유저 차단
+    public String banUser(String userEmail) {
+        User user = userRepository.findByEmail(userEmail)
+            .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다."));
+
+        if (user.getUserState() == User.UserState.BANNED) {
+            throw new IllegalStateException("이미 차단된 유저입니다.");
+        }
+        user.setUserState(User.UserState.BANNED);
+        userRepository.save(user);
+        return "유저가 차단 되었습니다.";
+    }
 }

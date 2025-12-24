@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -52,6 +53,14 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.success(message));
     }
 
+
+    //관리자 유저 차단
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/admin/users/ban")
+    public ResponseEntity<ApiResponse<Void>> banUser(@RequestParam String email) {
+        String message = userService.banUser(email);
+        return ResponseEntity.ok(ApiResponse.success(message));
+    }
 
 
 

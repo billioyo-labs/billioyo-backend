@@ -117,7 +117,8 @@ public class User implements UserDetails {
     public enum UserState{
         UNVERIFIED,
         PENDING_PROFILE_SETUP,
-        ACTIVE
+        ACTIVE,
+        BANNED
     }
 
     public LoginSuccessDto toLoginSuccessDto(){

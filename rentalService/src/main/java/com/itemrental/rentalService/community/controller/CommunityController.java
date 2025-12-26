@@ -1,13 +1,12 @@
-package com.itemrental.rentalService.community;
+package com.itemrental.rentalService.community.controller;
 
 import com.itemrental.rentalService.community.dto.request.CommentCreateRequestDto;
 import com.itemrental.rentalService.community.dto.request.CommunityPostCreateRequestDto;
-import com.itemrental.rentalService.community.dto.request.CommunityPostReportRequestDto;
+import com.itemrental.rentalService.user.dto.ReportRequestDto;
 import com.itemrental.rentalService.community.dto.request.CommunityPostUpdateRequestDto;
 import com.itemrental.rentalService.community.dto.response.CommunityPostCreateResponseDto;
 import com.itemrental.rentalService.community.dto.response.CommunityPostListResponseDto;
 import com.itemrental.rentalService.community.dto.response.CommunityPostReadResponseDto;
-import com.itemrental.rentalService.community.repository.CommunityReportRepository;
 import com.itemrental.rentalService.community.service.CommunityCommentService;
 import com.itemrental.rentalService.community.service.CommunityPostInteractionService;
 import com.itemrental.rentalService.community.service.CommunityPostService;
@@ -89,12 +88,6 @@ public class CommunityController {
     return ResponseEntity.ok(postService.searchPosts(keyword));
   }
 
-  @PostMapping("/{postId}/report")
-  public ResponseEntity<String> reportPost(@RequestBody CommunityPostReportRequestDto dto, @PathVariable Long postId) {
-    interactionService.reportPost(postId, dto);
-    return ResponseEntity.ok("게시글 신고 완료");
 
-
-  }
 
 }

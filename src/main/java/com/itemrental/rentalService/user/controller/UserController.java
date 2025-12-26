@@ -62,6 +62,9 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.success(message));
     }
 
-
-
+    @PostMapping("/report")
+    public ResponseEntity<ApiResponse<Void>> reportPost(@RequestBody ReportRequestDto dto) {
+        userService.reportPost(dto);
+        return ResponseEntity.ok(ApiResponse.success("게시글 신고 완료"));
+    }
 }

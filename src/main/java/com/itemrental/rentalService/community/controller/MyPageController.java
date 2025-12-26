@@ -1,4 +1,4 @@
-package com.itemrental.rentalService.community;
+package com.itemrental.rentalService.community.controller;
 
 
 import com.itemrental.rentalService.community.dto.response.CommunityPostReadResponseDto;

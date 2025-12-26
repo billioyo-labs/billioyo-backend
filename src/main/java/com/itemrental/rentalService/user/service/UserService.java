@@ -1,18 +1,29 @@
 package com.itemrental.rentalService.user.service;
 
+import com.itemrental.rentalService.community.entity.CommunityPost;
+import com.itemrental.rentalService.community.repository.CommunityPostRepository;
+import com.itemrental.rentalService.rental.entity.Post;
+import com.itemrental.rentalService.rental.repository.PostRepository;
+import com.itemrental.rentalService.user.dto.ReportRequestDto;
 import com.itemrental.rentalService.user.dto.SignUpDto;
 import com.itemrental.rentalService.user.dto.UpdateUserDto;
+import com.itemrental.rentalService.user.entity.Report;
 import com.itemrental.rentalService.user.entity.User;
 import com.itemrental.rentalService.exceptions.DuplicateUsernameException;
+import com.itemrental.rentalService.user.repository.ReportRepository;
 import com.itemrental.rentalService.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +36,9 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final CommunityPostRepository communityPostRepository;
+    private final PostRepository postRepository;
+    private final ReportRepository reportRepository;
 
     @Value("${admin.signup-secret}")
     private String adminSignupSecret;
@@ -152,4 +166,37 @@ public class UserService {
         userRepository.save(user);
         return "유저가 차단 되었습니다.";
     }
+
+
+    // 커뮤니티/렌탈 게시글 신고
+    @Transactional
+    public void reportPost(ReportRequestDto dto) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User reporter = userRepository.findByEmail(username)
+            .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다"));
+
+
+        if (dto.getTargetType()== Report.TargetType.COMMUNITY){
+            CommunityPost post = communityPostRepository.findById(dto.getTargetId())
+                .orElseThrow(() -> new IllegalArgumentException("Post not found: " + dto.getTargetId()));
+        }
+        else if (dto.getTargetType()== Report.TargetType.RENTAL){
+            Post post = postRepository.findById(dto.getTargetId())
+                .orElseThrow(() -> new IllegalArgumentException("Post not found: " + dto.getTargetId()));
+
+        }
+        Report report = Report.builder()
+            .targetId(dto.getTargetId())
+            .targetType(dto.getTargetType())
+            .reporter(reporter)
+            .reason(dto.getReason())
+            .description(dto.getDescription())
+            .build();
+
+        reportRepository.save(report);
+
+    }
+
+
+
 }

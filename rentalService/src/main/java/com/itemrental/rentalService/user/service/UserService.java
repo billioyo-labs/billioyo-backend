@@ -1,9 +1,9 @@
 package com.itemrental.rentalService.user.service;
 
-import com.itemrental.rentalService.community.entity.CommunityPost;
+
 import com.itemrental.rentalService.community.repository.CommunityPostRepository;
-import com.itemrental.rentalService.rental.entity.Post;
 import com.itemrental.rentalService.rental.repository.PostRepository;
+import com.itemrental.rentalService.user.dto.ReportListResponseDto;
 import com.itemrental.rentalService.user.dto.ReportRequestDto;
 import com.itemrental.rentalService.user.dto.SignUpDto;
 import com.itemrental.rentalService.user.dto.UpdateUserDto;
@@ -12,14 +12,16 @@ import com.itemrental.rentalService.user.entity.User;
 import com.itemrental.rentalService.exceptions.DuplicateUsernameException;
 import com.itemrental.rentalService.user.repository.ReportRepository;
 import com.itemrental.rentalService.user.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -120,6 +122,8 @@ public class UserService {
     }
 
 
+
+
     //회원정보 수정 기능
     @Transactional
     public String updateUser(UpdateUserDto updateUserDto){
@@ -196,9 +200,22 @@ public class UserService {
             .build();
 
         reportRepository.save(report);
-
     }
 
+    @Transactional(readOnly = true)
+    public Page<ReportListResponseDto> getReportList(Pageable pageable) {
+        Page<Report> page = reportRepository.findAll(pageable);
+
+        return page
+            .map(report -> ReportListResponseDto.builder()
+                .id(report.getId())
+                .targetType(report.getTargetType())
+                .targetId(report.getTargetId())
+                .reason(report.getReason())
+                .description(report.getDescription())
+                .createdAt(report.getCreatedAt())
+                .build());
+    }
 
 
 

@@ -82,6 +82,10 @@ public class User implements UserDetails {
     @Getter
     private List<CommunityPostBookmark> bookmarks;
 
+    @OneToMany(mappedBy = "reporter", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Getter
+    private List<Report> reports;
+
 
 
     @ElementCollection(fetch = FetchType.EAGER)

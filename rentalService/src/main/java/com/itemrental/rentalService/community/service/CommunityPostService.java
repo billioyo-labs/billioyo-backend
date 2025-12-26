@@ -173,7 +173,7 @@ public class CommunityPostService {
             post.getCommentCount(),
             post.getCreatedAt(),
             post.getImages().isEmpty() ? null : post.getImages().get(0).getImageUrl()
-    )).toList();
+        )).toList();
   }
 }
 

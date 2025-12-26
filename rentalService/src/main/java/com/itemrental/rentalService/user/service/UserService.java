@@ -1,7 +1,9 @@
 package com.itemrental.rentalService.user.service;
 
 
+import com.itemrental.rentalService.community.entity.CommunityPost;
 import com.itemrental.rentalService.community.repository.CommunityPostRepository;
+import com.itemrental.rentalService.rental.entity.Post;
 import com.itemrental.rentalService.rental.repository.PostRepository;
 import com.itemrental.rentalService.user.dto.ReportListResponseDto;
 import com.itemrental.rentalService.user.dto.ReportRequestDto;
@@ -18,7 +20,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -215,6 +219,22 @@ public class UserService {
                 .description(report.getDescription())
                 .createdAt(report.getCreatedAt())
                 .build());
+    }
+    //관리자 게시글 삭제
+    @Transactional
+    public void adminDeleteCommunityPost(Long postId) {
+
+        CommunityPost post = communityPostRepository.findById(postId)
+            .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
+        ;
+        communityPostRepository.delete(post);
+    }
+    @Transactional
+    public void adminDeleteRentalPost(Long postId) {
+        Post post = postRepository.findById(postId)
+            .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
+        ;
+        postRepository.delete(post);
     }
 
 

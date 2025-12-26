@@ -58,12 +58,12 @@ public class SecurityConfig {
         http.addFilterAt(new JwtAuthenticationFilter(jwtTokenProvider, customUserDetailsService), LoginFilter.class);
         // 경로별 인가 작업 설정
         http.authorizeHttpRequests((auth) -> auth
+                .requestMatchers("/user/admin/**").hasRole("ADMIN")
                 .requestMatchers("/login", "/", "/post/list", "/post/search", "/user/**", "/auth/**", "/mail/**", "/error").permitAll() // 누구나 접근가능
                 .requestMatchers(HttpMethod.GET, "/community/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
                 .requestMatchers("/reissue").permitAll()
                 // 관리자 전용
-                .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated());  //나머지 경로들은 다 인증된 사용자만
 
         //addat은 원하는 자리에 -> usernamepasswordauthenticationfilter 자리에 놓겠다.

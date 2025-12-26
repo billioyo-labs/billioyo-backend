@@ -175,16 +175,18 @@ public class UserService {
         User reporter = userRepository.findByEmail(username)
             .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다"));
 
-
-        if (dto.getTargetType()== Report.TargetType.COMMUNITY){
-            CommunityPost post = communityPostRepository.findById(dto.getTargetId())
-                .orElseThrow(() -> new IllegalArgumentException("Post not found: " + dto.getTargetId()));
+        if (dto.getTargetType() == Report.TargetType.COMMUNITY) {
+            if (!communityPostRepository.existsById(dto.getTargetId())) {
+                throw new IllegalArgumentException("CommunityPost not found: " + dto.getTargetId());
+            }
+        } else if (dto.getTargetType() == Report.TargetType.RENTAL) {
+            if (!postRepository.existsById(dto.getTargetId())) {
+                throw new IllegalArgumentException("Rental Post not found: " + dto.getTargetId());
+            }
+        } else {
+            throw new IllegalArgumentException("Invalid targetType: " + dto.getTargetType());
         }
-        else if (dto.getTargetType()== Report.TargetType.RENTAL){
-            Post post = postRepository.findById(dto.getTargetId())
-                .orElseThrow(() -> new IllegalArgumentException("Post not found: " + dto.getTargetId()));
 
-        }
         Report report = Report.builder()
             .targetId(dto.getTargetId())
             .targetType(dto.getTargetType())
@@ -196,6 +198,7 @@ public class UserService {
         reportRepository.save(report);
 
     }
+
 
 
 

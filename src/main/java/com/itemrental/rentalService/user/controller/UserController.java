@@ -80,4 +80,18 @@ public class UserController {
     ){
         return ResponseEntity.ok(userService.getReportList(pageable));
     }
+    // 관리자 게시글 삭제
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/admin/community/{postId}")
+    public ResponseEntity<ApiResponse<Void>> deleteCommunityPost(@PathVariable Long postId){
+        userService.adminDeleteCommunityPost(postId);
+        return ResponseEntity.ok(ApiResponse.success("커뮤니티 게시글 삭제 완료"));
+    }
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/admin/rental/{postId}")
+    public ResponseEntity<ApiResponse<Void>> deleteRentalPost(@PathVariable Long postId){
+        userService.adminDeleteRentalPost(postId);
+        return ResponseEntity.ok(ApiResponse.success("렌탈 게시글 삭제 완료"));
+    }
+
 }

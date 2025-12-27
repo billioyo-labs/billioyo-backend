@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itemrental.rentalService.domain.user.dto.LoginSuccessDto;
 import com.itemrental.rentalService.domain.auth.entity.RefreshToken;
 import com.itemrental.rentalService.domain.user.entity.User;
-import com.itemrental.rentalService.domain.user.repository.RefreshTokenRepository;
+import com.itemrental.rentalService.domain.auth.repository.RefreshTokenRepository;
 import com.itemrental.rentalService.domain.user.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.Cookie;

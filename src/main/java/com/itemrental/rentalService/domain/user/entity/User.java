@@ -1,8 +1,12 @@
 package com.itemrental.rentalService.domain.user.entity;
 
+import com.itemrental.rentalService.domain.chat.entity.ChattingParticipant;
+import com.itemrental.rentalService.domain.chat.entity.Message;
 import com.itemrental.rentalService.domain.community.entity.CommunityPost;
 import com.itemrental.rentalService.domain.community.entity.CommunityPostBookmark;
 import com.itemrental.rentalService.domain.community.entity.CommunityPostLike;
+import com.itemrental.rentalService.domain.notification.Notification;
+import com.itemrental.rentalService.domain.report.entity.Report;
 import com.itemrental.rentalService.domain.user.dto.LoginSuccessDto;
 import com.itemrental.rentalService.domain.rental.entity.Post;
 import jakarta.persistence.*;

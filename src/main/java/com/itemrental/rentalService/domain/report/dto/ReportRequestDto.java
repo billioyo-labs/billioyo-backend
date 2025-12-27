@@ -1,7 +1,7 @@
-package com.itemrental.rentalService.domain.user.dto;
+package com.itemrental.rentalService.domain.report.dto;
 
 
-import com.itemrental.rentalService.domain.user.entity.Report;
+import com.itemrental.rentalService.domain.report.entity.Report;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

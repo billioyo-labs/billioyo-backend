@@ -1,5 +1,6 @@
 package com.itemrental.rentalService.domain.user.controller;
 
+import com.itemrental.rentalService.domain.report.dto.ReportRequestDto;
 import com.itemrental.rentalService.domain.user.dto.AdminSignUpRequestDto;
 import com.itemrental.rentalService.domain.user.dto.*;
 import com.itemrental.rentalService.domain.user.service.UserService;
@@ -54,14 +55,6 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.success(message));
     }
 
-
-
-
-    @PostMapping("/report")
-    public ResponseEntity<ApiResponse<Void>> reportPost(@RequestBody ReportRequestDto dto) {
-        userService.reportPost(dto);
-        return ResponseEntity.ok(ApiResponse.success("게시글 신고 완료"));
-    }
 
 
 }

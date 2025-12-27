@@ -1,7 +1,7 @@
 package com.itemrental.rentalService.global.config;
 
 import com.itemrental.rentalService.global.utils.*;
-import com.itemrental.rentalService.domain.user.repository.RefreshTokenRepository;
+import com.itemrental.rentalService.domain.auth.repository.RefreshTokenRepository;
 import com.itemrental.rentalService.domain.user.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

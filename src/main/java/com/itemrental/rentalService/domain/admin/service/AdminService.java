@@ -6,9 +6,9 @@ import com.itemrental.rentalService.domain.community.repository.CommunityPostRep
 import com.itemrental.rentalService.domain.rental.entity.Post;
 import com.itemrental.rentalService.domain.rental.repository.PostRepository;
 import com.itemrental.rentalService.domain.admin.dto.ReportListResponseDto;
-import com.itemrental.rentalService.domain.user.entity.Report;
+import com.itemrental.rentalService.domain.report.entity.Report;
 import com.itemrental.rentalService.domain.user.entity.User;
-import com.itemrental.rentalService.domain.user.repository.ReportRepository;
+import com.itemrental.rentalService.domain.report.repository.ReportRepository;
 import com.itemrental.rentalService.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

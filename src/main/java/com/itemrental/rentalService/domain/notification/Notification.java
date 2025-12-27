@@ -1,5 +1,6 @@
-package com.itemrental.rentalService.domain.user.entity;
+package com.itemrental.rentalService.domain.notification;
 
+import com.itemrental.rentalService.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -2,7 +2,7 @@ package com.itemrental.rentalService.domain.user.service;
 
 import com.itemrental.rentalService.domain.user.dto.SendResetMailDto;
 import com.itemrental.rentalService.domain.user.entity.User;
-import com.itemrental.rentalService.domain.user.entity.VerificationToken;
+import com.itemrental.rentalService.domain.auth.entity.VerificationToken;
 import com.itemrental.rentalService.global.exceptions.PendingProfileSetupException;
 import com.itemrental.rentalService.domain.user.repository.VerificationTokenRepository;
 import jakarta.mail.MessagingException;

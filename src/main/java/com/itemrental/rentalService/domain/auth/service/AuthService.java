@@ -1,8 +1,8 @@
-package com.itemrental.rentalService.domain.user.service;
+package com.itemrental.rentalService.domain.auth.service;
 
-import com.itemrental.rentalService.domain.user.entity.ResetToken;
+import com.itemrental.rentalService.domain.auth.entity.ResetToken;
+import com.itemrental.rentalService.domain.auth.entity.VerificationToken;
 import com.itemrental.rentalService.domain.user.entity.User;
-import com.itemrental.rentalService.domain.user.entity.VerificationToken;
 import com.itemrental.rentalService.domain.user.repository.ResetTokenRepository;
 import com.itemrental.rentalService.domain.user.repository.UserRepository;
 import com.itemrental.rentalService.domain.user.repository.VerificationTokenRepository;

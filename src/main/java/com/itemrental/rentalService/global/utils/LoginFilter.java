@@ -4,7 +4,7 @@ package com.itemrental.rentalService.global.utils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itemrental.rentalService.domain.user.dto.LoginSuccessDto;
-import com.itemrental.rentalService.domain.user.entity.RefreshToken;
+import com.itemrental.rentalService.domain.auth.entity.RefreshToken;
 import com.itemrental.rentalService.domain.user.entity.User;
 import com.itemrental.rentalService.domain.user.repository.RefreshTokenRepository;
 import com.itemrental.rentalService.domain.user.repository.UserRepository;

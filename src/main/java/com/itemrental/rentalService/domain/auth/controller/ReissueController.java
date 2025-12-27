@@ -1,4 +1,4 @@
-package com.itemrental.rentalService.domain.user.controller;
+package com.itemrental.rentalService.domain.auth.controller;
 
 import com.itemrental.rentalService.global.utils.JwtService;
 import jakarta.servlet.http.HttpServletRequest;

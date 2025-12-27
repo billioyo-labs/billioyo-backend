@@ -1,0 +1,13 @@
+package com.itemrental.rentalService.domain.community.repository;
+import com.itemrental.rentalService.domain.community.entity.CommunityPostBookmark;
+import com.itemrental.rentalService.domain.user.entity.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+
+public interface CommunityPostBookmarkRepository extends JpaRepository<CommunityPostBookmark, Long> {
+  boolean existsByUser_IdAndPost_Id(Long userId, Long postId);
+  void deleteByUser_IdAndPost_Id(Long userId, Long postId);
+  List<CommunityPostBookmark> findAllByUser(User user);
+}

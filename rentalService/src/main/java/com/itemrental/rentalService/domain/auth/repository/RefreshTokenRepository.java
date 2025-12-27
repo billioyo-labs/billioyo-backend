@@ -1,4 +1,4 @@
-package com.itemrental.rentalService.domain.user.repository;
+package com.itemrental.rentalService.domain.auth.repository;
 
 import com.itemrental.rentalService.domain.auth.entity.RefreshToken;
 import org.springframework.data.repository.CrudRepository;

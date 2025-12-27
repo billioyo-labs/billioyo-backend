@@ -1,5 +1,6 @@
-package com.itemrental.rentalService.domain.user.entity;
+package com.itemrental.rentalService.domain.report.entity;
 
+import com.itemrental.rentalService.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;

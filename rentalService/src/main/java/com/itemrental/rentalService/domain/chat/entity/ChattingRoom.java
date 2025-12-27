@@ -1,4 +1,4 @@
-package com.itemrental.rentalService.domain.user.entity;
+package com.itemrental.rentalService.domain.chat.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;

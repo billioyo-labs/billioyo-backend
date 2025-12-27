@@ -1,4 +1,4 @@
-package com.itemrental.rentalService.domain.user.repository;
+package com.itemrental.rentalService.domain.chat.repository;
 
 import org.springframework.stereotype.Repository;
 

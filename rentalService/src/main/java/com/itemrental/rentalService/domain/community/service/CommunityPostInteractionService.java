@@ -9,7 +9,7 @@ import com.itemrental.rentalService.domain.community.entity.CommunityPostLike;
 import com.itemrental.rentalService.domain.community.repository.CommunityPostBookmarkRepository;
 import com.itemrental.rentalService.domain.community.repository.CommunityPostLikeRepository;
 import com.itemrental.rentalService.domain.community.repository.CommunityPostRepository;
-import com.itemrental.rentalService.domain.user.repository.ReportRepository;
+import com.itemrental.rentalService.domain.report.repository.ReportRepository;
 import com.itemrental.rentalService.domain.user.entity.User;
 import com.itemrental.rentalService.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

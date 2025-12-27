@@ -3,13 +3,13 @@ package com.itemrental.rentalService.domain.user.service;
 
 import com.itemrental.rentalService.domain.community.repository.CommunityPostRepository;
 import com.itemrental.rentalService.domain.rental.repository.PostRepository;
-import com.itemrental.rentalService.domain.user.dto.ReportRequestDto;
+import com.itemrental.rentalService.domain.report.dto.ReportRequestDto;
 import com.itemrental.rentalService.domain.user.dto.SignUpDto;
 import com.itemrental.rentalService.domain.user.dto.UpdateUserDto;
-import com.itemrental.rentalService.domain.user.entity.Report;
+import com.itemrental.rentalService.domain.report.entity.Report;
 import com.itemrental.rentalService.domain.user.entity.User;
 import com.itemrental.rentalService.global.exceptions.DuplicateUsernameException;
-import com.itemrental.rentalService.domain.user.repository.ReportRepository;
+import com.itemrental.rentalService.domain.report.repository.ReportRepository;
 import com.itemrental.rentalService.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,9 +31,6 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
-    private final CommunityPostRepository communityPostRepository;
-    private final PostRepository postRepository;
-    private final ReportRepository reportRepository;
 
 
     @Value("${admin.signup-secret}")
@@ -151,38 +148,6 @@ public class UserService {
 
         return "회원 탈퇴가 완료되었습니다.";
     }
-
-
-    // 커뮤니티/렌탈 게시글 신고
-    @Transactional
-    public void reportPost(ReportRequestDto dto) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User reporter = userRepository.findByEmail(username)
-            .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다"));
-
-        if (dto.getTargetType() == Report.TargetType.COMMUNITY) {
-            if (!communityPostRepository.existsById(dto.getTargetId())) {
-                throw new IllegalArgumentException("CommunityPost not found: " + dto.getTargetId());
-            }
-        } else if (dto.getTargetType() == Report.TargetType.RENTAL) {
-            if (!postRepository.existsById(dto.getTargetId())) {
-                throw new IllegalArgumentException("Rental Post not found: " + dto.getTargetId());
-            }
-        } else {
-            throw new IllegalArgumentException("Invalid targetType: " + dto.getTargetType());
-        }
-
-        Report report = Report.builder()
-            .targetId(dto.getTargetId())
-            .targetType(dto.getTargetType())
-            .reporter(reporter)
-            .reason(dto.getReason())
-            .description(dto.getDescription())
-            .build();
-
-        reportRepository.save(report);
-    }
-
 
 
 

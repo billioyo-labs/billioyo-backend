@@ -1,6 +1,6 @@
-package com.itemrental.rentalService.domain.user.controller;
+package com.itemrental.rentalService.domain.auth.controller;
 
-import com.itemrental.rentalService.domain.user.service.AuthService;
+import com.itemrental.rentalService.domain.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;

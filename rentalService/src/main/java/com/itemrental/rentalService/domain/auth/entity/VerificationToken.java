@@ -1,4 +1,4 @@
-package com.itemrental.rentalService.domain.user.entity;
+package com.itemrental.rentalService.domain.auth.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,19 +7,20 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.index.Indexed;
 
-@RedisHash(value = "resetToken", timeToLive = 86400)
+@RedisHash(value = "verificationToken", timeToLive = 86400)
 @Getter
 @Setter
 @NoArgsConstructor
-public class ResetToken {
+public class VerificationToken {
+
     @Id
     private String token;
 
     @Indexed
     private String email;
 
-    public ResetToken(String token, String email){
-        this.email = email;
+    public VerificationToken(String token, String email){
         this.token = token;
+        this.email = email;
     }
 }

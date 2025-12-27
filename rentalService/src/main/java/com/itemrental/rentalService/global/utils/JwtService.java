@@ -1,7 +1,7 @@
 package com.itemrental.rentalService.global.utils;
 
 
-import com.itemrental.rentalService.domain.user.entity.RefreshToken;
+import com.itemrental.rentalService.domain.auth.entity.RefreshToken;
 import com.itemrental.rentalService.domain.user.repository.RefreshTokenRepository;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;

@@ -1,4 +1,4 @@
-package com.itemrental.rentalService.domain.user.entity;
+package com.itemrental.rentalService.domain.auth.entity;
 
 
 import lombok.Getter;

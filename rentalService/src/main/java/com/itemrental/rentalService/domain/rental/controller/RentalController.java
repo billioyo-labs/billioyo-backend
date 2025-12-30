@@ -2,6 +2,7 @@ package com.itemrental.rentalService.domain.rental.controller;
 
 
 import com.itemrental.rentalService.domain.rental.dto.request.RentalPostCreateRequestDto;
+import com.itemrental.rentalService.domain.rental.dto.request.RentalPostSearchRequestDto;
 import com.itemrental.rentalService.domain.rental.dto.request.RentalPostUpdateRequestDto;
 import com.itemrental.rentalService.domain.rental.dto.request.ReviewCreateRequestDto;
 import com.itemrental.rentalService.domain.rental.dto.response.RentalPostListResponseDto;
@@ -53,9 +54,10 @@ public class RentalController {
 
   @GetMapping
   public ResponseEntity<Page<RentalPostListResponseDto>> getPosts(
+          @ModelAttribute RentalPostSearchRequestDto searchDto,
       @PageableDefault(size = 10, sort = "createdAt",direction = Sort.Direction.DESC) Pageable pageable
   ){
-    return ResponseEntity.ok(rentalService.getPosts(pageable));
+    return ResponseEntity.ok(rentalService.getPosts(pageable, searchDto));
   }
 
 

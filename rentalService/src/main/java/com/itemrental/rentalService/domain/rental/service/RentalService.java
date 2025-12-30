@@ -1,5 +1,6 @@
 package com.itemrental.rentalService.domain.rental.service;
 
+import com.itemrental.rentalService.domain.rental.dto.request.RentalPostSearchRequestDto;
 import com.itemrental.rentalService.domain.user.dto.UserSummary;
 import com.itemrental.rentalService.domain.user.entity.User;
 import com.itemrental.rentalService.domain.rental.dto.request.RentalPostCreateRequestDto;
@@ -11,6 +12,7 @@ import com.itemrental.rentalService.domain.rental.entity.Post;
 import com.itemrental.rentalService.domain.rental.repository.PostImageRepository;
 import com.itemrental.rentalService.domain.rental.repository.PostRepository;
 import com.itemrental.rentalService.domain.user.repository.UserRepository;
+import com.itemrental.rentalService.global.utils.Position;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,8 +37,8 @@ public class RentalService {
   @Transactional
   public Long createRentalPost(RentalPostCreateRequestDto dto) {
     String username = SecurityContextHolder.getContext().getAuthentication().getName();
-    System.out.println(username);
-    User user = userRepository.findByEmail(username).get();
+    User user = userRepository.findByEmail(username)
+            .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다."));
 
     Post post = new Post();
     post.setUser(user);
@@ -45,6 +47,11 @@ public class RentalService {
     post.setPrice(dto.getPrice());
     post.setLocation(dto.getLocation());
     post.setCategory(dto.getCategory());
+
+    if (dto.getLatitude() != null && dto.getLongitude() != null) {
+      post.setPosition(new Position(dto.getLatitude(), dto.getLongitude()));
+    }
+
     postRepository.save(post);
 
     if (dto.getImageUrls() != null) {
@@ -78,6 +85,8 @@ public class RentalService {
           .build();
     }
 
+    Double lat = (post.getPosition() != null) ? post.getPosition().getLatitude() : null;
+    Double lng = (post.getPosition() != null) ? post.getPosition().getLongitude() : null;
 
 //    List<CommentResponseDto> comments = post.getComments().stream().map(
 //        comment -> new CommentResponseDto(
@@ -87,20 +96,22 @@ public class RentalService {
 //            comment.getCreatedAt()
 //        )).toList();
     return new RentalPostReadResponseDto(
-        post.getId(),
-        post.getTitle(),
-        post.getDescription(),
-        post.getPrice(),
-        post.getLocation(),
-        post.isStatus(),
-        post.getCreatedAt(),
-        post.getViewCount(),
-        post.getUser().getUsername(),
-        post.getCategory(),
-        post.getImages(),
-        post.getReviewsCount(),
-        post.getRating(),
-        sellerSummary
+            post.getId(),
+            post.getTitle(),
+            post.getDescription(),
+            post.getPrice(),
+            post.getLocation(),
+            lat,
+            lng,
+            post.isStatus(),
+            post.getCreatedAt(),
+            post.getViewCount(),
+            post.getUser().getUsername(),
+            post.getCategory(),
+            post.getImages(),
+            post.getReviewsCount(),
+            post.getRating(),
+            sellerSummary
     );
   }
 
@@ -157,20 +168,30 @@ public class RentalService {
 
   //상품목록 조회
   @Transactional(readOnly = true)
-  public Page<RentalPostListResponseDto> getPosts(Pageable pageable) {
-    Page<Post> page = postRepository.findAll(pageable);
+  public Page<RentalPostListResponseDto> getPosts(Pageable pageable, RentalPostSearchRequestDto searchDto) {
+    Page<Post> page;
 
+    if (searchDto.getLat() != null && searchDto.getLng() != null && searchDto.getDistance() != null) {
+      page = postRepository.findWithinDistance(
+              searchDto.getLat(),
+              searchDto.getLng(),
+              searchDto.getDistance(),
+              pageable
+      );
+    } else {
+      page = postRepository.findAll(pageable);
+    }
 
-
-    return page.map(post->
-        new RentalPostListResponseDto(
-            post.getId(),
-            post.getUser().getNickName(),
-            post.getTitle(),
-            post.getPrice(),
-            post.isStatus(),
-            post.getCreatedAt()
-        ));
+    return page.map(post ->
+            new RentalPostListResponseDto(
+                    post.getId(),
+                    post.getUser().getNickName(),
+                    post.getTitle(),
+                    post.getPrice(),
+                    post.isStatus(),
+                    post.getCreatedAt()
+            )
+    );
   }
   //인기글
   @Transactional(readOnly = true)

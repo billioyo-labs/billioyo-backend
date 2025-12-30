@@ -2,6 +2,7 @@ package com.itemrental.rentalService.domain.rental.entity;
 
 
 import com.itemrental.rentalService.domain.user.entity.User;
+import com.itemrental.rentalService.global.utils.Position;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -29,6 +30,9 @@ public class Post {
 
     @Getter @Setter @Column(nullable = false)
     private String location;
+
+    @Getter @Setter @Column(nullable = false) @Embedded
+    private Position position;
 
     @Getter @Setter @Column(nullable = false)
     private boolean status = true;

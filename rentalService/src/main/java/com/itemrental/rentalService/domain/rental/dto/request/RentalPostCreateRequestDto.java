@@ -13,6 +13,8 @@ public class RentalPostCreateRequestDto {
   private String description;
   private Long price;
   private String location;
+  private Double latitude;
+  private Double longitude;
   private String category;
   private List<String> imageUrls;
 }

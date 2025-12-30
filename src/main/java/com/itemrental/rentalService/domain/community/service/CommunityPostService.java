@@ -1,6 +1,7 @@
 package com.itemrental.rentalService.domain.community.service;
 
 import com.itemrental.rentalService.domain.community.dto.request.CommunityPostCreateRequestDto;
+import com.itemrental.rentalService.domain.community.dto.request.CommunityPostSearchRequestDto;
 import com.itemrental.rentalService.domain.community.dto.request.CommunityPostUpdateRequestDto;
 import com.itemrental.rentalService.domain.community.dto.response.CommentResponseDto;
 import com.itemrental.rentalService.domain.community.dto.response.CommunityPostCreateResponseDto;
@@ -141,20 +142,31 @@ public class CommunityPostService {
   }
 
   @Transactional(readOnly = true)
-  public Page<CommunityPostListResponseDto> getPostList(Pageable pageable) {
-    Page<CommunityPost> page = repository.findAll(pageable);
+  public Page<CommunityPostListResponseDto> getPostList(Pageable pageable, CommunityPostSearchRequestDto searchDto) {
+    Page<CommunityPost> page;
 
-    return page.map(post->
-      new CommunityPostListResponseDto(
-      post.getId(),
-      post.getCategory(),
-      post.getTitle(),
-      post.getUser().getUsername(),
-      post.getLikeCount(),
-      post.getViewCount(),
-      post.getCommentCount(),
-      post.getCreatedAt(),
-      post.getImages().isEmpty() ? null : post.getImages().get(0).getImageUrl()
+    if (searchDto.getLat() != null && searchDto.getLng() != null && searchDto.getDistance() != null) {
+      page = repository.findWithinDistance(
+              searchDto.getLat(),
+              searchDto.getLng(),
+              searchDto.getDistance(),
+              pageable
+      );
+    } else {
+      page = repository.findAll(pageable);
+    }
+
+    return page.map(post -> new CommunityPostListResponseDto(
+            post.getId(),
+            post.getCategory(),
+            post.getTitle(),
+            post.getUser().getUsername(),
+            post.getLikeCount(),
+            post.getViewCount(),
+            post.getCommentCount(),
+            post.getCreatedAt(),
+            (post.getImages() == null || post.getImages().isEmpty())
+                    ? null : post.getImages().get(0).getImageUrl()
     ));
   }
 

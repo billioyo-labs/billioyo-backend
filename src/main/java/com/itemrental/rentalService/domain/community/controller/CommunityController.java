@@ -2,6 +2,7 @@ package com.itemrental.rentalService.domain.community.controller;
 
 import com.itemrental.rentalService.domain.community.dto.request.CommentCreateRequestDto;
 import com.itemrental.rentalService.domain.community.dto.request.CommunityPostCreateRequestDto;
+import com.itemrental.rentalService.domain.community.dto.request.CommunityPostSearchRequestDto;
 import com.itemrental.rentalService.domain.community.dto.request.CommunityPostUpdateRequestDto;
 import com.itemrental.rentalService.domain.community.dto.response.CommunityPostCreateResponseDto;
 import com.itemrental.rentalService.domain.community.dto.response.CommunityPostListResponseDto;
@@ -71,9 +72,10 @@ public class CommunityController {
 
   @GetMapping("/posts")
   public ResponseEntity<Page<CommunityPostListResponseDto>> getPosts(
+          @ModelAttribute CommunityPostSearchRequestDto searchDto,
       @PageableDefault(size = 10, sort = "createdAt",direction = Sort.Direction.DESC) Pageable pageable
   ){
-    return ResponseEntity.ok(postService.getPostList(pageable));
+    return ResponseEntity.ok(postService.getPostList(pageable, searchDto));
   }
 
   @PostMapping("/comment/{postId}")

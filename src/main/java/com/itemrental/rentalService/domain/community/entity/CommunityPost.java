@@ -2,6 +2,7 @@
 package com.itemrental.rentalService.domain.community.entity;
 
 import com.itemrental.rentalService.domain.user.entity.User;
+import com.itemrental.rentalService.global.utils.Position;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -34,6 +35,17 @@ public class CommunityPost {
   @Setter
   @Column(nullable = false, columnDefinition = "TEXT")
   private String content;
+
+  @Getter
+  @Setter
+  @Column(nullable = false)
+  private String location;
+
+  @Getter
+  @Setter
+  @Column(nullable = false)
+  @Embedded
+  private Position position;
 
   @Getter
   @Column(nullable = false, updatable = false)

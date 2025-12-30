@@ -16,6 +16,8 @@ public class RentalPostReadResponseDto {
   private String description;
   private Long price;
   private String location;
+  private Double latitude;
+  private Double longitude;
   private boolean status;
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
   private LocalDateTime createdAt;

@@ -62,6 +62,16 @@ jwt:
 admin:
   signup-secret: ${ADMIN_SIGNUP_SECRET}
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "prometheus,health,info"
+  endpoint:
+    prometheus:
+      access: read_only
+    health:
+      show-details: always
 
 server:
   port: 8081

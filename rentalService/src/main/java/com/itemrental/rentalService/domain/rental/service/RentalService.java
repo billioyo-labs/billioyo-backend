@@ -13,6 +13,7 @@ import com.itemrental.rentalService.domain.rental.repository.PostImageRepository
 import com.itemrental.rentalService.domain.rental.repository.PostRepository;
 import com.itemrental.rentalService.domain.user.repository.UserRepository;
 import com.itemrental.rentalService.global.utils.Position;
+import com.itemrental.rentalService.global.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,12 +32,12 @@ public class RentalService {
   private final PostRepository postRepository;
   private final UserRepository userRepository;
   private final PostImageRepository imageRepository;
-
+  private final SecurityUtil securityUtil;
 
   //대여 게시글 생성
   @Transactional
   public Long createRentalPost(RentalPostCreateRequestDto dto) {
-    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    String username = securityUtil.getCurrentUserEmail();
     User user = userRepository.findByEmail(username)
             .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다."));
 
@@ -118,7 +119,7 @@ public class RentalService {
   //게시글 수정
   @Transactional
   public void updateRentalPost(Long postId, RentalPostUpdateRequestDto dto) {
-    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    String username = securityUtil.getCurrentUserEmail();
 
     User currentUser = userRepository.findByEmail(username)
         .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다"));
@@ -152,7 +153,7 @@ public class RentalService {
   //게시글 삭제
   @Transactional
   public void deleteRentalPost(Long postId) {
-    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    String username = securityUtil.getCurrentUserEmail();
     User currentUser = userRepository.findByEmail(username).get();
 
     Post post = postRepository.findById(postId)

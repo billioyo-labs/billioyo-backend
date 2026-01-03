@@ -8,6 +8,7 @@ import com.itemrental.rentalService.domain.community.repository.CommunityComment
 import com.itemrental.rentalService.domain.community.repository.CommunityPostRepository;
 import com.itemrental.rentalService.domain.user.entity.User;
 import com.itemrental.rentalService.domain.user.repository.UserRepository;
+import com.itemrental.rentalService.global.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -19,13 +20,14 @@ public class CommunityCommentService {
   private final UserRepository userRepository;
   private final CommunityCommentRepository commentRepo;
   private final CommunityPostRepository postRepo;
+  private final SecurityUtil securityUtil;
 
 
 
   //커뮤니티 댓글 생성
   @Transactional
   public void createCommunityComment(CommentCreateRequestDto dto, Long postId) {
-    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    String username = securityUtil.getCurrentUserEmail();
     User user = userRepository.findByEmail(username).get();
 
     CommunityPost post = postRepo.findById(postId).get();

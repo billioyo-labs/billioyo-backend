@@ -12,6 +12,7 @@ import com.itemrental.rentalService.domain.community.repository.CommunityPostRep
 import com.itemrental.rentalService.domain.report.repository.ReportRepository;
 import com.itemrental.rentalService.domain.user.entity.User;
 import com.itemrental.rentalService.domain.user.repository.UserRepository;
+import com.itemrental.rentalService.global.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -28,12 +29,13 @@ public class CommunityPostInteractionService {
   private final CommunityPostLikeRepository likeRepo;
   private final CommunityPostBookmarkRepository bmRepo;
   private final ReportRepository postReportRepository;
+  private final SecurityUtil securityUtil;
 
 
   //게시글 좋아요
   @Transactional
   public int toggleLike(Long postId){
-    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    String username = securityUtil.getCurrentUserEmail();
     User user = userRepository.findByEmail(username)
         .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다"));
 
@@ -58,7 +60,7 @@ public class CommunityPostInteractionService {
   //게시글 북마크
   @Transactional
   public String toggleBookmark(Long postId){
-    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    String username = securityUtil.getCurrentUserEmail();
     User user = userRepository.findByEmail(username)
         .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다"));
 
@@ -82,7 +84,7 @@ public class CommunityPostInteractionService {
   // 좋아요한 게시글
   @Transactional(readOnly = true)
   public List<CommunityPostReadResponseDto> getLikedPosts() {
-    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    String username = securityUtil.getCurrentUserEmail();
     User user = userRepository.findByEmail(username)
         .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다"));
 
@@ -113,7 +115,7 @@ public class CommunityPostInteractionService {
   //북마크한 게시글
   @Transactional
   public List<CommunityPostReadResponseDto> getBmPosts(){
-    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    String username = securityUtil.getCurrentUserEmail();
     User user = userRepository.findByEmail(username)
       .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다"));
 

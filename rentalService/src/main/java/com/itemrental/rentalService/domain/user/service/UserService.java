@@ -11,6 +11,7 @@ import com.itemrental.rentalService.domain.user.entity.User;
 import com.itemrental.rentalService.global.exceptions.DuplicateUsernameException;
 import com.itemrental.rentalService.domain.report.repository.ReportRepository;
 import com.itemrental.rentalService.domain.user.repository.UserRepository;
+import com.itemrental.rentalService.global.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +32,7 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final SecurityUtil securityUtil;
 
 
     @Value("${admin.signup-secret}")
@@ -101,8 +103,8 @@ public class UserService {
 
     @Transactional
     public UpdateUserDto getProfile(){
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByUsername(username).get();
+        String username = securityUtil.getCurrentUserEmail();
+        User user = userRepository.findByEmail(username).get();
         return new UpdateUserDto(
             user.getEmail(),
             username,
@@ -141,8 +143,8 @@ public class UserService {
 
     //회원 삭제
     public String deleteUser(){
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByUsername(username).get();
+        String username = securityUtil.getCurrentUserEmail();
+        User user = userRepository.findByEmail(username).get();
 
         userRepository.delete(user);
 

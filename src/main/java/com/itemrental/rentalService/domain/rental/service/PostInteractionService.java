@@ -13,6 +13,7 @@ import com.itemrental.rentalService.domain.rental.repository.PostLikeRepository;
 import com.itemrental.rentalService.domain.rental.repository.PostRepository;
 import com.itemrental.rentalService.domain.rental.repository.PostReviewRepository;
 import com.itemrental.rentalService.domain.user.repository.UserRepository;
+import com.itemrental.rentalService.global.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,11 +29,12 @@ public class PostInteractionService {
   private final PostReviewRepository reviewRepository;
   private final PostBookmarkRepository bmRepo;
   private final PostLikeRepository likeRepo;
+  private final SecurityUtil securityUtil;
 
 
   @Transactional
   public void createPostReview(ReviewCreateRequestDto dto, Long postId){
-    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    String username = securityUtil.getCurrentUserEmail();
     User user = userRepository.findByEmail(username).get();
 
     Post post = postRepository.findById(postId).get();
@@ -62,7 +64,7 @@ public class PostInteractionService {
   }
   @Transactional
   public Page<RentalPostListResponseDto> getMyPosts(Pageable pageable) {
-    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    String username = securityUtil.getCurrentUserEmail();
     User user = userRepository.findByEmail(username).get();
 
     Page<Post> page = postRepository.findByUserId(user.getId(),pageable);
@@ -81,7 +83,7 @@ public class PostInteractionService {
   //게시글 좋아요
   @Transactional
   public Long toggleLike(Long postId){
-    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    String username = securityUtil.getCurrentUserEmail();
     User user = userRepository.findByEmail(username)
         .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다"));
 
@@ -106,7 +108,7 @@ public class PostInteractionService {
   //게시글 북마크
   @Transactional
   public String toggleBookmark(Long postId){
-    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    String username = securityUtil.getCurrentUserEmail();
     User user = userRepository.findByEmail(username)
         .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다"));
 

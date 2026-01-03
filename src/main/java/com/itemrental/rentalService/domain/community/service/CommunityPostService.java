@@ -13,6 +13,7 @@ import com.itemrental.rentalService.domain.community.repository.CommunityPostIma
 import com.itemrental.rentalService.domain.community.repository.CommunityPostRepository;
 import com.itemrental.rentalService.domain.user.entity.User;
 import com.itemrental.rentalService.domain.user.repository.UserRepository;
+import com.itemrental.rentalService.global.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,11 +32,12 @@ public class CommunityPostService {
   private final CommunityPostRepository repository;
   private final UserRepository userRepository;
   private final CommunityPostImageRepository imageRepository;
+  private final SecurityUtil securityUtil;
 
   //게시글 생성
   @Transactional
   public CommunityPostCreateResponseDto createCommunityPost(CommunityPostCreateRequestDto dto) {
-    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    String username = securityUtil.getCurrentUserEmail();
     User user = userRepository.findByEmail(username).get();
 
     CommunityPost post = new CommunityPost();
@@ -95,7 +97,7 @@ public class CommunityPostService {
   //게시글 수정
   @Transactional
   public void updateCommunityPost(Long postId, CommunityPostUpdateRequestDto dto) {
-    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    String username = securityUtil.getCurrentUserEmail();
 
     User currentUser = userRepository.findByEmail(username)
         .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다"));
@@ -126,7 +128,7 @@ public class CommunityPostService {
   //게시글 삭제
   @Transactional
   public void deleteCommunityPost(Long postId) {
-    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    String username = securityUtil.getCurrentUserEmail();
     User currentUser = userRepository.findByEmail(username)
         .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다"));
 

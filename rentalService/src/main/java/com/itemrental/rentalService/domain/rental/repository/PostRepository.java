@@ -14,8 +14,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
   Page<Post> findTop5ByStatusTrueOrderByLikeCountDescViewCountDescCreatedAtDesc(Pageable pageable);
 
   @Query(value = "SELECT * FROM post p " +
-          "WHERE ST_Distance_Sphere(POINT(:currentLng, :currentLat), POINT(p.longitude, p.latitude)) <= :distance " +
-          "ORDER BY ST_Distance_Sphere(POINT(:currentLng, :currentLat), POINT(p.longitude, p.latitude)) ASC",
+          "WHERE ST_Distance_Sphere(POINT(:currentLng, :currentLat), POINT(p.longitude, p.latitude)) <= :distance",
           countQuery = "SELECT count(*) FROM post p WHERE ST_Distance_Sphere(POINT(:currentLng, :currentLat), POINT(p.longitude, p.latitude)) <= :distance",
           nativeQuery = true)
   Page<Post> findWithinDistance(@Param("currentLat") Double lat,

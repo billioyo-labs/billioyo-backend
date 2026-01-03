@@ -1,16 +1,15 @@
 package com.itemrental.rentalService.domain.chat.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
 @Entity
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ChattingRoom {
@@ -20,6 +19,7 @@ public class ChattingRoom {
     @Column(name = "chattingRoomId", nullable = false, updatable = false, unique = true)
     private Long id;
     private String title;
+    @CreatedDate
     private LocalDateTime created_at;
 
     @OneToMany(mappedBy = "chattingRoom")

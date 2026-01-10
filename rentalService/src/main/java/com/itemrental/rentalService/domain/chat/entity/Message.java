@@ -2,10 +2,8 @@ package com.itemrental.rentalService.domain.chat.entity;
 
 import com.itemrental.rentalService.domain.user.entity.User;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 
@@ -13,12 +11,14 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Getter
 public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "messageId", updatable = false, nullable = false, unique = true)
     private Long id;
     private String content;
+    @CreatedDate
     private LocalDateTime sendTime;
 
     @ManyToOne(fetch = FetchType.LAZY)

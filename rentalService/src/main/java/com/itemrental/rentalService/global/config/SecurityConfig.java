@@ -61,6 +61,7 @@ public class SecurityConfig {
                 .requestMatchers("/login", "/", "/post/list", "/post/search", "/user/**", "/auth/**", "/mail/**", "/error", "/actuator/**").permitAll() // 누구나 접근가능
                 .requestMatchers(HttpMethod.GET, "/community/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
+                .requestMatchers("/ws-stomp/**").permitAll()
                 .requestMatchers("/reissue").permitAll()
                 // 관리자 전용
                 .requestMatchers("/admin/**").hasRole("ADMIN")

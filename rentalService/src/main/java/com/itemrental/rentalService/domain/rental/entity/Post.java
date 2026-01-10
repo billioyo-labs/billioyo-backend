@@ -6,6 +6,7 @@ import com.itemrental.rentalService.global.utils.Position;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -13,6 +14,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "rental_post")
 public class Post {
 
     @Id @Getter @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -69,17 +71,22 @@ public class Post {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     @Getter
-    private List<Review> reviews;
+    private List<Review> reviews = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     @Getter
-    private List<Image> images;
+    private List<Image> images = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     @Getter
-    private List<RentalPostBookmark> bookmarks;
+    private List<RentalPostBookmark> bookmarks = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     @Getter
-    private List<RentalPostLike> likes;
+    private List<RentalPostLike> likes = new ArrayList<>();
+
+    public void addImage(Image image) {
+        this.images.add(image);
+        image.setPost(this);
+    }
 }

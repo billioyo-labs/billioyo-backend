@@ -58,11 +58,11 @@ public class RentalService {
     if (dto.getImageUrls() != null) {
       for (String imageUrl : dto.getImageUrls()) {
         Image image = new Image();
-        image.setPost(post);
         image.setImageUrl(imageUrl);
-        imageRepository.save(image);
+        post.addImage(image);
       }
     }
+    postRepository.save(post);
     return post.getId();
   }
 

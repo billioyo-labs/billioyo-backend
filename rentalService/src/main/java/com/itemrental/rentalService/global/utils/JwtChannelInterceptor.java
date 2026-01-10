@@ -1,6 +1,7 @@
 package com.itemrental.rentalService.global.utils;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -10,29 +11,26 @@ import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
+
 @RequiredArgsConstructor
 @Component
+@Slf4j
 public class JwtChannelInterceptor implements ChannelInterceptor {
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtAuthenticationUtil jwtAuthenticationUtil;
 
     @Override
-    public Message<?> preSend(Message<?> message, MessageChannel channel){
+    public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
-        if(StompCommand.CONNECT.equals(accessor.getCommand())){
-            String token = accessor.getFirstNativeHeader("Authorization");
 
-            if(token != null && token.startsWith("Bearer ")){
-                String jwt = token.substring(7);
-                if(jwtTokenProvider.validateToken(token)){
-                    String username = jwtTokenProvider.getUserName(token);
-                    if(username != null){
-                        Authentication authentication = jwtAuthenticationUtil.createAuthentication(username);
+        if (StompCommand.CONNECT.equals(accessor.getCommand())) {
+            Map<String, Object> sessionAttributes = accessor.getSessionAttributes();
+            if (sessionAttributes != null && sessionAttributes.containsKey("principal")) {
+                Authentication auth = (Authentication) sessionAttributes.get("principal");
 
-                        accessor.setUser(authentication);
-                    }
-                }
-
+                accessor.setUser(auth);
+                log.info("STOMP User set: {}", auth.getName());
             }
         }
         return message;

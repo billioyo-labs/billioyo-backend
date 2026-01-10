@@ -1,5 +1,7 @@
 package com.itemrental.rentalService.domain.user.controller;
 
+import com.itemrental.rentalService.domain.rental.dto.response.RentalPostListResponseDto;
+import com.itemrental.rentalService.domain.rental.entity.Post;
 import com.itemrental.rentalService.domain.report.dto.ReportRequestDto;
 import com.itemrental.rentalService.domain.user.dto.AdminSignUpRequestDto;
 import com.itemrental.rentalService.domain.user.dto.*;
@@ -8,8 +10,14 @@ import com.itemrental.rentalService.global.response.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -46,6 +54,32 @@ public class UserController {
     public ResponseEntity<ApiResponse<Void>> updateUser(@Valid @RequestBody UpdateUserDto updateUserDto) {
         String message = userService.updateUser(updateUserDto);
         return ResponseEntity.ok(ApiResponse.success(message));
+    }
+
+    @GetMapping("/my-products")
+    public ResponseEntity<ApiResponse<Page<RentalPostListResponseDto>>> getMyProducts(
+            @PageableDefault(size = 10) Pageable pageable) {
+
+        Page<RentalPostListResponseDto> myProducts = userService.getMyProducts(pageable);
+        return ResponseEntity.ok(ApiResponse.success("내 상품 목록 조회 성공", myProducts));
+    }
+
+    @GetMapping("/my-likes")
+    public ResponseEntity<ApiResponse<Page<RentalPostListResponseDto>>> getMyLikedPosts(
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        // userService에서 현재 로그인한 유저 ID를 추출하여 조회 로직 수행
+        Page<RentalPostListResponseDto> likedPosts = userService.getMyLikedPosts(pageable);
+        return ResponseEntity.ok(ApiResponse.success("내 찜 목록 조회 성공", likedPosts));
+    }
+
+    // 내 북마크 목록 조회
+    @GetMapping("/my-bookmarks")
+    public ResponseEntity<ApiResponse<Page<RentalPostListResponseDto>>> getMyBookmarkedPosts(
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        Page<RentalPostListResponseDto> bookmarkedPosts = userService.getMyBookmarkedPosts(pageable);
+        return ResponseEntity.ok(ApiResponse.success("내 북마크 목록 조회 성공", bookmarkedPosts));
     }
 
     //회원정보 삭제

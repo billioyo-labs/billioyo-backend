@@ -1,6 +1,8 @@
 package com.itemrental.rentalService.domain.rental.repository;
 
+import aj.org.objectweb.asm.commons.Remapper;
 import com.itemrental.rentalService.domain.rental.entity.Post;
+import com.itemrental.rentalService.domain.user.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,4 +23,10 @@ public interface PostRepository extends JpaRepository<Post, Long> {
                                 @Param("currentLng") Double lng,
                                 @Param("distance") Double distance,
                                 Pageable pageable);
+
+  @Query("SELECT p FROM Post p JOIN p.likes l WHERE l.user.id = :userId")
+  Page<Post> findByLikesUserId(@Param("userId") Long userId, Pageable pageable);
+
+  @Query("SELECT p FROM Post p JOIN p.bookmarks b WHERE b.user.id = :userId")
+  Page<Post> findByBookmarksUserId(@Param("userId") Long userId, Pageable pageable);
 }

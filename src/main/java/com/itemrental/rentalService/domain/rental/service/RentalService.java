@@ -1,6 +1,7 @@
 package com.itemrental.rentalService.domain.rental.service;
 
 import com.itemrental.rentalService.domain.rental.dto.request.RentalPostSearchRequestDto;
+import com.itemrental.rentalService.domain.rental.repository.PostLikeRepository;
 import com.itemrental.rentalService.domain.user.dto.UserSummary;
 import com.itemrental.rentalService.domain.user.entity.User;
 import com.itemrental.rentalService.domain.rental.dto.request.RentalPostCreateRequestDto;
@@ -23,6 +24,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 
 
 @Service
@@ -32,6 +34,7 @@ public class RentalService {
   private final PostRepository postRepository;
   private final UserRepository userRepository;
   private final PostImageRepository imageRepository;
+  private final PostLikeRepository likeRepository;
   private final SecurityUtil securityUtil;
 
   //대여 게시글 생성
@@ -70,32 +73,35 @@ public class RentalService {
   @Transactional
   public RentalPostReadResponseDto getRentalPost(Long postId) {
     Post post = postRepository.findById(postId)
-        .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
+            .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
 
     post.setViewCount(post.getViewCount() + 1);
+
+    boolean isLiked = false;
+    String currentUserEmail = securityUtil.getCurrentUserEmail();
+
+    if (currentUserEmail != null && !currentUserEmail.equals("anonymousUser")) {
+      Optional<User> currentUser = userRepository.findByEmail(currentUserEmail);
+      if (currentUser.isPresent()) {
+        isLiked = likeRepository.existsByUserAndPost(currentUser.get(), post);
+      }
+    }
 
     User seller = post.getUser();
     UserSummary sellerSummary = null;
 
     if (seller != null) {
       sellerSummary = UserSummary.builder()
-          .id(seller.getId())
-          .email(seller.getEmail())
-          .name(seller.getUsername())
-          .nickname(seller.getNickName())
-          .build();
+              .id(seller.getId())
+              .email(seller.getEmail())
+              .name(seller.getUsername())
+              .nickname(seller.getNickName())
+              .build();
     }
 
     Double lat = (post.getPosition() != null) ? post.getPosition().getLatitude() : null;
     Double lng = (post.getPosition() != null) ? post.getPosition().getLongitude() : null;
 
-//    List<CommentResponseDto> comments = post.getComments().stream().map(
-//        comment -> new CommentResponseDto(
-//            comment.getId(),
-//            comment.getUser().getUsername(),
-//            comment.getComment(),
-//            comment.getCreatedAt()
-//        )).toList();
     return new RentalPostReadResponseDto(
             post.getId(),
             post.getTitle(),
@@ -112,6 +118,8 @@ public class RentalService {
             post.getImages(),
             post.getReviewsCount(),
             post.getRating(),
+            post.getLikeCount(),
+            isLiked,
             sellerSummary
     );
   }

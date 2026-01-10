@@ -2,6 +2,8 @@ package com.itemrental.rentalService.domain.user.service;
 
 
 import com.itemrental.rentalService.domain.community.repository.CommunityPostRepository;
+import com.itemrental.rentalService.domain.rental.dto.response.RentalPostListResponseDto;
+import com.itemrental.rentalService.domain.rental.entity.Post;
 import com.itemrental.rentalService.domain.rental.repository.PostRepository;
 import com.itemrental.rentalService.domain.report.dto.ReportRequestDto;
 import com.itemrental.rentalService.domain.user.dto.SignUpDto;
@@ -15,6 +17,8 @@ import com.itemrental.rentalService.global.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -31,6 +35,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final PostRepository postRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final SecurityUtil securityUtil;
 
@@ -74,8 +79,57 @@ public class UserService {
         return "관리자 정보 저장 완료";
     }
 
+    @Transactional(readOnly = true)
+    public Page<RentalPostListResponseDto> getMyProducts(Pageable pageable) {
+        String email = securityUtil.getCurrentUserEmail();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
+        Page<Post> posts = postRepository.findByUserId(user.getId(), pageable);
 
+        return posts.map(post -> new RentalPostListResponseDto(
+                post.getId(),
+                post.getUser().getNickName(),
+                post.getTitle(),
+                post.getPrice(),
+                post.isStatus(),
+                post.getCreatedAt()
+        ));
+    }
+
+    @Transactional(readOnly = true)
+    public Page<RentalPostListResponseDto> getMyLikedPosts(Pageable pageable) {
+        String email = securityUtil.getCurrentUserEmail();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+
+        return postRepository.findByLikesUserId(user.getId(), pageable)
+                .map(post -> new RentalPostListResponseDto(
+                        post.getId(),
+                        post.getUser().getNickName(),
+                        post.getTitle(),
+                        post.getPrice(),
+                        post.isStatus(),
+                        post.getCreatedAt()
+                ));
+    }
+
+    @Transactional(readOnly = true)
+    public Page<RentalPostListResponseDto> getMyBookmarkedPosts(Pageable pageable) {
+        String email = securityUtil.getCurrentUserEmail();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+
+        return postRepository.findByBookmarksUserId(user.getId(), pageable)
+                .map(post -> new RentalPostListResponseDto(
+                        post.getId(),
+                        post.getUser().getNickName(),
+                        post.getTitle(),
+                        post.getPrice(),
+                        post.isStatus(),
+                        post.getCreatedAt()
+                ));
+    }
 
     public void duplicateCheck(String nickName){
         if(userRepository.existsByNickName(nickName)){

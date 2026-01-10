@@ -1,8 +1,6 @@
 package com.itemrental.rentalService.domain.user.controller;
 
 import com.itemrental.rentalService.domain.rental.dto.response.RentalPostListResponseDto;
-import com.itemrental.rentalService.domain.rental.entity.Post;
-import com.itemrental.rentalService.domain.report.dto.ReportRequestDto;
 import com.itemrental.rentalService.domain.user.dto.AdminSignUpRequestDto;
 import com.itemrental.rentalService.domain.user.dto.*;
 import com.itemrental.rentalService.domain.user.service.UserService;
@@ -16,8 +14,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor

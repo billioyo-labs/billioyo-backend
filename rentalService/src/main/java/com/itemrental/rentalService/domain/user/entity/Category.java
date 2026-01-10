@@ -1,6 +1,6 @@
 package com.itemrental.rentalService.domain.user.entity;
 
-import com.itemrental.rentalService.domain.rental.entity.Post;
+import com.itemrental.rentalService.domain.rental.entity.RentalPost;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,7 +20,7 @@ public class Category {
     private String categoryName;
 
     @OneToMany(mappedBy = "category")
-    private List<Post> posts = new ArrayList<>();
+    private List<RentalPost> rentalPosts = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parentId")

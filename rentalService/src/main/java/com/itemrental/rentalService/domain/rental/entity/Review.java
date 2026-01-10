@@ -40,7 +40,7 @@ public class Review {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "post_id")
   @Getter @Setter
-  private Post post;
+  private RentalPost rentalPost;
 
   @PrePersist
   protected void onCreate() {

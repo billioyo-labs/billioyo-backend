@@ -1,17 +1,13 @@
 package com.itemrental.rentalService.domain.user.service;
 
 
-import com.itemrental.rentalService.domain.community.repository.CommunityPostRepository;
 import com.itemrental.rentalService.domain.rental.dto.response.RentalPostListResponseDto;
-import com.itemrental.rentalService.domain.rental.entity.Post;
+import com.itemrental.rentalService.domain.rental.entity.RentalPost;
 import com.itemrental.rentalService.domain.rental.repository.PostRepository;
-import com.itemrental.rentalService.domain.report.dto.ReportRequestDto;
 import com.itemrental.rentalService.domain.user.dto.SignUpDto;
 import com.itemrental.rentalService.domain.user.dto.UpdateUserDto;
-import com.itemrental.rentalService.domain.report.entity.Report;
 import com.itemrental.rentalService.domain.user.entity.User;
 import com.itemrental.rentalService.global.exceptions.DuplicateUsernameException;
-import com.itemrental.rentalService.domain.report.repository.ReportRepository;
 import com.itemrental.rentalService.domain.user.repository.UserRepository;
 import com.itemrental.rentalService.global.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -85,7 +80,7 @@ public class UserService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
-        Page<Post> posts = postRepository.findByUserId(user.getId(), pageable);
+        Page<RentalPost> posts = postRepository.findByUserId(user.getId(), pageable);
 
         return posts.map(post -> new RentalPostListResponseDto(
                 post.getId(),

@@ -1,10 +1,10 @@
 package com.itemrental.rentalService.domain.rental.service;
 
 
+import com.itemrental.rentalService.domain.rental.entity.RentalPost;
 import com.itemrental.rentalService.domain.user.entity.User;
 import com.itemrental.rentalService.domain.rental.dto.response.RentalPostListResponseDto;
 import com.itemrental.rentalService.domain.rental.dto.request.ReviewCreateRequestDto;
-import com.itemrental.rentalService.domain.rental.entity.Post;
 import com.itemrental.rentalService.domain.rental.entity.RentalPostBookmark;
 import com.itemrental.rentalService.domain.rental.entity.RentalPostLike;
 import com.itemrental.rentalService.domain.rental.entity.Review;
@@ -17,7 +17,6 @@ import com.itemrental.rentalService.global.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,13 +36,13 @@ public class PostInteractionService {
     String username = securityUtil.getCurrentUserEmail();
     User user = userRepository.findByEmail(username).get();
 
-    Post post = postRepository.findById(postId).get();
+    RentalPost rentalPost = postRepository.findById(postId).get();
 
     Review review = new Review();
     review.setContent(dto.getContent());
     review.setRating(dto.getRating());
     review.setUser(user);
-    review.setPost(post);
+    review.setRentalPost(rentalPost);
 
     reviewRepository.save(review);
   }
@@ -51,7 +50,7 @@ public class PostInteractionService {
   //같은 seller 상품 조회
   @Transactional(readOnly = true)
   public Page<RentalPostListResponseDto> getSellerPosts(Pageable pageable, Long userId) {
-    Page<Post> page = postRepository.findByUserId(userId, pageable);
+    Page<RentalPost> page = postRepository.findByUserId(userId, pageable);
     return page.map(post->
         new RentalPostListResponseDto(
             post.getId(),
@@ -67,7 +66,7 @@ public class PostInteractionService {
     String username = securityUtil.getCurrentUserEmail();
     User user = userRepository.findByEmail(username).get();
 
-    Page<Post> page = postRepository.findByUserId(user.getId(),pageable);
+    Page<RentalPost> page = postRepository.findByUserId(user.getId(),pageable);
 
     return page.map(post->
         new RentalPostListResponseDto(
@@ -87,22 +86,22 @@ public class PostInteractionService {
     User user = userRepository.findByEmail(username)
         .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다"));
 
-    Post post = postRepository.findById(postId)
+    RentalPost rentalPost = postRepository.findById(postId)
         .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
     ;
-    if (likeRepo.existsByUser_IdAndPost_Id(user.getId(), post.getId())) {
+    if (likeRepo.existsByUser_IdAndRentalPost_Id(user.getId(), rentalPost.getId())) {
       // 이미 좋아요 → 삭제
-      likeRepo.deleteByUser_IdAndPost_Id(user.getId(), post.getId());
-      post.setLikeCount(post.getLikeCount() - 1);
+      likeRepo.deleteByUser_IdAndRentalPost_Id(user.getId(), rentalPost.getId());
+      rentalPost.setLikeCount(rentalPost.getLikeCount() - 1);
     } else {
       // 없으니까 추가
       RentalPostLike postLike = new RentalPostLike();
       postLike.setUser(user);
-      postLike.setPost(post);
+      postLike.setRentalPost(rentalPost);
       likeRepo.save(postLike);
-      post.setLikeCount(post.getLikeCount() + 1);
+      rentalPost.setLikeCount(rentalPost.getLikeCount() + 1);
     }
-    return post.getLikeCount();
+    return rentalPost.getLikeCount();
   }
 
   //게시글 북마크
@@ -112,18 +111,18 @@ public class PostInteractionService {
     User user = userRepository.findByEmail(username)
         .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다"));
 
-    Post post = postRepository.findById(postId)
+    RentalPost rentalPost = postRepository.findById(postId)
         .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
     ;
-    if (bmRepo.existsByUser_IdAndPost_Id(user.getId(), post.getId())) {
+    if (bmRepo.existsByUser_IdAndRentalPost_Id(user.getId(), rentalPost.getId())) {
       // 이미 좋아요 → 삭제
-      bmRepo.deleteByUser_IdAndPost_Id(user.getId(), post.getId());
+      bmRepo.deleteByUser_IdAndRentalPost_Id(user.getId(), rentalPost.getId());
       return "북마크 취소";
     } else {
       // 없으니까 추가
       RentalPostBookmark postBm = new RentalPostBookmark();
       postBm.setUser(user);
-      postBm.setPost(post);
+      postBm.setRentalPost(rentalPost);
       bmRepo.save(postBm);
       return "북마크";
     }

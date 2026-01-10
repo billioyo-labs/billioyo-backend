@@ -15,10 +15,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "rental_post")
-public class Post {
+public class RentalPost {
 
     @Id @Getter @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "postId", nullable = false, updatable = false, unique = true)
+    @Column(name = "post_id", nullable = false, updatable = false, unique = true)
     private Long id;
 
     @Getter @Setter @Column(nullable = false)
@@ -69,24 +69,24 @@ public class Post {
         this.createdAt = LocalDateTime.now();
     }
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "rentalPost", cascade = CascadeType.ALL, orphanRemoval = true)
     @Getter
     private List<Review> reviews = new ArrayList<>();
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "rentalPost", cascade = CascadeType.ALL, orphanRemoval = true)
     @Getter
     private List<Image> images = new ArrayList<>();
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "rentalPost", cascade = CascadeType.ALL, orphanRemoval = true)
     @Getter
     private List<RentalPostBookmark> bookmarks = new ArrayList<>();
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "rentalPost", cascade = CascadeType.ALL, orphanRemoval = true)
     @Getter
     private List<RentalPostLike> likes = new ArrayList<>();
 
     public void addImage(Image image) {
         this.images.add(image);
-        image.setPost(this);
+        image.setRentalPost(this);
     }
 }

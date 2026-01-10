@@ -7,9 +7,9 @@ import com.itemrental.rentalService.domain.community.entity.CommunityPostBookmar
 import com.itemrental.rentalService.domain.community.entity.CommunityPostLike;
 import com.itemrental.rentalService.domain.notification.Notification;
 import com.itemrental.rentalService.domain.order.entity.Order;
+import com.itemrental.rentalService.domain.rental.entity.RentalPost;
 import com.itemrental.rentalService.domain.report.entity.Report;
 import com.itemrental.rentalService.domain.user.dto.LoginSuccessDto;
-import com.itemrental.rentalService.domain.rental.entity.Post;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -75,7 +75,7 @@ public class User implements UserDetails {
     private List<Message> messages;
 
     @OneToMany(mappedBy = "user")
-    private List<Post> posts;
+    private List<RentalPost> rentalPosts;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<CommunityPost> communityPosts;

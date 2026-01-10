@@ -38,7 +38,7 @@ public class RentalPostLike {
   @JoinColumn(name = "post_id")
   @Getter
   @Setter
-  private Post post;
+  private RentalPost rentalPost;
 
   @Getter
   @Column(nullable = false, updatable = false)

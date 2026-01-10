@@ -1,6 +1,7 @@
 package com.itemrental.rentalService.domain.rental.service;
 
 import com.itemrental.rentalService.domain.rental.dto.request.RentalPostSearchRequestDto;
+import com.itemrental.rentalService.domain.rental.entity.RentalPost;
 import com.itemrental.rentalService.domain.rental.repository.PostLikeRepository;
 import com.itemrental.rentalService.domain.user.dto.UserSummary;
 import com.itemrental.rentalService.domain.user.entity.User;
@@ -9,7 +10,6 @@ import com.itemrental.rentalService.domain.rental.dto.response.RentalPostListRes
 import com.itemrental.rentalService.domain.rental.dto.response.RentalPostReadResponseDto;
 import com.itemrental.rentalService.domain.rental.dto.request.RentalPostUpdateRequestDto;
 import com.itemrental.rentalService.domain.rental.entity.Image;
-import com.itemrental.rentalService.domain.rental.entity.Post;
 import com.itemrental.rentalService.domain.rental.repository.PostImageRepository;
 import com.itemrental.rentalService.domain.rental.repository.PostRepository;
 import com.itemrental.rentalService.domain.user.repository.UserRepository;
@@ -19,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,38 +43,38 @@ public class RentalService {
     User user = userRepository.findByEmail(username)
             .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다."));
 
-    Post post = new Post();
-    post.setUser(user);
-    post.setTitle(dto.getTitle());
-    post.setDescription(dto.getDescription());
-    post.setPrice(dto.getPrice());
-    post.setLocation(dto.getLocation());
-    post.setCategory(dto.getCategory());
+    RentalPost rentalPost = new RentalPost();
+    rentalPost.setUser(user);
+    rentalPost.setTitle(dto.getTitle());
+    rentalPost.setDescription(dto.getDescription());
+    rentalPost.setPrice(dto.getPrice());
+    rentalPost.setLocation(dto.getLocation());
+    rentalPost.setCategory(dto.getCategory());
 
     if (dto.getLatitude() != null && dto.getLongitude() != null) {
-      post.setPosition(new Position(dto.getLatitude(), dto.getLongitude()));
+      rentalPost.setPosition(new Position(dto.getLatitude(), dto.getLongitude()));
     }
 
-    postRepository.save(post);
+    postRepository.save(rentalPost);
 
     if (dto.getImageUrls() != null) {
       for (String imageUrl : dto.getImageUrls()) {
         Image image = new Image();
         image.setImageUrl(imageUrl);
-        post.addImage(image);
+        rentalPost.addImage(image);
       }
     }
-    postRepository.save(post);
-    return post.getId();
+    postRepository.save(rentalPost);
+    return rentalPost.getId();
   }
 
   //대여 게시글 상세 조회
   @Transactional
   public RentalPostReadResponseDto getRentalPost(Long postId) {
-    Post post = postRepository.findById(postId)
+    RentalPost rentalPost = postRepository.findById(postId)
             .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
 
-    post.setViewCount(post.getViewCount() + 1);
+    rentalPost.setViewCount(rentalPost.getViewCount() + 1);
 
     boolean isLiked = false;
     String currentUserEmail = securityUtil.getCurrentUserEmail();
@@ -83,11 +82,11 @@ public class RentalService {
     if (currentUserEmail != null && !currentUserEmail.equals("anonymousUser")) {
       Optional<User> currentUser = userRepository.findByEmail(currentUserEmail);
       if (currentUser.isPresent()) {
-        isLiked = likeRepository.existsByUserAndPost(currentUser.get(), post);
+        isLiked = likeRepository.existsByUserAndRentalPost(currentUser.get(), rentalPost);
       }
     }
 
-    User seller = post.getUser();
+    User seller = rentalPost.getUser();
     UserSummary sellerSummary = null;
 
     if (seller != null) {
@@ -99,26 +98,26 @@ public class RentalService {
               .build();
     }
 
-    Double lat = (post.getPosition() != null) ? post.getPosition().getLatitude() : null;
-    Double lng = (post.getPosition() != null) ? post.getPosition().getLongitude() : null;
+    Double lat = (rentalPost.getPosition() != null) ? rentalPost.getPosition().getLatitude() : null;
+    Double lng = (rentalPost.getPosition() != null) ? rentalPost.getPosition().getLongitude() : null;
 
     return new RentalPostReadResponseDto(
-            post.getId(),
-            post.getTitle(),
-            post.getDescription(),
-            post.getPrice(),
-            post.getLocation(),
+            rentalPost.getId(),
+            rentalPost.getTitle(),
+            rentalPost.getDescription(),
+            rentalPost.getPrice(),
+            rentalPost.getLocation(),
             lat,
             lng,
-            post.isStatus(),
-            post.getCreatedAt(),
-            post.getViewCount(),
-            post.getUser().getUsername(),
-            post.getCategory(),
-            post.getImages(),
-            post.getReviewsCount(),
-            post.getRating(),
-            post.getLikeCount(),
+            rentalPost.isStatus(),
+            rentalPost.getCreatedAt(),
+            rentalPost.getViewCount(),
+            rentalPost.getUser().getUsername(),
+            rentalPost.getCategory(),
+            rentalPost.getImages(),
+            rentalPost.getReviewsCount(),
+            rentalPost.getRating(),
+            rentalPost.getLikeCount(),
             isLiked,
             sellerSummary
     );
@@ -132,20 +131,20 @@ public class RentalService {
     User currentUser = userRepository.findByEmail(username)
         .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다"));
 
-    Post post = postRepository.findById(postId)
+    RentalPost rentalPost = postRepository.findById(postId)
         .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
 
-    User postUser = post.getUser();
+    User postUser = rentalPost.getUser();
 
     if (!postUser.getId().equals(currentUser.getId())) {
       throw new AccessDeniedException("작성자만 수정할 수 있습니다.");
     }
 
-    post.setTitle(dto.getTitle());
-    post.setDescription(dto.getDescription());
-    post.setPrice(dto.getPrice());
-    post.setLocation(dto.getLocation());
-    post.setCategory(dto.getCategory());
+    rentalPost.setTitle(dto.getTitle());
+    rentalPost.setDescription(dto.getDescription());
+    rentalPost.setPrice(dto.getPrice());
+    rentalPost.setLocation(dto.getLocation());
+    rentalPost.setCategory(dto.getCategory());
 
 
 //    post.getImages().clear();
@@ -164,21 +163,21 @@ public class RentalService {
     String username = securityUtil.getCurrentUserEmail();
     User currentUser = userRepository.findByEmail(username).get();
 
-    Post post = postRepository.findById(postId)
+    RentalPost rentalPost = postRepository.findById(postId)
         .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
     ;
-    User postUser = post.getUser();
+    User postUser = rentalPost.getUser();
 
     if (!postUser.getId().equals(currentUser.getId())) {
       throw new AccessDeniedException("작성자만 삭제할 수 있습니다.");
     }
-    postRepository.delete(post);
+    postRepository.delete(rentalPost);
   }
 
   //상품목록 조회
   @Transactional(readOnly = true)
   public Page<RentalPostListResponseDto> getPosts(Pageable pageable, RentalPostSearchRequestDto searchDto) {
-    Page<Post> page;
+    Page<RentalPost> page;
 
     if (searchDto.getLat() != null && searchDto.getLng() != null && searchDto.getDistance() != null) {
       page = postRepository.findWithinDistance(
@@ -205,7 +204,7 @@ public class RentalService {
   //인기글
   @Transactional(readOnly = true)
   public Page<RentalPostListResponseDto> getPopularPosts(Pageable pageable) {
-    Page<Post> page = postRepository.findTop5ByStatusTrueOrderByLikeCountDescViewCountDescCreatedAtDesc(pageable);
+    Page<RentalPost> page = postRepository.findTop5ByStatusTrueOrderByLikeCountDescViewCountDescCreatedAtDesc(pageable);
 
     return page.map(post ->
         new RentalPostListResponseDto(

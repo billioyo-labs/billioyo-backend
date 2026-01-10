@@ -4,7 +4,7 @@ import com.itemrental.rentalService.domain.order.dto.OrderCreateRequestDto;
 import com.itemrental.rentalService.domain.order.dto.OrderCreateResponseDto;
 import com.itemrental.rentalService.domain.order.entity.Order;
 import com.itemrental.rentalService.domain.order.repository.OrderRepository;
-import com.itemrental.rentalService.domain.rental.entity.Post;
+import com.itemrental.rentalService.domain.rental.entity.RentalPost;
 import com.itemrental.rentalService.domain.rental.repository.PostRepository;
 import com.itemrental.rentalService.domain.user.entity.User;
 import com.itemrental.rentalService.domain.user.repository.UserRepository;
@@ -28,14 +28,14 @@ public class OrderService {
     User user = userRepository.findByEmail(email)
         .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
 
-    Post post = postRepository.findById(dto.getPostId())
+    RentalPost rentalPost = postRepository.findById(dto.getPostId())
         .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
 
     String merchantUid = "order_" + UUID.randomUUID();
 
     Order order = Order.builder()
         .user(user)
-        .postId(post.getId())
+        .postId(rentalPost.getId())
         .merchantUid(merchantUid)
         .amount(dto.getAmount())
         .build();

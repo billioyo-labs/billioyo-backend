@@ -3,7 +3,7 @@ package com.itemrental.rentalService.domain.admin.service;
 
 import com.itemrental.rentalService.domain.community.entity.CommunityPost;
 import com.itemrental.rentalService.domain.community.repository.CommunityPostRepository;
-import com.itemrental.rentalService.domain.rental.entity.Post;
+import com.itemrental.rentalService.domain.rental.entity.RentalPost;
 import com.itemrental.rentalService.domain.rental.repository.PostRepository;
 import com.itemrental.rentalService.domain.admin.dto.ReportListResponseDto;
 import com.itemrental.rentalService.domain.report.entity.Report;
@@ -72,9 +72,9 @@ public class AdminService {
   }
   @Transactional
   public void adminDeleteRentalPost(Long postId) {
-    Post post = postRepository.findById(postId)
+    RentalPost rentalPost = postRepository.findById(postId)
         .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
     ;
-    postRepository.delete(post);
+    postRepository.delete(rentalPost);
   }
 }

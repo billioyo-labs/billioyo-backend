@@ -23,5 +23,5 @@ public class Image {
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false)
-    private Post post;
+    private RentalPost rentalPost;
 }

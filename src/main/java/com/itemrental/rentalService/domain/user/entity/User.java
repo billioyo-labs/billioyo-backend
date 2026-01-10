@@ -127,6 +127,7 @@ public class User implements UserDetails {
         return true;
     }
 
+
     public enum UserState{
         UNVERIFIED,
         PENDING_PROFILE_SETUP,
@@ -144,6 +145,7 @@ public class User implements UserDetails {
         loginSuccessDto.setNickName(this.getNickName());
         return loginSuccessDto;
     }
+
 }
 
 

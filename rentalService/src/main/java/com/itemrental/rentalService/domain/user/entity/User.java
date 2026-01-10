@@ -6,6 +6,7 @@ import com.itemrental.rentalService.domain.community.entity.CommunityPost;
 import com.itemrental.rentalService.domain.community.entity.CommunityPostBookmark;
 import com.itemrental.rentalService.domain.community.entity.CommunityPostLike;
 import com.itemrental.rentalService.domain.notification.Notification;
+import com.itemrental.rentalService.domain.order.entity.Order;
 import com.itemrental.rentalService.domain.report.entity.Report;
 import com.itemrental.rentalService.domain.user.dto.LoginSuccessDto;
 import com.itemrental.rentalService.domain.rental.entity.Post;
@@ -89,6 +90,12 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "reporter", cascade = CascadeType.ALL, orphanRemoval = true)
     @Getter
     private List<Report> reports;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Getter
+    private List<Order> orders;
+
+
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default

@@ -1,7 +1,6 @@
 package com.itemrental.rentalService.domain.user.entity;
 
 import com.itemrental.rentalService.domain.chat.entity.ChattingParticipant;
-import com.itemrental.rentalService.domain.chat.entity.FcmToken;
 import com.itemrental.rentalService.domain.chat.entity.Message;
 import com.itemrental.rentalService.domain.community.entity.CommunityPost;
 import com.itemrental.rentalService.domain.community.entity.CommunityPostBookmark;
@@ -91,10 +90,6 @@ public class User implements UserDetails {
     @Getter
     private List<Report> reports;
 
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<FcmToken> fcmTokens = new ArrayList<>();
-
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
     private List<String> roles = new ArrayList<>();
@@ -125,6 +120,7 @@ public class User implements UserDetails {
         return true;
     }
 
+
     public enum UserState{
         UNVERIFIED,
         PENDING_PROFILE_SETUP,
@@ -143,10 +139,6 @@ public class User implements UserDetails {
         return loginSuccessDto;
     }
 
-    public void addFcmToken(FcmToken token){
-        this.fcmTokens.add(token);
-        token.setUser(this);
-    }
 }
 
 

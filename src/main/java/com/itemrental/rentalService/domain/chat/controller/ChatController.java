@@ -15,31 +15,33 @@ import java.security.Principal;
 @RequiredArgsConstructor
 public class ChatController {
     private final SimpMessagingTemplate messagingTemplate;
-    private final SimpUserRegistry userRegistry;
     private final MessageService messageService;
 
     @MessageMapping("/chat/sendMessage")
     public void sendMessage(@Payload ChatMessage chatMessage, Principal principal){
         String sender = principal.getName();
         chatMessage.setSender(sender);
-        String receiver = chatMessage.getReceiver();
+        System.out.println("보내는 사람(Principal): " + sender);
+        System.out.println("받는 사람(Receiver): " + chatMessage.getReceiver());
 
-        boolean isUserConnected = checkUserConnected(receiver);
+        messageService.saveMessage(chatMessage);
 
-        if(isUserConnected) {
-            messagingTemplate.convertAndSendToUser(
-                    receiver,
-                    "/queue/messages",
-                    chatMessage
-            );
-        }else{
-            messageService.saveOfflineMessage(chatMessage);
-        }
+        messagingTemplate.convertAndSendToUser(
+                chatMessage.getReceiver(),
+                "/queue/messages",
+                chatMessage
+        );
 
+        messagingTemplate.convertAndSendToUser(
+                chatMessage.getReceiver(),
+                "/queue/notifications",
+                chatMessage
+        );
+
+        messagingTemplate.convertAndSendToUser(
+                sender,
+                "/queue/messages",
+                chatMessage
+        );
     }
-
-    private boolean checkUserConnected(String username){
-        return userRegistry.getUser(username) != null;
-    }
-
 }

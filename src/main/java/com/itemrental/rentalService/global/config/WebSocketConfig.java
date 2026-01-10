@@ -19,14 +19,13 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry){
         registry.addEndpoint("/ws-stomp")
-                .setAllowedOrigins("*")
-                .withSockJS()
-                .setInterceptors(customHandshakeInterceptor);
+                .setAllowedOriginPatterns("http://localhost:3000", "https://*.vercel.app")
+                .addInterceptors(customHandshakeInterceptor);
     }
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry){
-        registry.enableSimpleBroker("/topic", "queue");
+        registry.enableSimpleBroker("/topic", "/queue");
         registry.setApplicationDestinationPrefixes("/app");
         registry.setUserDestinationPrefix("/user");
     }

@@ -28,36 +28,42 @@ public class CustomHandshakeInterceptor implements HandshakeInterceptor {
     private final CustomUserDetailsService customUserDetailsService;
 
     @Override
-    public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception{
-        String accessToken = extractTokenFromHeader(request);
-        if(accessToken != null){
-            try{
+    public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response,
+                                   WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
+
+        String query = request.getURI().getQuery();
+        String accessToken = null;
+
+        if (query != null && query.contains("token=")) {
+            accessToken = query.split("token=")[1].split("&")[0];
+        }
+
+        if (accessToken == null) {
+            List<String> authHeaders = request.getHeaders().get("Authorization");
+            if (authHeaders != null && !authHeaders.isEmpty()) {
+                String header = authHeaders.get(0);
+                if (header.startsWith("Bearer ")) {
+                    accessToken = header.substring(7);
+                }
+            }
+        }
+
+        if (accessToken != null) {
+            try {
                 jwtTokenProvider.validateToken(accessToken);
-            }catch (ExpiredJwtException e) {
-                log.info("ACCESS TOKEN EXPIRED");
-                return false;
-            } catch (UnsupportedJwtException e) {
-                log.info("UNSUPPORTED JWT TOKEN");
-                return false;
-            } catch (MalformedJwtException | SecurityException | DecodingException e) {
-                log.info("INVALID JWT TOKEN");
-                return false;
-            } catch (IllegalArgumentException e) {
-                log.info("JWT CLAIMS STRING IS EMPTY");
-                return false;
-            } catch (JwtException e) {
-                log.info("INVALID ACCESS TOKEN");
+                String username = jwtTokenProvider.getUserName(accessToken);
+                UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
+
+                UsernamePasswordAuthenticationToken auth =
+                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+
+                attributes.put("principal", auth);
+                System.out.println("🔌 신규 연결 유저 Principal Name: " + (auth != null ? auth.getName() : "null"));
+                return true;
+            } catch (Exception e) {
+                log.warn("WebSocket Handshake JWT failed: {}", e.getMessage());
                 return false;
             }
-            if (!"access".equals(jwtTokenProvider.getCategory(accessToken))) {
-                log.info("INVALID ACCESS TOKEN");
-                return false;
-            }
-            String username = jwtTokenProvider.getUserName(accessToken);
-            UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
-            UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-            attributes.put("principal", auth);
-            return true;
         }
         return false;
     }

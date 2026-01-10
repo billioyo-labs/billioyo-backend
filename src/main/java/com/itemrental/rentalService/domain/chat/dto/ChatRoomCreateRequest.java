@@ -3,13 +3,13 @@ package com.itemrental.rentalService.domain.chat.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
+import java.util.List;
+
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
-public class FcmTokenRequest {
-    private String fcmToken;
-    private String deviceName;
+public class ChatRoomCreateRequest {
+    private String title;
+    private List<Long> userIds;
 }

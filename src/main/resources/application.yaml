@@ -73,5 +73,11 @@ management:
     health:
       show-details: always
 
+imp:
+  api:
+    key: ${IMP_API_KEY}
+    secretkey: ${IMP_API_SECRET}
+
+
 server:
   port: 8081

@@ -31,7 +31,7 @@ public class OrderService {
     RentalPost rentalPost = postRepository.findById(dto.getPostId())
         .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
 
-    String merchantUid = "order_" + UUID.randomUUID();
+    String merchantUid = generateMerchantUid();
 
     Order order = Order.builder()
         .user(user)
@@ -48,6 +48,10 @@ public class OrderService {
         .amount(saved.getAmount())
         .status(saved.getStatus())
         .build();
+  }
+  private String generateMerchantUid() {
+    String uuid = UUID.randomUUID().toString().replace("-", "");
+    return "order_" + uuid;
   }
 
 

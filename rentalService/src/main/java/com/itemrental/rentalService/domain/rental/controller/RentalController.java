@@ -7,6 +7,7 @@ import com.itemrental.rentalService.domain.rental.dto.request.RentalPostUpdateRe
 import com.itemrental.rentalService.domain.rental.dto.request.ReviewCreateRequestDto;
 import com.itemrental.rentalService.domain.rental.dto.response.RentalPostListResponseDto;
 import com.itemrental.rentalService.domain.rental.dto.response.RentalPostReadResponseDto;
+import com.itemrental.rentalService.domain.rental.service.ImageAnalysisService;
 import com.itemrental.rentalService.global.response.ApiResponse;
 import com.itemrental.rentalService.domain.rental.service.PostInteractionService;
 import com.itemrental.rentalService.domain.rental.service.RentalService;
@@ -19,6 +20,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -27,6 +30,7 @@ public class RentalController {
 
   private final RentalService rentalService;
   private final PostInteractionService interactionService;
+  private final ImageAnalysisService imageAnalysisService;
 
   //대여 게시글 생성
   @PostMapping
@@ -96,5 +100,16 @@ public class RentalController {
   public ResponseEntity<ApiResponse<Page<RentalPostListResponseDto>>> getPopularPosts(
       @PageableDefault(size = 5) Pageable pageable) {
     return ResponseEntity.ok(ApiResponse.success("인기 게시글 조회 성공", rentalService.getPopularPosts(pageable)));
+  }
+
+  @PostMapping("/analyze-image")
+  public ResponseEntity<ApiResponse<String>> analyzeImageForDescription(@RequestBody Map<String, String> request) {
+    String imageUrl = request.get("imageUrl");
+
+    log.info("AI 분석 요청 - URL: {}",  imageUrl);
+
+    String description = imageAnalysisService.generateDescription(imageUrl);
+
+    return ResponseEntity.ok(ApiResponse.success("AI가 소개글을 생성했습니다.", description));
   }
 }

@@ -37,6 +37,18 @@ spring:
           timeout: ${SMTP_TIMEOUT}
           writetimeout: ${SMTP_WRITE_TIMEOUT}
       auth-code-expiration-millis: ${SMTP_AUTH_CODE_EXPIRATION}
+  ai:
+    vertex:
+      ai:
+        gemini:
+          project-id: solar-galaxy-463716-s3
+          location: asia-northeast3
+          chat:
+            options:
+              model: gemini-2.5-flash
+#          credentials:
+#            location: ${GOOGLE_CLOUD_KEY}
+
 logging:
   file:
     name: /var/log/rentalService/rentalService.log

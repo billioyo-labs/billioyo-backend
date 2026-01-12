@@ -23,6 +23,7 @@ configurations {
 repositories {
 	mavenCentral()
 	maven { url 'https://jitpack.io' }
+	maven { url 'https://repo.spring.io/milestone' }
 }
 
 dependencies {
@@ -51,6 +52,8 @@ dependencies {
 	implementation 'io.micrometer:micrometer-registry-prometheus'
 	implementation 'com.github.iamport:iamport-rest-client-java:0.2.23'
 	implementation 'com.google.firebase:firebase-admin:9.2.0'
+	implementation 'org.springframework.ai:spring-ai-vertex-ai-gemini-spring-boot-starter'
+	implementation platform("org.springframework.ai:spring-ai-bom:1.0.0-M3")
 }
 
 tasks.named('test') {

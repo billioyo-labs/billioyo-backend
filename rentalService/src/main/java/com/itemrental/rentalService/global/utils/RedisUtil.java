@@ -11,14 +11,21 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class RedisUtil {
     private final RedisTemplate<String, Object> redisTemplate;
-    public void set(String key, Object o, Long duration){
+
+    public void set(String key, Object o, Long duration) {
         redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer(o.getClass()));
         redisTemplate.opsForValue().set(key, o, duration, TimeUnit.MILLISECONDS);
     }
 
-    public Object get(String key) {return redisTemplate.opsForValue().get(key);}
+    public Object get(String key) {
+        return redisTemplate.opsForValue().get(key);
+    }
 
-    public void delete(String key) {redisTemplate.delete(key);}
+    public void delete(String key) {
+        redisTemplate.delete(key);
+    }
 
-    public boolean hasKey(String key) {return redisTemplate.hasKey(key);}
+    public boolean hasKey(String key) {
+        return redisTemplate.hasKey(key);
+    }
 }

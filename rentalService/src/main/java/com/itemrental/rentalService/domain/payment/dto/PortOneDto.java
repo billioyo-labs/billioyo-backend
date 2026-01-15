@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PortOneDto {
-  private String impUid;
-  private String merchantUid;
-  private Long amount;
-  private Long orderId;
+    private String impUid;
+    private String merchantUid;
+    private Long amount;
+    private Long orderId;
 }

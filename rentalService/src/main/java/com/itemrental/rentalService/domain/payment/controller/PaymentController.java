@@ -22,29 +22,28 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/api/payment")
 public class PaymentController {
-  private  IamportClient iamportClient;
-  private final PaymentService paymentService;
+    private IamportClient iamportClient;
+    private final PaymentService paymentService;
 
 
+    @Value("${imp.api.key}")
+    private String apiKey;
 
-  @Value("${imp.api.key}")
-  private String apiKey;
+    @Value("${imp.api.secretkey}")
+    private String secretKey;
 
-  @Value("${imp.api.secretkey}")
-  private String secretKey;
+    @PostConstruct
+    public void init() {
+        this.iamportClient = new IamportClient(apiKey, secretKey);
+    }
 
-  @PostConstruct
-  public void init() {
-    this.iamportClient = new IamportClient(apiKey, secretKey);
-  }
-
-  @PostMapping("/complete")
-  public ResponseEntity<ApiResponse<Void>> validatePayment(@RequestBody PortOneDto dto) throws IamportResponseException, IOException {
-    IamportResponse<Payment> iamportRes = iamportClient.paymentByImpUid(dto.getImpUid());
+    @PostMapping("/complete")
+    public ResponseEntity<ApiResponse<Void>> validatePayment(@RequestBody PortOneDto dto) throws IamportResponseException, IOException {
+        IamportResponse<Payment> iamportRes = iamportClient.paymentByImpUid(dto.getImpUid());
 
 
-    paymentService.processPaymentDone(iamportRes.getResponse(), dto);
+        paymentService.processPaymentDone(iamportRes.getResponse(), dto);
 
-    return ResponseEntity.ok(ApiResponse.success("결제 완료"));
-  }
+        return ResponseEntity.ok(ApiResponse.success("결제 완료"));
+    }
 }

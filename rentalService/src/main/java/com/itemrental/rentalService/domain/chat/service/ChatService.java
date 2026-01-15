@@ -7,12 +7,11 @@ import com.itemrental.rentalService.domain.chat.entity.ChattingRoom;
 import com.itemrental.rentalService.domain.chat.repository.ChattingParticipantRepository;
 import com.itemrental.rentalService.domain.chat.repository.ChattingRoomRepository;
 import com.itemrental.rentalService.domain.chat.repository.MessageRepository;
-import com.itemrental.rentalService.domain.user.repository.UserRepository;
 import com.itemrental.rentalService.domain.user.entity.User;
-
+import com.itemrental.rentalService.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,10 +45,10 @@ public class ChatService {
         for (Long userId : userIds) {
             User user = userRepository.findById(userId).orElseThrow();
             ChattingParticipant participant = ChattingParticipant.builder()
-                    .user(user)
-                    .chattingRoom(room)
-                    .unreadCount(0L)
-                    .build();
+                .user(user)
+                .chattingRoom(room)
+                .unreadCount(0L)
+                .build();
             participantRepository.save(participant);
         }
         return room.getId();
@@ -57,12 +56,12 @@ public class ChatService {
 
     public List<ChatRoomResponse> getMyRooms(String userEmail) {
         return participantRepository.findAllByUserEmail(userEmail).stream()
-                .map(p -> new ChatRoomResponse(p.getChattingRoom(), userEmail)) // 현재 내 이메일 전달
-                .toList();
+            .map(p -> new ChatRoomResponse(p.getChattingRoom(), userEmail)) // 현재 내 이메일 전달
+            .toList();
     }
 
     public Slice<MessageResponse> getMessageHistory(Long roomId, Pageable pageable) {
         return messageRepository.findAllByChattingRoomIdOrderBySendTimeDesc(roomId, pageable)
-                .map(MessageResponse::new);
+            .map(MessageResponse::new);
     }
 }

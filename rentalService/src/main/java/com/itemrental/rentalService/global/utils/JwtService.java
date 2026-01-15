@@ -19,24 +19,26 @@ import org.springframework.web.server.ResponseStatusException;
 public class JwtService {
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
-    public JwtService(JwtTokenProvider jwtTokenProvider, RefreshTokenRepository refreshTokenRepository){
+
+    public JwtService(JwtTokenProvider jwtTokenProvider, RefreshTokenRepository refreshTokenRepository) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.refreshTokenRepository = refreshTokenRepository;
     }
-    public ResponseEntity<?> recreateJwt(HttpServletRequest request, HttpServletResponse response){
+
+    public ResponseEntity<?> recreateJwt(HttpServletRequest request, HttpServletResponse response) {
         String refreshToken = null;
         Cookie[] cookies = request.getCookies();
-        for(Cookie cookie : cookies){
-            if(cookie.getName().equals("refresh")){
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals("refresh")) {
                 refreshToken = cookie.getValue();
             }
         }
 
-        if(refreshToken==null){
+        if (refreshToken == null) {
             return new ResponseEntity("REFRESH TOKEN IS NULL", HttpStatus.BAD_REQUEST);
         }
 
-        try{
+        try {
             jwtTokenProvider.validateToken(refreshToken);
         } catch (ExpiredJwtException e) {
             return new ResponseEntity<>("REFRESH TOKEN EXPIRED", HttpStatus.UNAUTHORIZED);
@@ -49,17 +51,17 @@ public class JwtService {
         }
 
         String category = jwtTokenProvider.getCategory(refreshToken);
-        if(!category.equals("refresh")){
-            return new ResponseEntity("INVALID REFRESH TOKEN",HttpStatus.BAD_REQUEST);
+        if (!category.equals("refresh")) {
+            return new ResponseEntity("INVALID REFRESH TOKEN", HttpStatus.BAD_REQUEST);
         }
         RefreshToken refreshToken1 = refreshTokenRepository.findById(refreshToken)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
 
         String userName = jwtTokenProvider.getUserName(refreshToken);
 
 
-        String newAccessToken = jwtTokenProvider.createJwt("access",userName,600000L);
+        String newAccessToken = jwtTokenProvider.createJwt("access", userName, 600000L);
         String newRefresh = jwtTokenProvider.createJwt("refresh", userName, 86400000L);
 
         refreshTokenRepository.deleteByRefresh(refreshToken);
@@ -72,10 +74,10 @@ public class JwtService {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    private Cookie createCookie(String key, String value){
-        Cookie cookie = new Cookie(key,value);
+    private Cookie createCookie(String key, String value) {
+        Cookie cookie = new Cookie(key, value);
         //쿠키의 생명주기
-        cookie.setMaxAge(24*60*60);
+        cookie.setMaxAge(24 * 60 * 60);
         //쿠키 적용될 범위
         //cookie.setPath("/");
         //https통신을 위해
@@ -88,7 +90,7 @@ public class JwtService {
     }
 
     private void addRefreshEntity(Long userId, String refresh) {
-        RefreshToken refreshEntity = new RefreshToken(refresh,userId);
+        RefreshToken refreshEntity = new RefreshToken(refresh, userId);
         refreshTokenRepository.save(refreshEntity);
     }
 }

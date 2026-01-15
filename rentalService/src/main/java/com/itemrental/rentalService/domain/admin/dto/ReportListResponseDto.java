@@ -9,10 +9,10 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 public class ReportListResponseDto {
-  private Long id;
-  private Report.TargetType targetType;
-  private Long targetId;
-  private Report.ReportReason reason;
-  private String description;
-  private LocalDateTime createdAt;
+    private Long id;
+    private Report.TargetType targetType;
+    private Long targetId;
+    private Report.ReportReason reason;
+    private String description;
+    private LocalDateTime createdAt;
 }

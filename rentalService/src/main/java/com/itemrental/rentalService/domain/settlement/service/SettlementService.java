@@ -1,6 +1,7 @@
 package com.itemrental.rentalService.domain.settlement.service;
 
 
+import com.itemrental.rentalService.domain.settlement.dto.SettlementCreateRequest;
 import com.itemrental.rentalService.domain.settlement.dto.SettlementCreateResponse;
 import com.itemrental.rentalService.domain.settlement.dto.SettlementItemResponse;
 import com.itemrental.rentalService.domain.settlement.entity.Settlement;
@@ -33,7 +34,7 @@ public class SettlementService {
     }
 
     @Transactional
-    public SettlementCreateResponse createSettlement(Long ownerId) {
+    public SettlementCreateResponse createSettlement(Long ownerId, SettlementCreateRequest dto) {
 
         List<SettlementItem> items = settlementItemRepository
             .findAllByOwnerIdAndStatus(ownerId, AVAILABLE);
@@ -42,15 +43,19 @@ public class SettlementService {
 
         long total = items.stream().mapToLong(SettlementItem::getAmount).sum();
 
-        Settlement settlement = new Settlement();
-        settlement.setOwnerId(ownerId);
-        settlement.setTotalAmount(total);
+        Settlement settlement = Settlement.builder()
+            .ownerId(ownerId)
+            .totalAmount(total)
+            .bankName(dto.getBankName())
+            .bankAccountNumber(dto.getAccountNumber())
+            .bankAccountHolderName(dto.getAccountHolder())
+            .build();
+
         settlementRepository.save(settlement);
 
 
         return new SettlementCreateResponse(settlement.getId(), total);
     }
-
 
 
 

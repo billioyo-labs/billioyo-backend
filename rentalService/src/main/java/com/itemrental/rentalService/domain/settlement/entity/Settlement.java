@@ -1,6 +1,7 @@
 package com.itemrental.rentalService.domain.settlement.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,7 +27,7 @@ public class Settlement {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private SettlementStatus status;
+    private SettlementStatus status=SettlementStatus.REQUESTED;
 
     @Column(nullable = false)
     private LocalDateTime requestedAt;
@@ -35,7 +36,13 @@ public class Settlement {
     private LocalDateTime settledAt;
 
     @Column
-    private String referenceNo;
+    private String bankName;
+
+    @Column
+    private String bankAccountNumber;
+
+    @Column
+    private String bankAccountHolderName;
 
     @PrePersist
     void onCreate() {
@@ -45,6 +52,21 @@ public class Settlement {
     public enum SettlementStatus {
         REQUESTED, // 정산 요청됨
         SETTLED   // 정산 완료
+    }
+
+    @Builder
+    private Settlement(
+        Long ownerId,
+        Long totalAmount,
+        String bankName,
+        String bankAccountNumber,
+        String bankAccountHolderName
+    ){
+        this.ownerId = ownerId;
+        this.totalAmount = totalAmount;
+        this.bankName = bankName;
+        this.bankAccountNumber = bankAccountNumber;
+        this.bankAccountHolderName = bankAccountHolderName;
     }
 
 }

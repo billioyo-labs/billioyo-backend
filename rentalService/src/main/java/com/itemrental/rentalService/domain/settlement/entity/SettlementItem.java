@@ -1,6 +1,7 @@
 package com.itemrental.rentalService.domain.settlement.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -45,5 +46,18 @@ public class SettlementItem {
     public enum SettlementItemStatus {
         AVAILABLE,  // 정산 가능 (대여 완료됨)
         SETTLED    // 정산 완료됨
+    }
+
+    @Builder
+    private SettlementItem(
+        Long postId,
+        Long ownerId,
+        Long orderId,
+        Long amount
+    ){
+        this.postId = postId;
+        this.ownerId = ownerId;
+        this.orderId = orderId;
+        this.amount = amount;
     }
 }

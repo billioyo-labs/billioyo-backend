@@ -13,10 +13,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @Getter
 public class OrderCreateResponseDto {
-  private String merchantUid;
-  private Long orderId;
-  private Long amount;
-  private Order.OrderStatus status;
+    private String merchantUid;
+    private Long orderId;
+    private Long amount;
+    private Order.OrderStatus status;
 }
 
 

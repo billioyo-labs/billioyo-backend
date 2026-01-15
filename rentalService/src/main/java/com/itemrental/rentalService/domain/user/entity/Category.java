@@ -30,7 +30,7 @@ public class Category {
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Category> children = new ArrayList<>();
 
-    public void addChild(Category child){
+    public void addChild(Category child) {
         this.children.add(child);
         child.setParent(this);
     }

@@ -12,7 +12,7 @@ public class CommunityPostCreateRequestDto {
     private String title;
     private String content;
     private String location;
-    private Double lat;
-    private Double lng;
+    private Double latitude;
+    private Double longitude;
     private List<String> imageUrls;
 }

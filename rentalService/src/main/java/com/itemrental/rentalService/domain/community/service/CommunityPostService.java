@@ -13,6 +13,7 @@ import com.itemrental.rentalService.domain.community.repository.CommunityPostIma
 import com.itemrental.rentalService.domain.community.repository.CommunityPostRepository;
 import com.itemrental.rentalService.domain.user.entity.User;
 import com.itemrental.rentalService.domain.user.repository.UserRepository;
+import com.itemrental.rentalService.global.utils.Position;
 import com.itemrental.rentalService.global.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -44,6 +45,12 @@ public class CommunityPostService {
         post.setTitle(dto.getTitle());
         post.setContent(dto.getContent());
         post.setCategory(dto.getCategory());
+        post.setLocation(dto.getLocation());
+
+        if (dto.getLatitude() != null && dto.getLongitude() != null) {
+            post.setPosition(new Position(dto.getLatitude(), dto.getLongitude()));
+        }
+
         repository.save(post);
 
         if (dto.getImageUrls() != null) {

@@ -51,15 +51,21 @@ public class PostInteractionService {
   @Transactional(readOnly = true)
   public Page<RentalPostListResponseDto> getSellerPosts(Pageable pageable, Long userId) {
     Page<RentalPost> page = postRepository.findByUserId(userId, pageable);
-    return page.map(post->
-        new RentalPostListResponseDto(
-            post.getId(),
-            post.getUser().getNickName(),
-            post.getTitle(),
-            post.getPrice(),
-            post.isStatus(),
-            post.getCreatedAt()
-        ));
+    return page.map(post -> {
+      String firstImageUrl = post.getImages().isEmpty() ? null : post.getImages().get(0).getImageUrl();
+
+      return new RentalPostListResponseDto(
+              post.getId(),
+              post.getUser().getNickName(),
+              post.getTitle(),
+              post.getPrice(),
+              post.isStatus(),
+              post.getCreatedAt(),
+              firstImageUrl,
+              post.getRating(),
+              post.getReviewsCount()
+      );
+    });
   }
   @Transactional
   public Page<RentalPostListResponseDto> getMyPosts(Pageable pageable) {
@@ -68,15 +74,21 @@ public class PostInteractionService {
 
     Page<RentalPost> page = postRepository.findByUserId(user.getId(),pageable);
 
-    return page.map(post->
-        new RentalPostListResponseDto(
-            post.getId(),
-            post.getUser().getNickName(),
-            post.getTitle(),
-            post.getPrice(),
-            post.isStatus(),
-            post.getCreatedAt()
-        ));
+    return page.map(post -> {
+      String firstImageUrl = post.getImages().isEmpty() ? null : post.getImages().get(0).getImageUrl();
+
+      return new RentalPostListResponseDto(
+              post.getId(),
+              post.getUser().getNickName(),
+              post.getTitle(),
+              post.getPrice(),
+              post.isStatus(),
+              post.getCreatedAt(),
+              firstImageUrl,
+              post.getRating(),
+              post.getReviewsCount()
+      );
+    });
   }
 
   //게시글 좋아요

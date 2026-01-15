@@ -190,31 +190,42 @@ public class RentalService {
       page = postRepository.findAll(pageable);
     }
 
-    return page.map(post ->
-            new RentalPostListResponseDto(
-                    post.getId(),
-                    post.getUser().getNickName(),
-                    post.getTitle(),
-                    post.getPrice(),
-                    post.isStatus(),
-                    post.getCreatedAt()
-            )
-    );
+    return page.map(post -> {
+      String firstImageUrl = post.getImages().isEmpty() ? null : post.getImages().get(0).getImageUrl();
+
+      return new RentalPostListResponseDto(
+              post.getId(),
+              post.getUser().getNickName(),
+              post.getTitle(),
+              post.getPrice(),
+              post.isStatus(),
+              post.getCreatedAt(),
+              firstImageUrl,
+              post.getRating(),
+              post.getReviewsCount()
+      );
+    });
   }
   //인기글
   @Transactional(readOnly = true)
   public Page<RentalPostListResponseDto> getPopularPosts(Pageable pageable) {
     Page<RentalPost> page = postRepository.findTop5ByStatusTrueOrderByLikeCountDescViewCountDescCreatedAtDesc(pageable);
 
-    return page.map(post ->
-        new RentalPostListResponseDto(
-            post.getId(),
-            post.getUser().getNickName(),
-            post.getTitle(),
-            post.getPrice(),
-            post.isStatus(),
-            post.getCreatedAt()
-        ));
+    return page.map(post -> {
+      String firstImageUrl = post.getImages().isEmpty() ? null : post.getImages().get(0).getImageUrl();
+
+      return new RentalPostListResponseDto(
+              post.getId(),
+              post.getUser().getNickName(),
+              post.getTitle(),
+              post.getPrice(),
+              post.isStatus(),
+              post.getCreatedAt(),
+              firstImageUrl,
+              post.getRating(),
+              post.getReviewsCount()
+      );
+    });
   }
 
 

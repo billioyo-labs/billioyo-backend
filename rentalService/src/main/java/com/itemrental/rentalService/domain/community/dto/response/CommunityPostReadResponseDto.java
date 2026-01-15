@@ -19,4 +19,5 @@ public class CommunityPostReadResponseDto {
     private int viewCount;
     private int likeCount;
     private List<CommentResponseDto> comments;
+    private String location;
 }

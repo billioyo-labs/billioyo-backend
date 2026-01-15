@@ -96,7 +96,8 @@ public class CommunityPostService {
             post.getImages(),
             post.getViewCount(),
             post.getLikeCount(),
-            comments
+            comments,
+            post.getLocation()
         );
     }
 
@@ -174,7 +175,8 @@ public class CommunityPostService {
             post.getCommentCount(),
             post.getCreatedAt(),
             (post.getImages() == null || post.getImages().isEmpty())
-                ? null : post.getImages().get(0).getImageUrl()
+                ? null : post.getImages().get(0).getImageUrl(),
+            post.getLocation()
         ));
     }
 
@@ -192,7 +194,8 @@ public class CommunityPostService {
                 post.getViewCount(),
                 post.getCommentCount(),
                 post.getCreatedAt(),
-                post.getImages().isEmpty() ? null : post.getImages().get(0).getImageUrl()
+                post.getImages().isEmpty() ? null : post.getImages().get(0).getImageUrl(),
+                post.getLocation()
             )).toList();
     }
 }

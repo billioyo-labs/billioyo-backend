@@ -27,7 +27,7 @@ public class JwtTokenProvider {
     private Long refreshTokenValidTime;
 
     @Autowired
-    public JwtTokenProvider(@Value("${TOKEN_SECRET}")String secretKey, RedisUtil redisUtil){
+    public JwtTokenProvider(@Value("${TOKEN_SECRET}") String secretKey, RedisUtil redisUtil) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
         this.redisUtil = redisUtil;
@@ -36,19 +36,19 @@ public class JwtTokenProvider {
     public String createJwt(String category, String username, Long expiredMs) {
         Date now = new Date();
         return Jwts.builder()
-                .claim("category", category)
-                .claim("username", username)
-                .issuedAt(now)
-                .expiration(new Date(now.getTime() + expiredMs))
-                .signWith(key)
-                .compact();
+            .claim("category", category)
+            .claim("username", username)
+            .issuedAt(now)
+            .expiration(new Date(now.getTime() + expiredMs))
+            .signWith(key)
+            .compact();
     }
 
     public boolean validateToken(String token) {
         try {
             Jwts.parser().verifyWith(key)
-                    .build()
-                    .parseSignedClaims(token);
+                .build()
+                .parseSignedClaims(token);
             return true;
         } catch (SecurityException | MalformedJwtException | DecodingException e) {
             log.info("🔐 Invalid JWT Token", e);
@@ -62,19 +62,20 @@ public class JwtTokenProvider {
         return false;
     }
 
-    public Claims parseClaims(String accessToken){
-        try{
-        return Jwts.parser().verifyWith(key).build().parseSignedClaims(accessToken).getPayload();
-        }catch (ExpiredJwtException e){
+    public Claims parseClaims(String accessToken) {
+        try {
+            return Jwts.parser().verifyWith(key).build().parseSignedClaims(accessToken).getPayload();
+        } catch (ExpiredJwtException e) {
             return e.getClaims();
 
         }
     }
 
-    public String getUserName(String token){
-        return parseClaims(token).get("username",String.class);
+    public String getUserName(String token) {
+        return parseClaims(token).get("username", String.class);
     }
-    public String getCategory(String token){
-        return parseClaims(token).get("category",String.class);
+
+    public String getCategory(String token) {
+        return parseClaims(token).get("category", String.class);
     }
 }

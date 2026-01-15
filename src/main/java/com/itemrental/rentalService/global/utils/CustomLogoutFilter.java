@@ -21,7 +21,6 @@ public class CustomLogoutFilter extends GenericFilterBean {
     private final RefreshTokenRepository refreshtokenRepository;
 
 
-
     public CustomLogoutFilter(JwtTokenProvider jwtTokenProvider, RefreshTokenRepository refreshtokenRepository) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.refreshtokenRepository = refreshtokenRepository;
@@ -70,7 +69,7 @@ public class CustomLogoutFilter extends GenericFilterBean {
         //expired check
         try {
             jwtTokenProvider.validateToken(refresh);
-        }  catch (ExpiredJwtException e) {
+        } catch (ExpiredJwtException e) {
             // 만료된 토큰
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 Unauthorized
             response.getWriter().write("{\"message\":\"만료된 토큰입니다.\"}");

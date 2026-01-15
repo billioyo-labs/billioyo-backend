@@ -9,12 +9,12 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 public class RentalPostListResponseDto {
-  private Long id;
-  private String nickname;
-  private String title;
-  private Long price;
-  private boolean status;
-  private LocalDateTime registerTime;
+    private Long id;
+    private String nickname;
+    private String title;
+    private Long price;
+    private boolean status;
+    private LocalDateTime registerTime;
 }
 
 

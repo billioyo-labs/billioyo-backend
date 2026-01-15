@@ -6,9 +6,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class SecurityUtil {
-    public String getCurrentUserEmail(){
+    public String getCurrentUserEmail() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication == null || authentication.getName() == null){
+        if (authentication == null || authentication.getName() == null) {
         }
         return authentication.getName();
     }

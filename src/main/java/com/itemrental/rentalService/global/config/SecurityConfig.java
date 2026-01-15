@@ -1,8 +1,8 @@
 package com.itemrental.rentalService.global.config;
 
-import com.itemrental.rentalService.global.utils.*;
 import com.itemrental.rentalService.domain.auth.repository.RefreshTokenRepository;
 import com.itemrental.rentalService.domain.user.repository.UserRepository;
+import com.itemrental.rentalService.global.utils.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
@@ -42,9 +42,10 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)throws  Exception{
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
@@ -58,14 +59,14 @@ public class SecurityConfig {
         http.addFilterAt(new JwtAuthenticationFilter(jwtTokenProvider, customUserDetailsService), LoginFilter.class);
         // 경로별 인가 작업 설정
         http.authorizeHttpRequests((auth) -> auth
-                .requestMatchers("/login", "/", "/post/list", "/post/search", "/user/**", "/auth/**", "/mail/**", "/error", "/actuator/**").permitAll() // 누구나 접근가능
-                .requestMatchers(HttpMethod.GET, "/community/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
-                .requestMatchers("/ws-stomp/**").permitAll()
-                .requestMatchers("/reissue").permitAll()
-                // 관리자 전용
-                .requestMatchers("/admin/**").hasRole("ADMIN")
-                .anyRequest().authenticated());  //나머지 경로들은 다 인증된 사용자만
+            .requestMatchers("/login", "/", "/post/list", "/post/search", "/user/**", "/auth/**", "/mail/**", "/error", "/actuator/**").permitAll() // 누구나 접근가능
+            .requestMatchers(HttpMethod.GET, "/community/**").permitAll()
+            .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
+            .requestMatchers("/ws-stomp/**").permitAll()
+            .requestMatchers("/reissue").permitAll()
+            // 관리자 전용
+            .requestMatchers("/admin/**").hasRole("ADMIN")
+            .anyRequest().authenticated());  //나머지 경로들은 다 인증된 사용자만
 
         //addat은 원하는 자리에 -> usernamepasswordauthenticationfilter 자리에 놓겠다.
         //LoginFilter에게 authentication manager 인스턴스를 주입해줘야 함 -> bean으로 authenticationmanager을 객체를 반환하는 메소드

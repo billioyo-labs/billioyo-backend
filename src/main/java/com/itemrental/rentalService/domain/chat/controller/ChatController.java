@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.stereotype.Controller;
 
 import java.security.Principal;
@@ -18,7 +17,7 @@ public class ChatController {
     private final MessageService messageService;
 
     @MessageMapping("/chat/sendMessage")
-    public void sendMessage(@Payload ChatMessage chatMessage, Principal principal){
+    public void sendMessage(@Payload ChatMessage chatMessage, Principal principal) {
         String sender = principal.getName();
         chatMessage.setSender(sender);
         System.out.println("보내는 사람(Principal): " + sender);
@@ -27,21 +26,21 @@ public class ChatController {
         messageService.saveMessage(chatMessage);
 
         messagingTemplate.convertAndSendToUser(
-                chatMessage.getReceiver(),
-                "/queue/messages",
-                chatMessage
+            chatMessage.getReceiver(),
+            "/queue/messages",
+            chatMessage
         );
 
         messagingTemplate.convertAndSendToUser(
-                chatMessage.getReceiver(),
-                "/queue/notifications",
-                chatMessage
+            chatMessage.getReceiver(),
+            "/queue/notifications",
+            chatMessage
         );
 
         messagingTemplate.convertAndSendToUser(
-                sender,
-                "/queue/messages",
-                chatMessage
+            sender,
+            "/queue/messages",
+            chatMessage
         );
     }
 }

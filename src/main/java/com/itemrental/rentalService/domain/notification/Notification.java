@@ -27,7 +27,7 @@ public class Notification {
     @OneToMany(mappedBy = "notification")
     private List<User> receivers = new ArrayList<>();
 
-    public void addReceiver(User user){
+    public void addReceiver(User user) {
         receivers.add(user);
         user.setNotification(this);
     }

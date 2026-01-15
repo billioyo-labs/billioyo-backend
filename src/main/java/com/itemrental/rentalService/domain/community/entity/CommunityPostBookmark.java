@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
 import java.time.LocalDateTime;
 
 @Entity
@@ -22,31 +21,31 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class CommunityPostBookmark {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Getter
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Getter
+    private Long id;
 
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "user_id")
-  @Getter
-  @Setter
-  private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    @Getter
+    @Setter
+    private User user;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "post_id")
-  @Getter
-  @Setter
-  private CommunityPost post;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id")
+    @Getter
+    @Setter
+    private CommunityPost post;
 
-  @Getter
-  @Column(nullable = false, updatable = false)
-  private LocalDateTime createdAt;
+    @Getter
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
-  @PrePersist
-  protected void onCreate() {
-    this.createdAt = LocalDateTime.now();
-  }
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 
 }

@@ -1,10 +1,10 @@
 package com.itemrental.rentalService.domain.user.service;
 
+import com.itemrental.rentalService.domain.auth.entity.VerificationToken;
+import com.itemrental.rentalService.domain.auth.repository.VerificationTokenRepository;
 import com.itemrental.rentalService.domain.user.dto.SendResetMailDto;
 import com.itemrental.rentalService.domain.user.entity.User;
-import com.itemrental.rentalService.domain.auth.entity.VerificationToken;
 import com.itemrental.rentalService.global.exceptions.PendingProfileSetupException;
-import com.itemrental.rentalService.domain.auth.repository.VerificationTokenRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -47,15 +47,15 @@ public class MailService {
 //    }
 
     @Transactional
-    public void sendTemporalPasswordMail(SendResetMailDto sendResetMailDto) throws MessagingException{
+    public void sendTemporalPasswordMail(SendResetMailDto sendResetMailDto) throws MessagingException {
         String email = sendResetMailDto.getEmail();
         String name = sendResetMailDto.getName();
         String temporalPassword = UUID.randomUUID().toString();
         String cryptedPassowrd = passwordEncoder.encode(temporalPassword);
         Optional<User> user = userService.findByEmail(email);
-        if(user.isPresent() && user.get().getUsername().equals(name)){
-                user.get().setPassword(cryptedPassowrd);
-        }else{
+        if (user.isPresent() && user.get().getUsername().equals(name)) {
+            user.get().setPassword(cryptedPassowrd);
+        } else {
             throw new IllegalArgumentException("일치하는 사용자가 없습니다.");
         }
 
@@ -64,10 +64,10 @@ public class MailService {
 
     public void sendVerificationMail(String email) throws MessagingException {
         String accountState = checkAccountState(email);
-        if(accountState.equals("초기화되지 않은 계정")){
+        if (accountState.equals("초기화되지 않은 계정")) {
             throw new PendingProfileSetupException("초기화되지 않은 계정");
         }
-        if(accountState.equals("처음 가입하는 email")){
+        if (accountState.equals("처음 가입하는 email")) {
             userService.makeInitialUser(email);
         }
 
@@ -100,7 +100,7 @@ public class MailService {
 //        mailSender.send(message);
 //    }
 
-    public void sendTemporalPasswordWithHtmlTemplate(String to, String subject, String temporalPassword) throws MessagingException{
+    public void sendTemporalPasswordWithHtmlTemplate(String to, String subject, String temporalPassword) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
@@ -138,20 +138,20 @@ public class MailService {
         mailSender.send(message);
     }
 
-    public String checkAccountState(String email){
+    public String checkAccountState(String email) {
         Optional<User> user = userService.findByEmail(email);
-        if(user.isPresent()){
-            if(user.get().getUserState().equals(User.UserState.UNVERIFIED)){
+        if (user.isPresent()) {
+            if (user.get().getUserState().equals(User.UserState.UNVERIFIED)) {
                 return "인증되지 않은 계정";
-            }else{
+            } else {
                 return "초기화되지 않은 계정";
             }
-        }else{
+        } else {
             return "처음 가입하는 email";
         }
     }
 
-    public boolean doesEmailAndNickNameMatch(String email, String nickname){
+    public boolean doesEmailAndNickNameMatch(String email, String nickname) {
         Optional<User> user = userService.findByEmail(email);
         return user.map(value -> value.getNickName().equals(nickname)).orElse(false);
     }

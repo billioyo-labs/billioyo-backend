@@ -106,7 +106,8 @@ public class CommunityPostInteractionService {
                     post.getImages(),
                     post.getViewCount(),
                     post.getLikeCount(),
-                    comments
+                    comments,
+                    post.getLocation()
                 );
             }).toList();
     }
@@ -136,7 +137,8 @@ public class CommunityPostInteractionService {
                     post.getImages(),
                     post.getViewCount(),
                     post.getLikeCount(),
-                    comments
+                    comments,
+                    post.getLocation()
                 );
             }).toList();
 

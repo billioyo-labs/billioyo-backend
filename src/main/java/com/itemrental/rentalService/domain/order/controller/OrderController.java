@@ -16,13 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/order")
 public class OrderController {
-  private final OrderService orderService;
+    private final OrderService orderService;
 
-  //주문 생성
-  @PostMapping
-  public ResponseEntity<ApiResponse<OrderCreateResponseDto>> createOrder(
-      @RequestBody OrderCreateRequestDto orderCreateRequestDto) {
-    OrderCreateResponseDto dto = orderService.createOrder(orderCreateRequestDto);
-    return ResponseEntity.ok(ApiResponse.success("주문 생성 완료",dto));
-  }
+    //주문 생성
+    @PostMapping
+    public ResponseEntity<ApiResponse<OrderCreateResponseDto>> createOrder(
+        @RequestBody OrderCreateRequestDto orderCreateRequestDto) {
+        OrderCreateResponseDto dto = orderService.createOrder(orderCreateRequestDto);
+        return ResponseEntity.ok(ApiResponse.success("주문 생성 완료", dto));
+    }
 }

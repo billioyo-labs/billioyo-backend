@@ -19,7 +19,7 @@ public class VerificationToken {
     @Indexed
     private String email;
 
-    public VerificationToken(String token, String email){
+    public VerificationToken(String token, String email) {
         this.token = token;
         this.email = email;
     }

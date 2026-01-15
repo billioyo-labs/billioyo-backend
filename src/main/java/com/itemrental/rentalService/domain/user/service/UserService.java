@@ -7,8 +7,8 @@ import com.itemrental.rentalService.domain.rental.repository.PostRepository;
 import com.itemrental.rentalService.domain.user.dto.SignUpDto;
 import com.itemrental.rentalService.domain.user.dto.UpdateUserDto;
 import com.itemrental.rentalService.domain.user.entity.User;
-import com.itemrental.rentalService.global.exceptions.DuplicateUsernameException;
 import com.itemrental.rentalService.domain.user.repository.UserRepository;
+import com.itemrental.rentalService.global.exceptions.DuplicateUsernameException;
 import com.itemrental.rentalService.global.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,13 +40,13 @@ public class UserService {
 
 
     @Transactional
-    public String signUp(SignUpDto signUpDto){
+    public String signUp(SignUpDto signUpDto) {
         String email = signUpDto.getEmail();
         String encodedPassword = passwordEncoder.encode(signUpDto.getPassword());
         List<String> roles = new ArrayList<>();
         roles.add("USER");
         User user = findByEmail(email).orElseThrow(() ->
-                new RuntimeException("이메일에 해당하는 사용자가 없습니다."));
+            new RuntimeException("이메일에 해당하는 사용자가 없습니다."));
         User updateUser = signUpDto.toEntity(encodedPassword, roles);
         updateUser.setId(user.getId());
         userRepository.save(updateUser);
@@ -54,13 +54,14 @@ public class UserService {
     }
 
     //관리자 가입
-    public void validateAdminSignupSecret(String adminSecret){
-        if(!Objects.equals(adminSecret, adminSignupSecret)){
+    public void validateAdminSignupSecret(String adminSecret) {
+        if (!Objects.equals(adminSecret, adminSignupSecret)) {
             throw new RuntimeException("관리자 가입 코드가 올바르지 않습니다.");
         }
     }
+
     @Transactional
-    public String signUpAdmin(SignUpDto signUpDto, String adminSecret){
+    public String signUpAdmin(SignUpDto signUpDto, String adminSecret) {
         validateAdminSignupSecret(adminSecret);
         String email = signUpDto.getEmail();
         String encodedPassword = passwordEncoder.encode(signUpDto.getPassword());
@@ -78,7 +79,7 @@ public class UserService {
     public Page<RentalPostListResponseDto> getMyProducts(Pageable pageable) {
         String email = securityUtil.getCurrentUserEmail();
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+            .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
         Page<RentalPost> posts = postRepository.findByUserId(user.getId(), pageable);
 
@@ -103,7 +104,7 @@ public class UserService {
     public Page<RentalPostListResponseDto> getMyLikedPosts(Pageable pageable) {
         String email = securityUtil.getCurrentUserEmail();
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+            .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
         return postRepository.findByLikesUserId(user.getId(), pageable)
                 .map(post -> {
@@ -129,7 +130,7 @@ public class UserService {
     public Page<RentalPostListResponseDto> getMyBookmarkedPosts(Pageable pageable) {
         String email = securityUtil.getCurrentUserEmail();
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+            .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
         return postRepository.findByBookmarksUserId(user.getId(), pageable)
                 .map(post -> {
@@ -151,32 +152,32 @@ public class UserService {
                 });
     }
 
-    public void duplicateCheck(String nickName){
-        if(userRepository.existsByNickName(nickName)){
+    public void duplicateCheck(String nickName) {
+        if (userRepository.existsByNickName(nickName)) {
             throw new DuplicateUsernameException("이미 존재하는 아이디입니다.");
         }
     }
 
-    public String findAccount(String phoneNumber){
+    public String findAccount(String phoneNumber) {
         Optional<User> opUser = userRepository.findByPhoneNumber(phoneNumber);
-        if(opUser.isPresent()){
+        if (opUser.isPresent()) {
             return opUser.get().getEmail();
-        }else{
+        } else {
             return "해당하는 사용자가 없습니다.";
         }
     }
 
-    public Optional<User> findByEmail(String email){
+    public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
-    public User makeInitialUser(String email){
+    public User makeInitialUser(String email) {
         User user = User.builder().email(email).build();
         return userRepository.save(user);
     }
 
     @Transactional
-    public UpdateUserDto getProfile(){
+    public UpdateUserDto getProfile() {
         String username = securityUtil.getCurrentUserEmail();
         User user = userRepository.findByEmail(username).get();
         return new UpdateUserDto(
@@ -189,11 +190,9 @@ public class UserService {
     }
 
 
-
-
     //회원정보 수정 기능
     @Transactional
-    public String updateUser(UpdateUserDto updateUserDto){
+    public String updateUser(UpdateUserDto updateUserDto) {
         User user = userRepository.findByEmail(updateUserDto.getEmail()).get();
 
         if (StringUtils.hasText(updateUserDto.getNickName()) &&
@@ -216,7 +215,7 @@ public class UserService {
     }
 
     //회원 삭제
-    public String deleteUser(){
+    public String deleteUser() {
         String username = securityUtil.getCurrentUserEmail();
         User user = userRepository.findByEmail(username).get();
 
@@ -224,7 +223,6 @@ public class UserService {
 
         return "회원 탈퇴가 완료되었습니다.";
     }
-
 
 
 }

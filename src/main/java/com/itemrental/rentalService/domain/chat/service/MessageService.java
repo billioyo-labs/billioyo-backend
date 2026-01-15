@@ -15,9 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -31,19 +28,19 @@ public class MessageService {
     public MessageResponse saveMessage(ChatMessage chatMessage) {
         // 1. 방 찾기
         ChattingRoom room = roomRepository.findById(chatMessage.getRoomId())
-                .orElseThrow(() -> new RuntimeException("방을 찾을 수 없습니다."));
+            .orElseThrow(() -> new RuntimeException("방을 찾을 수 없습니다."));
 
         // 2. 보낸 사람 찾기 (chatMessage.getSender()에 이메일이 담겨와야 함)
         User sender = userRepository.findByEmail(chatMessage.getSender())
-                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다: " + chatMessage.getSender()));
+            .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다: " + chatMessage.getSender()));
 
         // 3. 메시지 객체 생성 (이때 찾은 sender를 넣어줘야 user_id가 정상 저장됨)
         Message message = Message.builder()
-                .content(chatMessage.getContent())
-                .user(sender) // 여기서 sender(user_id)가 결정됨
-                .chattingRoom(room)
-                .sendTime(LocalDateTime.now())
-                .build();
+            .content(chatMessage.getContent())
+            .user(sender) // 여기서 sender(user_id)가 결정됨
+            .chattingRoom(room)
+            .sendTime(LocalDateTime.now())
+            .build();
 
         messageRepository.save(message);
         return new MessageResponse(message);
@@ -54,10 +51,10 @@ public class MessageService {
         roomRepository.save(newRoom);
 
         participantRepository.save(ChattingParticipant.builder()
-                .user(sender).chattingRoom(newRoom).unreadCount(0L).build());
+            .user(sender).chattingRoom(newRoom).unreadCount(0L).build());
 
         participantRepository.save(ChattingParticipant.builder()
-                .user(receiver).chattingRoom(newRoom).unreadCount(1L).build());
+            .user(receiver).chattingRoom(newRoom).unreadCount(1L).build());
 
         return newRoom;
     }

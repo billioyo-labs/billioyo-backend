@@ -4,6 +4,6 @@ import lombok.Getter;
 
 @Getter
 public class AdminSignUpRequestDto {
-  private SignUpDto signUpDto;
-  private String adminSecret;
+    private SignUpDto signUpDto;
+    private String adminSecret;
 }

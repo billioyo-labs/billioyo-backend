@@ -16,16 +16,16 @@ public class FirebaseConfig {
     private String firebaseKeyPath;
 
     @PostConstruct
-    public void initialize(){
-        try{
+    public void initialize() {
+        try {
             FirebaseOptions options = FirebaseOptions.builder()
-                    .setCredentials(GoogleCredentials.fromStream(
-                            new ClassPathResource(firebaseKeyPath).getInputStream()
-                    )).build();
-            if(FirebaseApp.getApps().isEmpty()){
+                .setCredentials(GoogleCredentials.fromStream(
+                    new ClassPathResource(firebaseKeyPath).getInputStream()
+                )).build();
+            if (FirebaseApp.getApps().isEmpty()) {
                 FirebaseApp.initializeApp(options);
             }
-        }catch(IOException e){
+        } catch (IOException e) {
         }
     }
 }

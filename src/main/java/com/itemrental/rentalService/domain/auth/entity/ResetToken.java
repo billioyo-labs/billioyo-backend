@@ -18,7 +18,7 @@ public class ResetToken {
     @Indexed
     private String email;
 
-    public ResetToken(String token, String email){
+    public ResetToken(String token, String email) {
         this.email = email;
         this.token = token;
     }

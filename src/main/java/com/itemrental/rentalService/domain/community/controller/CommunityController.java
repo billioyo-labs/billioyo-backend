@@ -26,69 +26,68 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommunityController {
 
-  private final CommunityPostService postService;
-  private final S3Service s3Service;
-  private final CommunityPostInteractionService interactionService;
-  private final CommunityCommentService commentService;
+    private final CommunityPostService postService;
+    private final S3Service s3Service;
+    private final CommunityPostInteractionService interactionService;
+    private final CommunityCommentService commentService;
 
-  //커뮤니티 생성
-  @PostMapping
-  public ResponseEntity<CommunityPostCreateResponseDto> createCommunityPost(@RequestBody CommunityPostCreateRequestDto dto) {
-    return ResponseEntity.ok(postService.createCommunityPost(dto));
-  }
+    //커뮤니티 생성
+    @PostMapping
+    public ResponseEntity<CommunityPostCreateResponseDto> createCommunityPost(@RequestBody CommunityPostCreateRequestDto dto) {
+        return ResponseEntity.ok(postService.createCommunityPost(dto));
+    }
 
-  //커뮤니티 상세 조회
-  @GetMapping("/{postId}")
-  public ResponseEntity<CommunityPostReadResponseDto> getPost(@PathVariable Long postId) {
-    return ResponseEntity.ok(postService.getCommunityPost(postId));
-  }
+    //커뮤니티 상세 조회
+    @GetMapping("/{postId}")
+    public ResponseEntity<CommunityPostReadResponseDto> getPost(@PathVariable Long postId) {
+        return ResponseEntity.ok(postService.getCommunityPost(postId));
+    }
 
-  //커뮤니티 수정
-  @PutMapping("/{postId}")
-  public ResponseEntity<String> updatePost(@PathVariable Long postId, @RequestBody CommunityPostUpdateRequestDto dto) {
-    postService.updateCommunityPost(postId, dto);
-    return ResponseEntity.ok("게시글 수정 완료");
-  }
+    //커뮤니티 수정
+    @PutMapping("/{postId}")
+    public ResponseEntity<String> updatePost(@PathVariable Long postId, @RequestBody CommunityPostUpdateRequestDto dto) {
+        postService.updateCommunityPost(postId, dto);
+        return ResponseEntity.ok("게시글 수정 완료");
+    }
 
-  //커뮤니티 삭제
-  @DeleteMapping("/{postId}")
-  public ResponseEntity<String> deletePost(@PathVariable Long postId) {
-    postService.deleteCommunityPost(postId);
-    return ResponseEntity.ok("게시글 삭제 완료");
-  }
+    //커뮤니티 삭제
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<String> deletePost(@PathVariable Long postId) {
+        postService.deleteCommunityPost(postId);
+        return ResponseEntity.ok("게시글 삭제 완료");
+    }
 
-  @PostMapping("/{postId}/like")
-  public ResponseEntity<Integer> likePost(@PathVariable Long postId) {
-    int likeCount = interactionService.toggleLike(postId);
-    return ResponseEntity.ok(likeCount);
-  }
+    @PostMapping("/{postId}/like")
+    public ResponseEntity<Integer> likePost(@PathVariable Long postId) {
+        int likeCount = interactionService.toggleLike(postId);
+        return ResponseEntity.ok(likeCount);
+    }
 
-  @PostMapping("/{postId}/bm")
-  public ResponseEntity<String> bmPost(@PathVariable Long postId) {
-    String message = interactionService.toggleBookmark(postId);
-    return ResponseEntity.ok(message);
-  }
+    @PostMapping("/{postId}/bm")
+    public ResponseEntity<String> bmPost(@PathVariable Long postId) {
+        String message = interactionService.toggleBookmark(postId);
+        return ResponseEntity.ok(message);
+    }
 
 
-  @GetMapping("/posts")
-  public ResponseEntity<Page<CommunityPostListResponseDto>> getPosts(
-          @ModelAttribute CommunityPostSearchRequestDto searchDto,
-      @PageableDefault(size = 10, sort = "createdAt",direction = Sort.Direction.DESC) Pageable pageable
-  ){
-    return ResponseEntity.ok(postService.getPostList(pageable, searchDto));
-  }
+    @GetMapping("/posts")
+    public ResponseEntity<Page<CommunityPostListResponseDto>> getPosts(
+        @ModelAttribute CommunityPostSearchRequestDto searchDto,
+        @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        return ResponseEntity.ok(postService.getPostList(pageable, searchDto));
+    }
 
-  @PostMapping("/comment/{postId}")
-  public ResponseEntity<String> creatComment(@RequestBody CommentCreateRequestDto dto, @PathVariable Long postId) {
-    commentService.createCommunityComment(dto, postId);
-    return ResponseEntity.ok("댓글 생성됨");
-  }
+    @PostMapping("/comment/{postId}")
+    public ResponseEntity<String> creatComment(@RequestBody CommentCreateRequestDto dto, @PathVariable Long postId) {
+        commentService.createCommunityComment(dto, postId);
+        return ResponseEntity.ok("댓글 생성됨");
+    }
 
-  @GetMapping("/posts/search")
-  public ResponseEntity<List<CommunityPostListResponseDto>> searchPosts(@RequestParam String keyword) {
-    return ResponseEntity.ok(postService.searchPosts(keyword));
-  }
-
+    @GetMapping("/posts/search")
+    public ResponseEntity<List<CommunityPostListResponseDto>> searchPosts(@RequestParam String keyword) {
+        return ResponseEntity.ok(postService.searchPosts(keyword));
+    }
 
 
 }

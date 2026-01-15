@@ -8,9 +8,9 @@ import com.itemrental.rentalService.domain.rental.dto.request.ReviewCreateReques
 import com.itemrental.rentalService.domain.rental.dto.response.RentalPostListResponseDto;
 import com.itemrental.rentalService.domain.rental.dto.response.RentalPostReadResponseDto;
 import com.itemrental.rentalService.domain.rental.service.ImageAnalysisService;
-import com.itemrental.rentalService.global.response.ApiResponse;
 import com.itemrental.rentalService.domain.rental.service.PostInteractionService;
 import com.itemrental.rentalService.domain.rental.service.RentalService;
+import com.itemrental.rentalService.global.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -28,88 +28,91 @@ import java.util.Map;
 @RequestMapping("/products")
 public class RentalController {
 
-  private final RentalService rentalService;
-  private final PostInteractionService interactionService;
-  private final ImageAnalysisService imageAnalysisService;
+    private final RentalService rentalService;
+    private final PostInteractionService interactionService;
+    private final ImageAnalysisService imageAnalysisService;
 
-  //대여 게시글 생성
-  @PostMapping
-  public ResponseEntity<ApiResponse<Long>> createPost(@RequestBody RentalPostCreateRequestDto dto) {
-    return ResponseEntity.ok(ApiResponse.success("게시글이 등록되었습니다.", rentalService.createRentalPost(dto)));
-  }
-  //대여 게시글 상세 조회
-  @GetMapping("/{postId}")
-  public ResponseEntity<RentalPostReadResponseDto> getRentalPost(@PathVariable Long postId) {
-    return ResponseEntity.ok(rentalService.getRentalPost(postId));
-  }
-  //대여 게시글 수정
-  @PutMapping("/{postId}")
-  public ResponseEntity<ApiResponse<Void>> updateRentalPost(@PathVariable Long postId, @RequestBody RentalPostUpdateRequestDto dto) {
-    rentalService.updateRentalPost(postId, dto);
-    return ResponseEntity.ok(ApiResponse.success("게시글이 수정되었습니다."));
-  }
-  //대여 게시글 삭제
-  @DeleteMapping("/{postId}")
-  public ResponseEntity<ApiResponse<Void>> deleteRentalPost(@PathVariable Long postId) {
-    rentalService.deleteRentalPost(postId);
-    return ResponseEntity.ok(ApiResponse.success("게시글이 삭제되었습니다"));
-  }
+    //대여 게시글 생성
+    @PostMapping
+    public ResponseEntity<ApiResponse<Long>> createPost(@RequestBody RentalPostCreateRequestDto dto) {
+        return ResponseEntity.ok(ApiResponse.success("게시글이 등록되었습니다.", rentalService.createRentalPost(dto)));
+    }
 
+    //대여 게시글 상세 조회
+    @GetMapping("/{postId}")
+    public ResponseEntity<RentalPostReadResponseDto> getRentalPost(@PathVariable Long postId) {
+        return ResponseEntity.ok(rentalService.getRentalPost(postId));
+    }
 
-  @GetMapping
-  public ResponseEntity<Page<RentalPostListResponseDto>> getPosts(
-          @ModelAttribute RentalPostSearchRequestDto searchDto,
-      @PageableDefault(size = 10, sort = "createdAt",direction = Sort.Direction.DESC) Pageable pageable
-  ){
-    return ResponseEntity.ok(rentalService.getPosts(pageable, searchDto));
-  }
+    //대여 게시글 수정
+    @PutMapping("/{postId}")
+    public ResponseEntity<ApiResponse<Void>> updateRentalPost(@PathVariable Long postId, @RequestBody RentalPostUpdateRequestDto dto) {
+        rentalService.updateRentalPost(postId, dto);
+        return ResponseEntity.ok(ApiResponse.success("게시글이 수정되었습니다."));
+    }
+
+    //대여 게시글 삭제
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<ApiResponse<Void>> deleteRentalPost(@PathVariable Long postId) {
+        rentalService.deleteRentalPost(postId);
+        return ResponseEntity.ok(ApiResponse.success("게시글이 삭제되었습니다"));
+    }
 
 
-  //게시글 리뷰 작성
-  @PostMapping("review/{postId}")
-  public ResponseEntity<ApiResponse<Void>> createPostReview(@RequestBody ReviewCreateRequestDto dto, @PathVariable Long postId) {
-    interactionService.createPostReview(dto, postId);
-    return ResponseEntity.ok(ApiResponse.success("리뷰가 등록되었습니다"));
-  }
-
-  // 특정 판매자의 상품 목록 조회
-  @GetMapping("/seller/{userId}")
-  public ResponseEntity<ApiResponse<Page<RentalPostListResponseDto>>> getSellerPosts(
-      @PathVariable Long userId,
-      @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
-  ) {
-    Page<RentalPostListResponseDto> sellerPosts = interactionService.getSellerPosts(pageable, userId);
-    return ResponseEntity.ok(ApiResponse.success("판매자 상품 목록 조회 성공", sellerPosts));
-  }
+    @GetMapping
+    public ResponseEntity<Page<RentalPostListResponseDto>> getPosts(
+        @ModelAttribute RentalPostSearchRequestDto searchDto,
+        @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        return ResponseEntity.ok(rentalService.getPosts(pageable, searchDto));
+    }
 
 
-  @PostMapping("/{postId}/like")
-  public ResponseEntity<Long> likePost(@PathVariable Long postId) {
-    Long likeCount = interactionService.toggleLike(postId);
-    return ResponseEntity.ok(likeCount);
-  }
+    //게시글 리뷰 작성
+    @PostMapping("review/{postId}")
+    public ResponseEntity<ApiResponse<Void>> createPostReview(@RequestBody ReviewCreateRequestDto dto, @PathVariable Long postId) {
+        interactionService.createPostReview(dto, postId);
+        return ResponseEntity.ok(ApiResponse.success("리뷰가 등록되었습니다"));
+    }
 
-  @PostMapping("/{postId}/bm")
-  public ResponseEntity<String> bmPost(@PathVariable Long postId) {
-    String message = interactionService.toggleBookmark(postId);
-    return ResponseEntity.ok(message);
-  }
+    // 특정 판매자의 상품 목록 조회
+    @GetMapping("/seller/{userId}")
+    public ResponseEntity<ApiResponse<Page<RentalPostListResponseDto>>> getSellerPosts(
+        @PathVariable Long userId,
+        @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        Page<RentalPostListResponseDto> sellerPosts = interactionService.getSellerPosts(pageable, userId);
+        return ResponseEntity.ok(ApiResponse.success("판매자 상품 목록 조회 성공", sellerPosts));
+    }
 
-  //인기글 조회
-  @GetMapping("/popular")
-  public ResponseEntity<ApiResponse<Page<RentalPostListResponseDto>>> getPopularPosts(
-      @PageableDefault(size = 5) Pageable pageable) {
-    return ResponseEntity.ok(ApiResponse.success("인기 게시글 조회 성공", rentalService.getPopularPosts(pageable)));
-  }
 
-  @PostMapping("/analyze-image")
-  public ResponseEntity<ApiResponse<String>> analyzeImageForDescription(@RequestBody Map<String, String> request) {
-    String imageUrl = request.get("imageUrl");
+    @PostMapping("/{postId}/like")
+    public ResponseEntity<Long> likePost(@PathVariable Long postId) {
+        Long likeCount = interactionService.toggleLike(postId);
+        return ResponseEntity.ok(likeCount);
+    }
 
-    log.info("AI 분석 요청 - URL: {}",  imageUrl);
+    @PostMapping("/{postId}/bm")
+    public ResponseEntity<String> bmPost(@PathVariable Long postId) {
+        String message = interactionService.toggleBookmark(postId);
+        return ResponseEntity.ok(message);
+    }
 
-    String description = imageAnalysisService.generateDescription(imageUrl);
+    //인기글 조회
+    @GetMapping("/popular")
+    public ResponseEntity<ApiResponse<Page<RentalPostListResponseDto>>> getPopularPosts(
+        @PageableDefault(size = 5) Pageable pageable) {
+        return ResponseEntity.ok(ApiResponse.success("인기 게시글 조회 성공", rentalService.getPopularPosts(pageable)));
+    }
 
-    return ResponseEntity.ok(ApiResponse.success("AI가 소개글을 생성했습니다.", description));
-  }
+    @PostMapping("/analyze-image")
+    public ResponseEntity<ApiResponse<String>> analyzeImageForDescription(@RequestBody Map<String, String> request) {
+        String imageUrl = request.get("imageUrl");
+
+        log.info("AI 분석 요청 - URL: {}", imageUrl);
+
+        String description = imageAnalysisService.generateDescription(imageUrl);
+
+        return ResponseEntity.ok(ApiResponse.success("AI가 소개글을 생성했습니다.", description));
+    }
 }

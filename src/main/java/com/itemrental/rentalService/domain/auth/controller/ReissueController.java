@@ -18,7 +18,7 @@ public class ReissueController {
     private final JwtService jwtService;
 
     @PostMapping("/accessToken")
-    public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response){
+    public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response) {
         return jwtService.recreateJwt(request, response);
     }
 }

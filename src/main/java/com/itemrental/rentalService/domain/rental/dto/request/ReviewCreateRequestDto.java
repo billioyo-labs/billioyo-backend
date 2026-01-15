@@ -6,6 +6,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class ReviewCreateRequestDto {
-  private String content;
-  private int rating;
+    private String content;
+    private int rating;
 }

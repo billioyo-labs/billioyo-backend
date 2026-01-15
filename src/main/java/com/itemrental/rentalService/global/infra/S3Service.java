@@ -14,22 +14,22 @@ import java.time.Duration;
 @RequiredArgsConstructor
 public class S3Service {
 
-  @Value("${AWS_S3_BUCKET}")
-  private String bucket;
-  @Value("${AWS_REGION}")
-  private String region;
-  private final S3Presigner s3Presigner;
+    @Value("${AWS_S3_BUCKET}")
+    private String bucket;
+    @Value("${AWS_REGION}")
+    private String region;
+    private final S3Presigner s3Presigner;
 
-  public String createPresignedUrl(String path) {
-    PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-        .bucket(bucket)
-        .key(path)
-        .build();
-    PutObjectPresignRequest preSignRequest = PutObjectPresignRequest.builder()
-        .signatureDuration(Duration.ofMinutes(3))
-        .putObjectRequest(putObjectRequest)
-        .build();
-    return s3Presigner.presignPutObject(preSignRequest).url().toString();
-  }
+    public String createPresignedUrl(String path) {
+        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+            .bucket(bucket)
+            .key(path)
+            .build();
+        PutObjectPresignRequest preSignRequest = PutObjectPresignRequest.builder()
+            .signatureDuration(Duration.ofMinutes(3))
+            .putObjectRequest(putObjectRequest)
+            .build();
+        return s3Presigner.presignPutObject(preSignRequest).url().toString();
+    }
 
 }

@@ -12,6 +12,6 @@ import lombok.Setter;
 @Setter
 public class FindAccountDto {
     @Pattern(regexp = "^010-\\d{4}-\\d{4}$",
-            message = "010-0000-0000 형식으로 입력해주세요.")
+        message = "010-0000-0000 형식으로 입력해주세요.")
     private String phoneNumber;
 }

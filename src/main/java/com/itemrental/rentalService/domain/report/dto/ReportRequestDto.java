@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class ReportRequestDto {
-  private Report.TargetType targetType;
-  private Long targetId;
-  private Report.ReportReason reason;
-  private String description;
+    private Report.TargetType targetType;
+    private Long targetId;
+    private Report.ReportReason reason;
+    private String description;
 
 }

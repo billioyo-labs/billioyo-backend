@@ -1,11 +1,13 @@
 package com.itemrental.rentalService.domain.order.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderCreateRequestDto {
-  private Long postId;
-  private Long amount;
+    private Long postId;
+    private Long amount;
 }

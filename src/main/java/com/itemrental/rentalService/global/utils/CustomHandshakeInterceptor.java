@@ -1,17 +1,10 @@
 package com.itemrental.rentalService.global.utils;
 
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
-import io.jsonwebtoken.io.DecodingException;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketHandler;
@@ -55,7 +48,7 @@ public class CustomHandshakeInterceptor implements HandshakeInterceptor {
                 UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
 
                 UsernamePasswordAuthenticationToken auth =
-                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
                 attributes.put("principal", auth);
                 System.out.println("🔌 신규 연결 유저 Principal Name: " + (auth != null ? auth.getName() : "null"));
@@ -69,19 +62,19 @@ public class CustomHandshakeInterceptor implements HandshakeInterceptor {
     }
 
     @Override
-    public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Exception exception){
+    public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Exception exception) {
 
     }
 
-    private String extractTokenFromHeader(ServerHttpRequest request){
+    private String extractTokenFromHeader(ServerHttpRequest request) {
         List<String> authorizationHeaders = request.getHeaders().get("Authorization");
-        if(authorizationHeaders == null || authorizationHeaders.isEmpty()){
+        if (authorizationHeaders == null || authorizationHeaders.isEmpty()) {
             return null;
         }
 
         String header = authorizationHeaders.getFirst();
 
-        if(header != null && header.startsWith("Bearer")){
+        if (header != null && header.startsWith("Bearer")) {
             return header.substring(7);
         }
         return null;

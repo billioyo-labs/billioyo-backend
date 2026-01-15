@@ -8,9 +8,9 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class UserSummary {
-  private Long id;
-  private String email;
-  private String name;
-  private String nickname;
+    private Long id;
+    private String email;
+    private String name;
+    private String nickname;
 }
 

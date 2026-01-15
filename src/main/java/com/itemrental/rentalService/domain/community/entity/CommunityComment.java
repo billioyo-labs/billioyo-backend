@@ -1,9 +1,11 @@
-
 package com.itemrental.rentalService.domain.community.entity;
 
 import com.itemrental.rentalService.domain.user.entity.User;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -13,35 +15,35 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class CommunityComment {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Getter
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Getter
+    private Long id;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name="user_id", nullable = false)
-  @Getter
-  @Setter
-  private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    @Getter
+    @Setter
+    private User user;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name="post_id", nullable = false)
-  @Getter
-  @Setter
-  private CommunityPost post;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id", nullable = false)
+    @Getter
+    @Setter
+    private CommunityPost post;
 
-  @Getter
-  @Setter
-  @Column(nullable = false, columnDefinition = "TEXT")
-  private String comment;
+    @Getter
+    @Setter
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String comment;
 
-  @Getter
-  @Column(nullable = false, updatable = false)
-  private LocalDateTime createdAt;
+    @Getter
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
-  @PrePersist
-  protected void onCreate() {
-    this.createdAt = LocalDateTime.now();
-  }
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 
 }

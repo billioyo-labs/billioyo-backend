@@ -2,7 +2,9 @@ package com.itemrental.rentalService.domain.user.controller;
 
 import com.itemrental.rentalService.domain.rental.dto.response.RentalPostListResponseDto;
 import com.itemrental.rentalService.domain.user.dto.AdminSignUpRequestDto;
-import com.itemrental.rentalService.domain.user.dto.*;
+import com.itemrental.rentalService.domain.user.dto.FindAccountDto;
+import com.itemrental.rentalService.domain.user.dto.SignUpDto;
+import com.itemrental.rentalService.domain.user.dto.UpdateUserDto;
 import com.itemrental.rentalService.domain.user.service.UserService;
 import com.itemrental.rentalService.global.response.ApiResponse;
 import jakarta.validation.Valid;
@@ -28,6 +30,7 @@ public class UserController {
         String message = userService.signUp(signUpDto);
         return ResponseEntity.ok(ApiResponse.success(message));
     }
+
     @PostMapping("/sign-up/admin")
     public ResponseEntity<ApiResponse<Void>> signUpAdmin(@Valid @RequestBody AdminSignUpRequestDto signUpDto) {
         String message = userService.signUpAdmin(signUpDto.getSignUpDto(), signUpDto.getAdminSecret());
@@ -35,14 +38,14 @@ public class UserController {
     }
 
     @GetMapping("/duplicate-check")
-    public ResponseEntity<ApiResponse<Void>> duplicateCheck(@RequestParam("nickName") String nickName){
+    public ResponseEntity<ApiResponse<Void>> duplicateCheck(@RequestParam("nickName") String nickName) {
         userService.duplicateCheck(nickName);
         return ResponseEntity.ok(ApiResponse.success("사용 가능한 아이디입니다."));
     }
 
     @PostMapping("/find-account")
-    public ResponseEntity<ApiResponse<String>> findAccount(@Valid @RequestBody FindAccountDto findAccountDto){
-        return ResponseEntity.ok(ApiResponse.success("사용자 아이디" ,userService.findAccount(findAccountDto.getPhoneNumber())));
+    public ResponseEntity<ApiResponse<String>> findAccount(@Valid @RequestBody FindAccountDto findAccountDto) {
+        return ResponseEntity.ok(ApiResponse.success("사용자 아이디", userService.findAccount(findAccountDto.getPhoneNumber())));
     }
 
     //회원정보 수정
@@ -54,7 +57,7 @@ public class UserController {
 
     @GetMapping("/my-products")
     public ResponseEntity<ApiResponse<Page<RentalPostListResponseDto>>> getMyProducts(
-            @PageableDefault(size = 10) Pageable pageable) {
+        @PageableDefault(size = 10) Pageable pageable) {
 
         Page<RentalPostListResponseDto> myProducts = userService.getMyProducts(pageable);
         return ResponseEntity.ok(ApiResponse.success("내 상품 목록 조회 성공", myProducts));
@@ -62,7 +65,7 @@ public class UserController {
 
     @GetMapping("/my-likes")
     public ResponseEntity<ApiResponse<Page<RentalPostListResponseDto>>> getMyLikedPosts(
-            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+        @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         // userService에서 현재 로그인한 유저 ID를 추출하여 조회 로직 수행
         Page<RentalPostListResponseDto> likedPosts = userService.getMyLikedPosts(pageable);
@@ -72,7 +75,7 @@ public class UserController {
     // 내 북마크 목록 조회
     @GetMapping("/my-bookmarks")
     public ResponseEntity<ApiResponse<Page<RentalPostListResponseDto>>> getMyBookmarkedPosts(
-            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+        @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         Page<RentalPostListResponseDto> bookmarkedPosts = userService.getMyBookmarkedPosts(pageable);
         return ResponseEntity.ok(ApiResponse.success("내 북마크 목록 조회 성공", bookmarkedPosts));
@@ -84,7 +87,6 @@ public class UserController {
         String message = userService.deleteUser();
         return ResponseEntity.ok(ApiResponse.success(message));
     }
-
 
 
 }

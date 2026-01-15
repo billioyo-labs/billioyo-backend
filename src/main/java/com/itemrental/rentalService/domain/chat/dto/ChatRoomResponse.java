@@ -30,12 +30,12 @@ public class ChatRoomResponse {
         }
 
         room.getParticipants().stream()
-                .filter(p -> !p.getUser().getEmail().equals(myEmail)) // 이메일로 정확히 비교
-                .findFirst()
-                .ifPresent(opponent -> {
-                    this.opponentNickname = opponent.getUser().getNickName();
-                    this.opponentEmail = opponent.getUser().getEmail();
-                });
+            .filter(p -> !p.getUser().getEmail().equals(myEmail)) // 이메일로 정확히 비교
+            .findFirst()
+            .ifPresent(opponent -> {
+                this.opponentNickname = opponent.getUser().getNickName();
+                this.opponentEmail = opponent.getUser().getEmail();
+            });
 
         if (this.opponentNickname == null) {
             this.opponentNickname = "나와의 채팅";

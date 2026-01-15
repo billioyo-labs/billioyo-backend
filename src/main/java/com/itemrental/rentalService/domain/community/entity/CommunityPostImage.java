@@ -14,19 +14,19 @@ import lombok.Setter;
 
 public class CommunityPostImage {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  @Getter
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Getter
+    private Long id;
 
-  @Column(nullable = false, length = 1024)
-  @Getter
-  @Setter
-  private String imageUrl;
+    @Column(nullable = false, length = 1024)
+    @Getter
+    @Setter
+    private String imageUrl;
 
-  @Setter
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "community_post_id", nullable = false)
-  private CommunityPost post;
+    @Setter
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "community_post_id", nullable = false)
+    private CommunityPost post;
 
 }

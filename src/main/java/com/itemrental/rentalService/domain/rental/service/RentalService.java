@@ -252,6 +252,4 @@ public class RentalService {
             .build();
         settlementItemRepository.save(si);
     }
-
-
 }

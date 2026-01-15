@@ -1,6 +1,5 @@
 package com.itemrental.rentalService.domain.chat.controller;
 
-import com.itemrental.rentalService.domain.chat.dto.ChatMessage;
 import com.itemrental.rentalService.domain.chat.dto.ChatRoomCreateRequest;
 import com.itemrental.rentalService.domain.chat.dto.ChatRoomResponse;
 import com.itemrental.rentalService.domain.chat.dto.MessageResponse;
@@ -11,8 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -32,8 +29,8 @@ public class ChatRoomController {
 
     @GetMapping("/rooms/{roomId}/messages")
     public ResponseEntity<Slice<MessageResponse>> getHistory(
-            @PathVariable Long roomId,
-            @PageableDefault(size = 30) Pageable pageable) {
+        @PathVariable Long roomId,
+        @PageableDefault(size = 30) Pageable pageable) {
         return ResponseEntity.ok(chatService.getMessageHistory(roomId, pageable));
     }
 

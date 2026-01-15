@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@EqualsAndHashCode(of="id")
+@EqualsAndHashCode(of = "id")
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -66,7 +66,6 @@ public class User implements UserDetails {
     private Notification notification;
 
 
-
     //외래키 관리
     @OneToMany(mappedBy = "user")
     private List<ChattingParticipant> participants;
@@ -96,17 +95,17 @@ public class User implements UserDetails {
     private List<Order> orders;
 
 
-
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
     private List<String> roles = new ArrayList<>();
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities(){
+    public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.roles.stream()
-                .map(role -> new SimpleGrantedAuthority("ROLE_"+role))
-                .collect(Collectors.toList());
+            .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+            .collect(Collectors.toList());
     }
+
     @Override
     public boolean isAccountNonExpired() {
         return true;
@@ -128,14 +127,14 @@ public class User implements UserDetails {
     }
 
 
-    public enum UserState{
+    public enum UserState {
         UNVERIFIED,
         PENDING_PROFILE_SETUP,
         ACTIVE,
         BANNED
     }
 
-    public LoginSuccessDto toLoginSuccessDto(){
+    public LoginSuccessDto toLoginSuccessDto() {
         LoginSuccessDto loginSuccessDto = new LoginSuccessDto();
         loginSuccessDto.setId(this.getId());
         loginSuccessDto.setEmail(this.getEmail());

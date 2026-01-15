@@ -23,17 +23,17 @@ public class ImageAnalysisService {
             Resource imageResource = new UrlResource(s3PublicUrl);
 
             String promptText = "이미지 분석 후 다음 JSON 형식으로만 답하세요. 마크다운 기호(```)는 절대 쓰지 마세요. " +
-                    "{" +
-                    "\"title\": \"물건이름\"," +
-                    "\"description\": \"상세설명\"," +
-                    "\"price\": 10000," +
-                    "\"condition\": \"상태\"" +
-                    "}";
+                "{" +
+                "\"title\": \"물건이름\"," +
+                "\"description\": \"상세설명\"," +
+                "\"price\": 10000," +
+                "\"condition\": \"상태\"" +
+                "}";
 
             String response = chatClient.prompt()
-                    .user(u -> u.text(promptText).media(MimeTypeUtils.IMAGE_JPEG, imageResource))
-                    .call()
-                    .content();
+                .user(u -> u.text(promptText).media(MimeTypeUtils.IMAGE_JPEG, imageResource))
+                .call()
+                .content();
 
             if (response != null) {
                 response = response.replaceAll("```json|```", "").trim();

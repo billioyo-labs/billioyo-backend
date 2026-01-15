@@ -68,5 +68,8 @@ public class Settlement {
         this.bankAccountNumber = bankAccountNumber;
         this.bankAccountHolderName = bankAccountHolderName;
     }
-
+    public void complete() {
+        this.status = SettlementStatus.SETTLED;
+        this.settledAt = LocalDateTime.now();
+    }
 }

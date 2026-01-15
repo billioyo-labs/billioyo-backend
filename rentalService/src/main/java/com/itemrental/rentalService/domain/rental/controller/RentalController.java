@@ -115,4 +115,12 @@ public class RentalController {
 
         return ResponseEntity.ok(ApiResponse.success("AI가 소개글을 생성했습니다.", description));
     }
+
+    // RentalController 내부에 추가
+    @PostMapping("/return/{orderId}")
+    public ResponseEntity<ApiResponse<Void>> returnRental(@PathVariable Long orderId) {
+        rentalService.returnRental(orderId);
+        return ResponseEntity.ok(ApiResponse.success("반납 처리되었습니다."));
+    }
+
 }

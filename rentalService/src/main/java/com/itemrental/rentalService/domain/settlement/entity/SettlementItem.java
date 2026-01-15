@@ -38,6 +38,10 @@ public class SettlementItem {
     @Column
     private LocalDateTime createdAt;
 
+
+    @Column
+    private Long settlementId;
+
     @PrePersist
     void onCreate() {
         this.createdAt = LocalDateTime.now();

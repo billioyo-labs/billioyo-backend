@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.itemrental.rentalService.domain.settlement.entity.SettlementItem.SettlementItemStatus.AVAILABLE;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +25,7 @@ public class SettlementService {
     public SettlementItemResponse getSettlementItems(Long ownerId) {
         List<SettlementItem> items = settlementItemRepository.findAllByOwnerIdAndStatus(
             ownerId,
-            AVAILABLE
+            SettlementItem.SettlementItemStatus.AVAILABLE
         );
         long total = items.stream().mapToLong(SettlementItem::getAmount).sum();
 
@@ -37,7 +36,7 @@ public class SettlementService {
     public SettlementCreateResponse createSettlement(Long ownerId, SettlementCreateRequest dto) {
 
         List<SettlementItem> items = settlementItemRepository
-            .findAllByOwnerIdAndStatus(ownerId, AVAILABLE);
+            .findAllByOwnerIdAndStatus(ownerId, SettlementItem.SettlementItemStatus.AVAILABLE);
 
         if (items.isEmpty()) throw new IllegalStateException("정산 대상 없음");
 
@@ -53,11 +52,28 @@ public class SettlementService {
 
         settlementRepository.save(settlement);
 
-
+        for (SettlementItem item : items) {
+            item.setSettlementId(settlement.getId());
+        }
         return new SettlementCreateResponse(settlement.getId(), total);
     }
+    //정산 완료
+    @Transactional
+    public void completeSettlement(Long settlementId) {
+        Settlement settlement = settlementRepository.findById(settlementId)
+            .orElseThrow(()-> new IllegalArgumentException("정산 건이 존재하지 않습니다"));
+
+        if (settlement.getStatus() == Settlement.SettlementStatus.SETTLED) return;
+
+        List<SettlementItem> items = settlementItemRepository.findAllBySettlementId(settlementId);
+
+        if (items.isEmpty()) throw new IllegalStateException("정산 아이템이 없습니다.");
 
 
+        for(SettlementItem item : items) {
+            item.setStatus(SettlementItem.SettlementItemStatus.SETTLED);
+        }
 
-
+        settlement.complete();
+    }
 }

@@ -10,4 +10,5 @@ public interface SettlementItemRepository extends JpaRepository<SettlementItem, 
     List<SettlementItem> findAllByOwnerIdAndStatus(
         Long ownerId,
         SettlementItem.SettlementItemStatus status);
+    List<SettlementItem> findAllBySettlementId(Long settlementId);
 }

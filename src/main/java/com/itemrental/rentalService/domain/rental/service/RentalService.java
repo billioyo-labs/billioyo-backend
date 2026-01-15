@@ -1,5 +1,7 @@
 package com.itemrental.rentalService.domain.rental.service;
 
+import com.itemrental.rentalService.domain.order.entity.Order;
+import com.itemrental.rentalService.domain.order.repository.OrderRepository;
 import com.itemrental.rentalService.domain.rental.dto.request.RentalPostCreateRequestDto;
 import com.itemrental.rentalService.domain.rental.dto.request.RentalPostSearchRequestDto;
 import com.itemrental.rentalService.domain.rental.dto.request.RentalPostUpdateRequestDto;
@@ -10,6 +12,8 @@ import com.itemrental.rentalService.domain.rental.entity.RentalPost;
 import com.itemrental.rentalService.domain.rental.repository.PostImageRepository;
 import com.itemrental.rentalService.domain.rental.repository.PostLikeRepository;
 import com.itemrental.rentalService.domain.rental.repository.PostRepository;
+import com.itemrental.rentalService.domain.settlement.entity.SettlementItem;
+import com.itemrental.rentalService.domain.settlement.repository.SettlementItemRepository;
 import com.itemrental.rentalService.domain.user.dto.UserSummary;
 import com.itemrental.rentalService.domain.user.entity.User;
 import com.itemrental.rentalService.domain.user.repository.UserRepository;
@@ -32,9 +36,10 @@ public class RentalService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-    private final PostImageRepository imageRepository;
     private final PostLikeRepository likeRepository;
     private final SecurityUtil securityUtil;
+    private final OrderRepository orderRepository;
+    private final SettlementItemRepository settlementItemRepository;
 
     //대여 게시글 생성
     @Transactional
@@ -217,6 +222,35 @@ public class RentalService {
                 post.isStatus(),
                 post.getCreatedAt()
             ));
+    }
+
+    //대여 반납
+    @Transactional
+    public void returnRental(Long orderId){
+        String username = securityUtil.getCurrentUserEmail();
+        User user = userRepository.findByEmail(username)
+            .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다."));
+
+        Order order = orderRepository.findById(orderId)
+            .orElseThrow(() -> new IllegalArgumentException("주문이 존재하지 않습니다"));
+
+        if(!user.getId().equals(order.getUser().getId())) {
+            throw new AccessDeniedException("반납 권한이 없습니다.");
+        }
+
+        RentalPost post = postRepository.findById(order.getPostId())
+            .orElseThrow(()-> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
+
+        post.setStatus(false);
+        order.setStatus(Order.OrderStatus.RETURNED);
+
+        SettlementItem si = SettlementItem.builder()
+            .postId(post.getId())
+            .ownerId(post.getUser().getId())
+            .orderId(orderId)
+            .amount(order.getAmount())
+            .build();
+        settlementItemRepository.save(si);
     }
 
 

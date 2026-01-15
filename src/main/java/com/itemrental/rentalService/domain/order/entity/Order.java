@@ -61,7 +61,8 @@ public class Order {
         CREATED,    // 주문 생성 (결제 전)
         PAID,       // 결제 완료
         CANCELED,   // 주문 취소 (사용자/시스템)
-        EXPIRED     // 결제 미완료로 만료
+        EXPIRED,     // 결제 미완료로 만료
+        RETURNED // 반납됨
     }
 
     @Builder

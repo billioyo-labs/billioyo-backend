@@ -1,6 +1,7 @@
 package com.itemrental.rentalService.domain.settlement.controller;
 
 
+import com.itemrental.rentalService.domain.settlement.dto.SettlementCreateRequest;
 import com.itemrental.rentalService.domain.settlement.dto.SettlementCreateResponse;
 import com.itemrental.rentalService.domain.settlement.dto.SettlementItemResponse;
 import com.itemrental.rentalService.domain.settlement.service.SettlementService;
@@ -24,8 +25,8 @@ public class SettlementController {
     }
 
     @PostMapping("/settlement/{ownerId}")
-    public ApiResponse<SettlementCreateResponse> createSettlement(@PathVariable Long ownerId) {
-        SettlementCreateResponse result = settlementService.createSettlement(ownerId);
+    public ApiResponse<SettlementCreateResponse> createSettlement(@PathVariable Long ownerId, SettlementCreateRequest dto) {
+        SettlementCreateResponse result = settlementService.createSettlement(ownerId, dto);
         return ApiResponse.success("정산 테이블 생성", result);
     }
 

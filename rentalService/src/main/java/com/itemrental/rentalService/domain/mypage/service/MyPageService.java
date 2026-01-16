@@ -7,12 +7,14 @@ import com.itemrental.rentalService.domain.community.repository.CommunityPostBoo
 import com.itemrental.rentalService.domain.community.repository.CommunityPostLikeRepository;
 import com.itemrental.rentalService.domain.community.repository.CommunityPostRepository;
 import com.itemrental.rentalService.domain.mypage.dto.MyPageSummaryDto;
+import com.itemrental.rentalService.domain.order.entity.Order;
 import com.itemrental.rentalService.domain.order.repository.OrderRepository;
 import com.itemrental.rentalService.domain.rental.dto.response.RentalPostListResponseDto;
 import com.itemrental.rentalService.domain.rental.entity.RentalPost;
 import com.itemrental.rentalService.domain.rental.repository.PostRepository;
 import com.itemrental.rentalService.domain.report.repository.ReportRepository;
 import com.itemrental.rentalService.domain.settlement.entity.Settlement;
+import com.itemrental.rentalService.domain.settlement.entity.SettlementItem;
 import com.itemrental.rentalService.domain.settlement.repository.SettlementItemRepository;
 import com.itemrental.rentalService.domain.settlement.repository.SettlementRepository;
 import com.itemrental.rentalService.domain.user.entity.User;
@@ -135,13 +137,18 @@ public class MyPageService {
         User user = userRepository.findByEmail(username)
             .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다"));
 
-        List<Settlement> settlements = settlementRepository.findAllByOwnerIdAndStatus_Settled(user.getId());
+        List<Settlement> settlements = settlementRepository.findAllByOwnerIdAndStatus(
+            user.getId(),
+            Settlement.SettlementStatus.SETTLED
+        );
         Long totalAmount = settlements.stream()
             .mapToLong(Settlement::getTotalAmount)
             .sum();
 
-        int rentedCount = settlementItemRepository.countByOwnerIdAndStatus_Settled(user.getId());
-        int lentCount = orderRepository.countByUserAndStatus_Paid(user);
+        int rentedCount = settlementItemRepository.countByOwnerIdAndStatus(
+            user.getId(),
+            SettlementItem.SettlementItemStatus.SETTLED);
+        int lentCount = orderRepository.countByUserAndStatus(user, Order.OrderStatus.PAID);
 
         return new MyPageSummaryDto(rentedCount, lentCount, totalAmount);
     }

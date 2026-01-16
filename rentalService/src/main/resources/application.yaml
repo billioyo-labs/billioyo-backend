@@ -95,4 +95,4 @@ server:
 
 fcm:
   key:
-    path: ${FCM_KEY_PATH}
+    path: ${FCM_KEY_PATH:dummy}

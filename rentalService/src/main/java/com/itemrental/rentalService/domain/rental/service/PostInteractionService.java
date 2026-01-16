@@ -67,29 +67,6 @@ public class PostInteractionService {
       );
     });
   }
-  @Transactional
-  public Page<RentalPostListResponseDto> getMyPosts(Pageable pageable) {
-      String username = securityUtil.getCurrentUserEmail();
-      User user = userRepository.findByEmail(username).get();
-
-      Page<RentalPost> page = postRepository.findByUserId(user.getId(), pageable);
-
-      return page.map(post -> {
-          String firstImageUrl = post.getImages().isEmpty() ? null : post.getImages().get(0).getImageUrl();
-
-          return new RentalPostListResponseDto(
-                  post.getId(),
-                  post.getUser().getNickName(),
-                  post.getTitle(),
-                  post.getPrice(),
-                  post.isStatus(),
-                  post.getCreatedAt(),
-                  firstImageUrl,
-                  post.getRating(),
-                  post.getReviewsCount()
-          );
-      });
-  }
 
     //게시글 좋아요
     @Transactional

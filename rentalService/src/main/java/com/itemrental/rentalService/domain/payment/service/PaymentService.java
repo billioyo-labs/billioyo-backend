@@ -34,7 +34,7 @@ public class PaymentService {
         RentalPost post = postRepository.findById(order.getPostId())
                 .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
 
-        post.setStatus(true);
+        post.set
         order.setStatus(Order.OrderStatus.PAID);
 
         // 4. 결제 이력 저장

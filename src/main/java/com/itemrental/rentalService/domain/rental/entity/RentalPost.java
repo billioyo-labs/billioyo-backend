@@ -53,6 +53,7 @@ public class RentalPost {
     @Getter
     @Setter
     @Column(nullable = false)
+    @Builder.Default
     private boolean status = true;
 
     @Getter
@@ -63,21 +64,25 @@ public class RentalPost {
     @Getter
     @Setter
     @Column(nullable = false)
+    @Builder.Default
     private Long viewCount = 0L;
 
     @Getter
     @Setter
     @Column(nullable = false)
+    @Builder.Default
     private Long reviewsCount = 0L;
 
     @Getter
     @Setter
     @Column(nullable = false)
+    @Builder.Default
     private double rating = 0.0;
 
     @Getter
     @Setter
     @Column(nullable = false)
+    @Builder.Default
     private Long likeCount = 0L;
 
 
@@ -99,18 +104,22 @@ public class RentalPost {
 
     @OneToMany(mappedBy = "rentalPost", cascade = CascadeType.ALL, orphanRemoval = true)
     @Getter
+    @Builder.Default
     private List<Review> reviews = new ArrayList<>();
 
     @OneToMany(mappedBy = "rentalPost", cascade = CascadeType.ALL, orphanRemoval = true)
     @Getter
+    @Builder.Default
     private List<Image> images = new ArrayList<>();
 
     @OneToMany(mappedBy = "rentalPost", cascade = CascadeType.ALL, orphanRemoval = true)
     @Getter
+    @Builder.Default
     private List<RentalPostBookmark> bookmarks = new ArrayList<>();
 
     @OneToMany(mappedBy = "rentalPost", cascade = CascadeType.ALL, orphanRemoval = true)
     @Getter
+    @Builder.Default
     private List<RentalPostLike> likes = new ArrayList<>();
 
     public void addImage(Image image) {

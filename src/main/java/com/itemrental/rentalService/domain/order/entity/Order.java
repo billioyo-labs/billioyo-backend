@@ -2,10 +2,7 @@ package com.itemrental.rentalService.domain.order.entity;
 
 import com.itemrental.rentalService.domain.user.entity.User;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -14,6 +11,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Table(name = "orders")
+@Builder
+@AllArgsConstructor
 public class Order {
 
     @Id
@@ -64,18 +63,4 @@ public class Order {
         EXPIRED,     // 결제 미완료로 만료
         RETURNED // 반납됨
     }
-
-    @Builder
-    private Order(User user,
-                  Long postId,
-                  String merchantUid,
-                  Long amount) {
-        this.user = user;
-        this.postId = postId;
-        this.merchantUid = merchantUid;
-        this.amount = amount;
-        this.status = OrderStatus.CREATED;
-    }
-
-
 }

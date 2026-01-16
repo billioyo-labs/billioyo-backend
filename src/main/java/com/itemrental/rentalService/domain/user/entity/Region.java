@@ -25,5 +25,6 @@ public class Region {
     private Region parent;
 
     @OneToMany(mappedBy = "parent")
+    @Builder.Default
     private List<Region> children = new ArrayList<>();
 }

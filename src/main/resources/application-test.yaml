@@ -1,32 +1,65 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:testdb;MODE=MySQL
     driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1
     username: sa
     password:
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
-    properties:
-      hibernate:
-        show-sql: true
-        format-sql: true
     hibernate:
       ddl-auto: create-drop
-  sql:
-    init:
-      platform: postgres
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
   data:
     redis:
-      host: ${REDIS_HOST}
-      port: ${REDIS_PORT}
-      password: ${REDIS_PW}
-logging:
-  level:
-    org.springframework.security: DEBUG
+      host: localhost
+      port: 6379
 
+  mail:
+    host: localhost
+    port: 25
+    properties:
+      mail.smtp.auth: false
+      mail.smtp.starttls.enable: false
+
+  ai:
+    vertex:
+      ai:
+        gemini:
+          enabled: false
+
+cloud:
+  aws:
+    credentials:
+      access-key: test-access-key
+      secret-key: test-secret-key
+    region:
+      static: ap-northeast-2
+    s3:
+      bucket: test-bucket
+    stack:
+      auto: false
+    endpoint: http://localhost:4566
 
 jwt:
   header: Authorization
-  secret: ${TOKEN_SECRET}
-  accessTokenExpiresIn: ${ACCESSTOKEN_VALIDTIME}
-  refreshTokenExpiresIn: ${REFRESHTOKEN_VALIDTIME}
+  secret: c2lsdmVybmluZS10ZWNoLXN0YWNrLWzcHJpbmctYm9vdC1qd3QtdHV0b3JpYWwtc2VjcmV0LWtleS10ZXN0LXNlY3JldA== # 256비트 이상 긴 문자열
+  accessTokenExpiresIn: 3600000
+  refreshTokenExpiresIn: 86400000
+
+imp:
+  api:
+    key: test_imp_key
+    secretkey: test_imp_secret
+
+fcm:
+  key:
+    path: src/test/resources/dummy-fcm.json
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.hibernate.SQL: DEBUG

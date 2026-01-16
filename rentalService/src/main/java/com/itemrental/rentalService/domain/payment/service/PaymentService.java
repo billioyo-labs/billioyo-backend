@@ -20,24 +20,32 @@ public class PaymentService {
     private final PaymentHistoryRepository paymentHistoryRepository;
     private final PostRepository postRepository;
 
-    public void processPaymentDone(PaymentInfo payment, PortOneDto dto) {
-        // 1. 데이터 정합성 검증 (Value Object들끼리 비교)
+    @Transactional
+    public void processPaymentDone(PaymentInfo payment, PortOneDto dto, String email) {
+        // 1. 포트원 조회 결과 기본 검증
         validatePaymentData(payment, dto);
 
-        // 2. 주문 정보 조회 및 검증
+        // 2. 주문 조회
         Order order = orderRepository.findById(dto.getOrderId())
                 .orElseThrow(() -> new IllegalStateException("주문을 찾을 수 없습니다. orderId=" + dto.getOrderId()));
 
+        // 3. 결제 주체 검증
+        if (!order.getUser().getEmail().equals(email)) {
+            throw new IllegalStateException("해당 주문에 대한 결제 권한이 없습니다.");
+        }
+
+        // 4. 중복 결제 및 금액/UID 매칭 검증
+        if (order.getStatus() == Order.OrderStatus.PAID) {
+            throw new IllegalStateException("이미 결제가 완료된 주문입니다.");
+        }
         validateOrderMatching(order, payment);
 
-        // 3. 비즈니스 상태 변경 (객체에게 메시지를 던짐)
+        // 5. 상태 변경 및 이력 저장
         RentalPost post = postRepository.findById(order.getPostId())
                 .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
 
         post.setStatus(true);
         order.setStatus(Order.OrderStatus.PAID);
-
-        // 4. 결제 이력 저장
         savePaymentHistory(payment, order);
     }
 

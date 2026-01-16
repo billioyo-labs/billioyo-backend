@@ -165,7 +165,8 @@ public class CommunityPostService {
             page = repository.findAll(pageable);
         }
 
-        return page.map(post -> new CommunityPostListResponseDto(
+        return page.map(post ->
+            new CommunityPostListResponseDto(
             post.getId(),
             post.getCategory(),
             post.getTitle(),

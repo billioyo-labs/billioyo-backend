@@ -1,12 +1,15 @@
-package com.itemrental.rentalService.domain.community.controller;
+package com.itemrental.rentalService.domain.mypage.controller;
 
 
 import com.itemrental.rentalService.domain.community.dto.response.CommunityPostReadResponseDto;
 import com.itemrental.rentalService.domain.community.service.CommunityPostInteractionService;
+import com.itemrental.rentalService.domain.mypage.dto.MyPageSummaryDto;
+import com.itemrental.rentalService.domain.mypage.service.MyPageService;
 import com.itemrental.rentalService.domain.rental.dto.response.RentalPostListResponseDto;
 import com.itemrental.rentalService.domain.rental.service.PostInteractionService;
 import com.itemrental.rentalService.domain.user.dto.UpdateUserDto;
 import com.itemrental.rentalService.domain.user.service.UserService;
+import com.itemrental.rentalService.global.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,19 +27,23 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MyPageController {
 
-    private final CommunityPostInteractionService interactionService;
+    private final MyPageService myPageService;
     private final UserService userService;
-    private final PostInteractionService postInteractionService;
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<MyPageSummaryDto>> getMyPage(){
+        return ResponseEntity.ok(ApiResponse.success("조회 성공",myPageService.getMyPageSummary()));
+    }
 
 
     @GetMapping("/likes")
     public ResponseEntity<List<CommunityPostReadResponseDto>> getLikePosts() {
-        return ResponseEntity.ok(interactionService.getLikedPosts());
+        return ResponseEntity.ok(myPageService.getLikedPosts());
     }
 
     @GetMapping("/bms")
     public ResponseEntity<List<CommunityPostReadResponseDto>> getBmPosts() {
-        return ResponseEntity.ok(interactionService.getBmPosts());
+        return ResponseEntity.ok(myPageService.getBmPosts());
     }
 
     @GetMapping("/profile")
@@ -47,7 +54,7 @@ public class MyPageController {
     @GetMapping("/products")
     public ResponseEntity<Page<RentalPostListResponseDto>> getProducts(
         @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        return ResponseEntity.ok(postInteractionService.getMyPosts(pageable));
+        return ResponseEntity.ok(myPageService.getMyPosts(pageable));
     }
 
 }

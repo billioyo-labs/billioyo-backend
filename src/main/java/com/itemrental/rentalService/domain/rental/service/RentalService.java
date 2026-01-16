@@ -237,6 +237,7 @@ public class RentalService {
     //대여 반납
     @Transactional
     public void returnRental(Long orderId){
+
         String username = securityUtil.getCurrentUserEmail();
         User user = userRepository.findByEmail(username)
             .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다."));

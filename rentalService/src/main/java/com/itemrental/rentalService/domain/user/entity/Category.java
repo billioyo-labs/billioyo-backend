@@ -20,6 +20,7 @@ public class Category {
     private String categoryName;
 
     @OneToMany(mappedBy = "category")
+    @Builder.Default
     private List<RentalPost> rentalPosts = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -28,6 +29,7 @@ public class Category {
     private Category parent;
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<Category> children = new ArrayList<>();
 
     public void addChild(Category child) {

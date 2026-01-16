@@ -25,6 +25,7 @@ public class Notification {
     private String description;
 
     @OneToMany(mappedBy = "notification")
+    @Builder.Default
     private List<User> receivers = new ArrayList<>();
 
     public void addReceiver(User user) {

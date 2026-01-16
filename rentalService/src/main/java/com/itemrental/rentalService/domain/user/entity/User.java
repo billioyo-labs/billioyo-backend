@@ -58,6 +58,7 @@ public class User implements UserDetails {
     private String email;
 
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     private UserState userState = UserState.UNVERIFIED;
 
     @Setter

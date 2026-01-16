@@ -7,9 +7,8 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Setter
 @Table(name = "orders")
 @Builder
 @AllArgsConstructor
@@ -19,7 +18,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; //PK
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user; // 주문자
 
@@ -34,8 +33,9 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     @Column
-    private OrderStatus status;
-
+    @Builder.Default
+    @Setter
+    private OrderStatus status = OrderStatus.CREATED;
 
     @Column
     private LocalDateTime createdAt;

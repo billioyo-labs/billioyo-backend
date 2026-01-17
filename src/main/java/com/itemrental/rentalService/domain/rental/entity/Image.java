@@ -5,23 +5,21 @@ import lombok.*;
 
 
 @Entity
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Table(name = "image")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Image {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, length = 1024)
-    @Getter
-    @Setter
     private String imageUrl;
 
-    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false)
     private RentalPost rentalPost;
+
+    public Image(String imageUrl, RentalPost post) {
+        this.imageUrl = imageUrl;
+        this.rentalPost = post;
+    }
 }

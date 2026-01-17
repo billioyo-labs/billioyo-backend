@@ -27,6 +27,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -37,230 +38,122 @@ public class RentalService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final PostLikeRepository likeRepository;
-    private final SecurityUtil securityUtil;
     private final OrderRepository orderRepository;
     private final SettlementItemRepository settlementItemRepository;
+    private final List<PostSearchStrategy> strategies;
 
     //대여 게시글 생성
     @Transactional
-    public Long createRentalPost(RentalPostCreateRequestDto dto) {
-        String username = securityUtil.getCurrentUserEmail();
-        User user = userRepository.findByEmail(username)
-            .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다."));
+    public Long createRentalPost(RentalPostCreateRequestDto dto, String loginEmail) {
+        User user = userRepository.findByEmail(loginEmail)
+                .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다."));
 
-        RentalPost rentalPost = new RentalPost();
-        rentalPost.setUser(user);
-        rentalPost.setTitle(dto.getTitle());
-        rentalPost.setDescription(dto.getDescription());
-        rentalPost.setPrice(dto.getPrice());
-        rentalPost.setLocation(dto.getLocation());
-        rentalPost.setCategory(dto.getCategory());
-
-        if (dto.getLatitude() != null && dto.getLongitude() != null) {
-            rentalPost.setPosition(new Position(dto.getLatitude(), dto.getLongitude()));
-        }
-
-        postRepository.save(rentalPost);
+        RentalPost rentalPost = RentalPost.create(
+                user, dto.getTitle(), dto.getDescription(), dto.getPrice(),
+                dto.getLocation(), new Position(dto.getLatitude(), dto.getLongitude()), dto.getCategory()
+        );
 
         if (dto.getImageUrls() != null) {
-            for (String imageUrl : dto.getImageUrls()) {
-                Image image = new Image();
-                image.setImageUrl(imageUrl);
-                rentalPost.addImage(image);
-            }
+            dto.getImageUrls().forEach(rentalPost::addImage);
         }
-        postRepository.save(rentalPost);
-        return rentalPost.getId();
+
+        return postRepository.save(rentalPost).getId();
     }
 
     //대여 게시글 상세 조회
     @Transactional
-    public RentalPostReadResponseDto getRentalPost(Long postId) {
+    public RentalPostReadResponseDto getRentalPost(Long postId, String loginEmail) {
         RentalPost rentalPost = postRepository.findById(postId)
-            .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
+                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
 
-        rentalPost.setViewCount(rentalPost.getViewCount() + 1);
+        rentalPost.incrementViewCount();
 
         boolean isLiked = false;
-        String currentUserEmail = securityUtil.getCurrentUserEmail();
-
-        if (currentUserEmail != null && !currentUserEmail.equals("anonymousUser")) {
-            Optional<User> currentUser = userRepository.findByEmail(currentUserEmail);
-            if (currentUser.isPresent()) {
-                isLiked = likeRepository.existsByUserAndRentalPost(currentUser.get(), rentalPost);
-            }
+        if (loginEmail != null && !loginEmail.equals("anonymousUser")) {
+            isLiked = userRepository.findByEmail(loginEmail)
+                    .map(user -> likeRepository.existsByUserAndRentalPost(user, rentalPost))
+                    .orElse(false);
         }
 
-        User seller = rentalPost.getUser();
-        UserSummary sellerSummary = null;
-
-        if (seller != null) {
-            sellerSummary = UserSummary.builder()
-                .id(seller.getId())
-                .email(seller.getEmail())
-                .name(seller.getUsername())
-                .nickname(seller.getNickName())
-                .build();
-        }
-
-        Double lat = (rentalPost.getPosition() != null) ? rentalPost.getPosition().getLatitude() : null;
-        Double lng = (rentalPost.getPosition() != null) ? rentalPost.getPosition().getLongitude() : null;
-
-        return new RentalPostReadResponseDto(
-            rentalPost.getId(),
-            rentalPost.getTitle(),
-            rentalPost.getDescription(),
-            rentalPost.getPrice(),
-            rentalPost.getLocation(),
-            lat,
-            lng,
-            rentalPost.isStatus(),
-            rentalPost.getCreatedAt(),
-            rentalPost.getViewCount(),
-            rentalPost.getUser().getUsername(),
-            rentalPost.getCategory(),
-            rentalPost.getImages(),
-            rentalPost.getReviewsCount(),
-            rentalPost.getRating(),
-            rentalPost.getLikeCount(),
-            isLiked,
-            sellerSummary
-        );
+        return RentalPostReadResponseDto.from(rentalPost, isLiked);
     }
 
     //게시글 수정
     @Transactional
-    public void updateRentalPost(Long postId, RentalPostUpdateRequestDto dto) {
-        String username = securityUtil.getCurrentUserEmail();
-
-        User currentUser = userRepository.findByEmail(username)
-            .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다"));
-
+    public void updateRentalPost(Long postId, RentalPostUpdateRequestDto dto, String loginEmail) {
         RentalPost rentalPost = postRepository.findById(postId)
-            .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
+                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
 
-        User postUser = rentalPost.getUser();
+        validateAuthor(rentalPost, loginEmail);
 
-        if (!postUser.getId().equals(currentUser.getId())) {
-            throw new AccessDeniedException("작성자만 수정할 수 있습니다.");
-        }
-
-        rentalPost.setTitle(dto.getTitle());
-        rentalPost.setDescription(dto.getDescription());
-        rentalPost.setPrice(dto.getPrice());
-        rentalPost.setLocation(dto.getLocation());
-        rentalPost.setCategory(dto.getCategory());
-
-
-//    post.getImages().clear();
-//
-//    if (dto.getImageUrls() != null) {
-//      for (String imageUrl : dto.getImageUrls()) {
-//        CommunityPostImage image = new CommunityPostImage();
-//        image.setPost(post);
-//        image.setImageUrl(imageUrl);
-//        imageRepository.save(image);
-//      }
+        rentalPost.update(dto.getTitle(), dto.getDescription(), dto.getPrice(), dto.getLocation(), dto.getCategory());
     }
 
-  //인기글
-  @Transactional(readOnly = true)
-  public Page<RentalPostListResponseDto> getPopularPosts(Pageable pageable) {
-    Page<RentalPost> page = postRepository.findTop5ByStatusTrueOrderByLikeCountDescViewCountDescCreatedAtDesc(pageable);
+    //인기글
+    @Transactional(readOnly = true)
+    public Page<RentalPostListResponseDto> getPopularPosts(Pageable pageable) {
+        return postRepository.findTop5ByStatusTrueOrderByLikeCountDescViewCountDescCreatedAtDesc(pageable)
+                .map(RentalPostListResponseDto::from);
+    }
 
-    return page.map(post -> {
-      String firstImageUrl = post.getImages().isEmpty() ? null : post.getImages().get(0).getImageUrl();
-
-      return new RentalPostListResponseDto(
-              post.getId(),
-              post.getUser().getNickName(),
-              post.getTitle(),
-              post.getPrice(),
-              post.isStatus(),
-              post.getCreatedAt(),
-              firstImageUrl,
-              post.getRating(),
-              post.getReviewsCount()
-      );
-    });
-  }
-    //게시글 삭제
     @Transactional
-    public void deleteRentalPost(Long postId) {
-        String username = securityUtil.getCurrentUserEmail();
-        User currentUser = userRepository.findByEmail(username).get();
-
+    public void deleteRentalPost(Long postId, String loginEmail) {
         RentalPost rentalPost = postRepository.findById(postId)
-            .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
-        ;
-        User postUser = rentalPost.getUser();
+                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
 
-        if (!postUser.getId().equals(currentUser.getId())) {
-            throw new AccessDeniedException("작성자만 삭제할 수 있습니다.");
-        }
+        validateAuthor(rentalPost, loginEmail);
+
         postRepository.delete(rentalPost);
     }
 
     //상품목록 조회
-    @Transactional(readOnly = true)
     public Page<RentalPostListResponseDto> getPosts(Pageable pageable, RentalPostSearchRequestDto searchDto) {
-        Page<RentalPost> page;
+        PostSearchStrategy strategy = (searchDto.getLat() != null)
+                ? getStrategy(DistanceSearchStrategy.class)
+                : getStrategy(DefaultSearchStrategy.class);
 
-        if (searchDto.getLat() != null && searchDto.getLng() != null && searchDto.getDistance() != null) {
-            page = postRepository.findWithinDistance(
-                searchDto.getLat(),
-                searchDto.getLng(),
-                searchDto.getDistance(),
-                pageable
-            );
-        } else {
-            page = postRepository.findAll(pageable);
-        }
+        return strategy.search(searchDto, pageable)
+                .map(RentalPostListResponseDto::from);
+    }
 
-        return page.map(post -> {
-            String firstImageUrl = post.getImages().isEmpty() ? null : post.getImages().get(0).getImageUrl();
-
-            return new RentalPostListResponseDto(
-                    post.getId(),
-                    post.getUser().getNickName(),
-                    post.getTitle(),
-                    post.getPrice(),
-                    post.isStatus(),
-                    post.getCreatedAt(),
-                    firstImageUrl,
-                    post.getRating(),
-                    post.getReviewsCount()
-            );
-        });
+    private PostSearchStrategy getStrategy(Class<?> strategyClass) {
+        return strategies.stream()
+                .filter(strategyClass::isInstance)
+                .findFirst()
+                .orElseThrow();
     }
 
     //대여 반납
     @Transactional
-    public void returnRental(Long orderId){
-
-        String username = securityUtil.getCurrentUserEmail();
-        User user = userRepository.findByEmail(username)
-            .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다."));
+    public void returnRental(Long orderId, String loginEmail) {
+        User user = userRepository.findByEmail(loginEmail)
+                .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다."));
 
         Order order = orderRepository.findById(orderId)
-            .orElseThrow(() -> new IllegalArgumentException("주문이 존재하지 않습니다"));
+                .orElseThrow(() -> new IllegalArgumentException("주문이 존재하지 않습니다"));
 
-        if(!user.getId().equals(order.getUser().getId())) {
+        if (!user.getId().equals(order.getUser().getId())) {
             throw new AccessDeniedException("반납 권한이 없습니다.");
         }
 
         RentalPost post = postRepository.findById(order.getPostId())
-            .orElseThrow(()-> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
+                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
 
-        post.setStatus(false);
+        post.changeStatus(false);
         order.setStatus(Order.OrderStatus.RETURNED);
 
         SettlementItem si = SettlementItem.builder()
-            .postId(post.getId())
-            .ownerId(post.getUser().getId())
-            .orderId(orderId)
-            .amount(order.getAmount())
-            .build();
+                .postId(post.getId())
+                .ownerId(post.getUser().getId())
+                .orderId(orderId)
+                .amount(order.getAmount())
+                .build();
         settlementItemRepository.save(si);
+    }
+
+    private void validateAuthor(RentalPost post, String email) {
+        if (!post.getUser().getEmail().equals(email)) {
+            throw new AccessDeniedException("작성자만 수정/삭제할 수 있습니다.");
+        }
     }
 }

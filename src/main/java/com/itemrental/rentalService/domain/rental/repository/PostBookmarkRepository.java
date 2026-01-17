@@ -1,10 +1,19 @@
 package com.itemrental.rentalService.domain.rental.repository;
 
+import com.itemrental.rentalService.domain.rental.entity.RentalPost;
 import com.itemrental.rentalService.domain.rental.entity.RentalPostBookmark;
+import com.itemrental.rentalService.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface PostBookmarkRepository extends JpaRepository<RentalPostBookmark, Long> {
-    boolean existsByUser_IdAndRentalPost_Id(Long userId, Long postId);
+import java.util.Optional;
 
-    void deleteByUser_IdAndRentalPost_Id(Long userId, Long postId);
+public interface PostBookmarkRepository extends JpaRepository<RentalPostBookmark, Long> {
+
+    Optional<RentalPostBookmark> findByUserAndRentalPost(User user, RentalPost rentalPost);
+
+    boolean existsByUserAndRentalPost(User user, RentalPost rentalPost);
+
+    void deleteByUserAndRentalPost(User user, RentalPost rentalPost);
+
+    void deleteByUserIdAndRentalPostId(Long userId, Long postId);
 }

@@ -12,118 +12,119 @@ import java.util.List;
 
 
 @Entity
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder(access = AccessLevel.PRIVATE)
 @Table(name = "rental_post")
 public class RentalPost {
 
     @Id
-    @Getter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id", nullable = false, updatable = false, unique = true)
     private Long id;
 
-    @Getter
-    @Setter
     @Column(nullable = false)
     private String title;
 
-    @Getter
-    @Setter
     @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
 
-    @Getter
-    @Setter
     @Column(nullable = false)
     private Long price;
 
-    @Getter
-    @Setter
     @Column(nullable = false)
     private String location;
 
-    @Getter
-    @Setter
-    @Column(nullable = false)
     @Embedded
+    @Column(nullable = false)
     private Position position;
 
-    @Getter
-    @Setter
     @Column(nullable = false)
-    @Builder.Default
-    private boolean status = true;
+    private boolean status;
 
-    @Getter
-    @Setter
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @Getter
-    @Setter
     @Column(nullable = false)
-    @Builder.Default
-    private Long viewCount = 0L;
+    private Long viewCount;
 
-    @Getter
-    @Setter
     @Column(nullable = false)
-    @Builder.Default
-    private Long reviewsCount = 0L;
+    private Long reviewsCount;
 
-    @Getter
-    @Setter
     @Column(nullable = false)
-    @Builder.Default
-    private double rating = 0.0;
+    private double rating;
 
-    @Getter
-    @Setter
     @Column(nullable = false)
-    @Builder.Default
-    private Long likeCount = 0L;
-
+    private Long likeCount;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
-    @Getter
-    @Setter
     private User user;
 
-    @Getter
-    @Setter
     @Column(nullable = false)
     private String category;
 
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-    }
-
     @OneToMany(mappedBy = "rentalPost", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Getter
-    @Builder.Default
-    private List<Review> reviews = new ArrayList<>();
-
-    @OneToMany(mappedBy = "rentalPost", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Getter
     @Builder.Default
     private List<Image> images = new ArrayList<>();
 
-    @OneToMany(mappedBy = "rentalPost", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Getter
+    @OneToMany(mappedBy = "rentalPost", cascade = CascadeType.ALL)
     @Builder.Default
-    private List<RentalPostBookmark> bookmarks = new ArrayList<>();
+    private List<Review> reviews = new ArrayList<>();
 
-    @OneToMany(mappedBy = "rentalPost", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Getter
-    @Builder.Default
-    private List<RentalPostLike> likes = new ArrayList<>();
+    public static RentalPost create(User user, String title, String description, Long price,
+                                    String location, Position position, String category) {
+        return RentalPost.builder()
+                .user(user)
+                .title(title)
+                .description(description)
+                .price(price)
+                .location(location)
+                .position(position)
+                .category(category)
+                .status(false)
+                .viewCount(0L)
+                .reviewsCount(0L)
+                .likeCount(0L)
+                .rating(0.0)
+                .createdAt(LocalDateTime.now())
+                .images(new ArrayList<>())
+                .build();
+    }
 
-    public void addImage(Image image) {
+    public void update(String title, String description, Long price, String location, String category) {
+        this.title = title;
+        this.description = description;
+        this.price = price;
+        this.location = location;
+        this.category = category;
+    }
+
+    public void incrementViewCount() {
+        this.viewCount++;
+    }
+
+    public void toggleLike(boolean isAdding) {
+        this.likeCount = isAdding ? this.likeCount + 1 : Math.max(0, this.likeCount - 1);
+    }
+
+    public void changeStatus(boolean status) {
+        this.status = status;
+    }
+    
+    public void addImage(String imageUrl) {
+        Image image = new Image(imageUrl, this);
         this.images.add(image);
-        image.setRentalPost(this);
+    }
+
+    public void addReview(Review review) {
+        this.reviews.add(review);
+    }
+
+    public void updateRating(int newRating) {
+        double totalScore = (this.rating * this.reviewsCount) + newRating;
+        this.reviewsCount++;
+        this.rating = Math.round((totalScore / this.reviewsCount) * 10) / 10.0;
     }
 }

@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
 
@@ -48,12 +49,9 @@ class OrderServiceTest {
         User owner = User.builder().id(2L).email("owner@test.com").build();
         User renter = User.builder().id(1L).email(email).build();
 
-        RentalPost post = RentalPost.builder()
-                .id(10L)
-                .user(owner)
-                .price(5000L)
-                .status(false)
-                .build();
+        RentalPost post = RentalPost.create(owner, "제목", "내용", 5000L, "서울", null, "가전");
+        ReflectionTestUtils.setField(post, "id", 10L);
+        post.changeStatus(false);
 
         given(userRepository.findByEmail(email)).willReturn(Optional.of(renter));
         given(postRepository.findById(10L)).willReturn(Optional.of(post));
@@ -104,7 +102,8 @@ class OrderServiceTest {
         // given
         String email = "owner@test.com";
         User owner = User.builder().email(email).build();
-        RentalPost post = RentalPost.builder().id(10L).user(owner).build();
+        RentalPost post = RentalPost.create(owner, "제목", "내용", 5000L, "서울", null, "가전");
+        ReflectionTestUtils.setField(post, "id", 10L);
 
         given(userRepository.findByEmail(email)).willReturn(Optional.of(owner));
         given(postRepository.findById(10L)).willReturn(Optional.of(post));
@@ -121,7 +120,8 @@ class OrderServiceTest {
         // given
         String email = "renter@test.com";
         User owner = User.builder().email("owner@test.com").build();
-        RentalPost post = RentalPost.builder().id(10L).user(owner).status(true).build();
+        RentalPost post = RentalPost.create(owner, "제목", "내용", 5000L, "서울", null, "가전");
+        post.changeStatus(true);
 
         given(userRepository.findByEmail(email)).willReturn(Optional.of(User.builder().build()));
         given(postRepository.findById(10L)).willReturn(Optional.of(post));
@@ -142,12 +142,8 @@ class OrderServiceTest {
         User owner = User.builder().email(ownerEmail).build();
         User renter = User.builder().email(renterEmail).build();
 
-        RentalPost post = RentalPost.builder()
-                .id(10L)
-                .price(10000L)
-                .user(owner)
-                .status(false)
-                .build();
+        RentalPost post = RentalPost.create(owner, "제목", "내용", 10000L, "서울", null, "가전");
+        post.changeStatus(false);
 
         given(userRepository.findByEmail(renterEmail)).willReturn(Optional.of(renter));
         given(postRepository.findById(10L)).willReturn(Optional.of(post));
@@ -163,16 +159,14 @@ class OrderServiceTest {
     void createOrder_InvalidAmount() {
         // given
         String email = "renter@test.com";
-        OrderCreateRequestDto requestDto = new OrderCreateRequestDto(10L, 0L); // 0원 요청
+        Long postId = 10L;
+        OrderCreateRequestDto requestDto = new OrderCreateRequestDto(10L, 0L);
 
         User renter = User.builder().email(email).build();
         User owner = User.builder().email("owner@test.com").build();
-        RentalPost post = RentalPost.builder()
-                .id(10L)
-                .user(owner)
-                .price(0L)
-                .status(false)
-                .build();
+        RentalPost post = RentalPost.create(owner, "제목", "내용", 0L, "서울", null, "가전");
+        ReflectionTestUtils.setField(post, "id", postId);
+        post.changeStatus(false);
 
         given(userRepository.findByEmail(email)).willReturn(Optional.of(renter));
         given(postRepository.findById(10L)).willReturn(Optional.of(post));

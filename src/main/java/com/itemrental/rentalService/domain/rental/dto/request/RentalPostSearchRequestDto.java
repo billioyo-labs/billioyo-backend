@@ -1,12 +1,10 @@
 package com.itemrental.rentalService.domain.rental.dto.request;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
-@Setter
-@NoArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RentalPostSearchRequestDto {
     private Double lat;
     private Double lng;

@@ -17,6 +17,7 @@ import com.itemrental.rentalService.global.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,95 +27,73 @@ public class PostInteractionService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final PostReviewRepository reviewRepository;
-    private final PostBookmarkRepository bmRepo;
-    private final PostLikeRepository likeRepo;
-    private final SecurityUtil securityUtil;
+    private final PostBookmarkRepository bmRepository;
+    private final PostLikeRepository likeRepository;
 
 
     @Transactional
-    public void createPostReview(ReviewCreateRequestDto dto, Long postId) {
-        String username = securityUtil.getCurrentUserEmail();
-        User user = userRepository.findByEmail(username).get();
+    public void createPostReview(ReviewCreateRequestDto dto, Long postId, String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다."));
+        RentalPost rentalPost = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
 
-        RentalPost rentalPost = postRepository.findById(postId).get();
+        rentalPost.updateRating(dto.getRating());
 
-        Review review = new Review();
-        review.setContent(dto.getContent());
-        review.setRating(dto.getRating());
-        review.setUser(user);
-        review.setRentalPost(rentalPost);
+        Review review = Review.create(user, rentalPost, dto.getContent(), dto.getRating());
 
-    reviewRepository.save(review);
-  }
+        reviewRepository.save(review);
+    }
 
-  //같은 seller 상품 조회
-  @Transactional(readOnly = true)
-  public Page<RentalPostListResponseDto> getSellerPosts(Pageable pageable, Long userId) {
-    Page<RentalPost> page = postRepository.findByUserId(userId, pageable);
-    return page.map(post -> {
-      String firstImageUrl = post.getImages().isEmpty() ? null : post.getImages().get(0).getImageUrl();
-
-      return new RentalPostListResponseDto(
-              post.getId(),
-              post.getUser().getNickName(),
-              post.getTitle(),
-              post.getPrice(),
-              post.isStatus(),
-              post.getCreatedAt(),
-              firstImageUrl,
-              post.getRating(),
-              post.getReviewsCount()
-      );
-    });
-  }
+    //같은 seller 상품 조회
+    @Transactional(readOnly = true)
+    public Page<RentalPostListResponseDto> getSellerPosts(Pageable pageable, Long userId) {
+        return postRepository.findByUserId(userId, pageable)
+                .map(RentalPostListResponseDto::from);
+    }
 
     //게시글 좋아요
     @Transactional
-    public Long toggleLike(Long postId) {
-        String username = securityUtil.getCurrentUserEmail();
-        User user = userRepository.findByEmail(username)
-            .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다"));
-
+    public Long toggleLike(Long postId, String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다."));
         RentalPost rentalPost = postRepository.findById(postId)
-            .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
-        ;
-        if (likeRepo.existsByUser_IdAndRentalPost_Id(user.getId(), rentalPost.getId())) {
-            // 이미 좋아요 → 삭제
-            likeRepo.deleteByUser_IdAndRentalPost_Id(user.getId(), rentalPost.getId());
-            rentalPost.setLikeCount(rentalPost.getLikeCount() - 1);
-        } else {
-            // 없으니까 추가
-            RentalPostLike postLike = new RentalPostLike();
-            postLike.setUser(user);
-            postLike.setRentalPost(rentalPost);
-            likeRepo.save(postLike);
-            rentalPost.setLikeCount(rentalPost.getLikeCount() + 1);
-        }
+                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
+
+        likeRepository.findByUserAndRentalPost(user, rentalPost)
+                .ifPresentOrElse(
+                        like -> {
+                            likeRepository.delete(like);
+                            rentalPost.toggleLike(false);
+                        },
+                        () -> {
+                            RentalPostLike newLike = RentalPostLike.create(user, rentalPost);
+                            likeRepository.save(newLike);
+                            rentalPost.toggleLike(true);
+                        }
+                );
+
         return rentalPost.getLikeCount();
     }
 
     //게시글 북마크
     @Transactional
-    public String toggleBookmark(Long postId) {
-        String username = securityUtil.getCurrentUserEmail();
-        User user = userRepository.findByEmail(username)
-            .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다"));
-
+    public String toggleBookmark(Long postId, String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다."));
         RentalPost rentalPost = postRepository.findById(postId)
-            .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
-        ;
-        if (bmRepo.existsByUser_IdAndRentalPost_Id(user.getId(), rentalPost.getId())) {
-            // 이미 좋아요 → 삭제
-            bmRepo.deleteByUser_IdAndRentalPost_Id(user.getId(), rentalPost.getId());
-            return "북마크 취소";
-        } else {
-            // 없으니까 추가
-            RentalPostBookmark postBm = new RentalPostBookmark();
-            postBm.setUser(user);
-            postBm.setRentalPost(rentalPost);
-            bmRepo.save(postBm);
-            return "북마크";
-        }
+                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
+
+        return bmRepository.findByUserAndRentalPost(user, rentalPost)
+                .map(bookmark -> {
+                    bmRepository.delete(bookmark);
+                    return "북마크 취소";
+                })
+                .orElseGet(() -> {
+                    RentalPostBookmark newBookmark = RentalPostBookmark.create(user, rentalPost);
+                    bmRepository.save(newBookmark);
+                    return "북마크";
+                });
     }
 
 }

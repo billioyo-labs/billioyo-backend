@@ -1,13 +1,16 @@
 package com.itemrental.rentalService.domain.rental.dto.request;
 
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class RentalPostCreateRequestDto {
     private String title;
     private String description;

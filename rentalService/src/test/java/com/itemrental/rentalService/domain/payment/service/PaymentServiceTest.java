@@ -15,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
 
@@ -56,10 +57,12 @@ class PaymentServiceTest {
         PortOneDto dto = createDto();
         PaymentInfo payment = createPaymentInfo("paid", 10000L);
         User user = User.builder().email(TEST_EMAIL).build();
+        User owner = User.builder().email("owner@test.com").build();
 
         Order order = Order.builder()
                 .id(1L).user(user).merchantUid("merchant_456").amount(10000L).postId(10L).build();
-        RentalPost post = new RentalPost();
+        RentalPost post = RentalPost.create(owner, "제목", "내용", 10000L, "서울", null, "가전");
+        ReflectionTestUtils.setField(post, "id", 10L);
 
         given(orderRepository.findById(1L)).willReturn(Optional.of(order));
         given(postRepository.findById(10L)).willReturn(Optional.of(post));

@@ -3,55 +3,44 @@ package com.itemrental.rentalService.domain.rental.entity;
 
 import com.itemrental.rentalService.domain.user.entity.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Review {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter
-    @Column(name = "reviewId", nullable = false, updatable = false, unique = true)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
-    @Getter
-    @Setter
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
-
-    @Getter
-    @Setter
     @Column(nullable = false)
-    private int rating; // ⭐️ 별점 (1~5)
-
-    @Getter
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private int rating; // 1~5
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    @Getter
-    @Setter
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
-    @Getter
-    @Setter
+    @JoinColumn(name = "post_id", nullable = false)
     private RentalPost rentalPost;
 
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    public static Review create(User user, RentalPost post, String content, int rating) {
+        Review review = new Review();
+        review.user = user;
+        review.rentalPost = post;
+        review.content = content;
+        review.rating = rating;
+        review.createdAt = LocalDateTime.now();
+
+        post.addReview(review);
+        return review;
     }
 }

@@ -3,49 +3,36 @@ package com.itemrental.rentalService.domain.rental.entity;
 
 import com.itemrental.rentalService.domain.user.entity.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table(
-    name = "rental_post_like",
-    uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"post_id", "user_id"})
-    }
-)
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Table(name = "rental_post_like",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"post_id", "user_id"}))
 public class RentalPostLike {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    @Getter
-    @Setter
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
-    @Getter
-    @Setter
+    @JoinColumn(name = "post_id", nullable = false)
     private RentalPost rentalPost;
 
-    @Getter
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
+    public static RentalPostLike create(User user, RentalPost rentalPost) {
+        RentalPostLike like = new RentalPostLike();
+        like.user = user;
+        like.rentalPost = rentalPost;
+        like.createdAt = LocalDateTime.now();
+        return like;
     }
-
 }

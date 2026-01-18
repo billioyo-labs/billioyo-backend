@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.itemrental.rentalService.domain.rental.entity.Image;
 import com.itemrental.rentalService.domain.rental.entity.RentalPost;
-import com.itemrental.rentalService.domain.user.dto.UserSummary;
+import com.itemrental.rentalService.domain.user.dto.response.UserSummaryResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,7 +36,7 @@ public class RentalPostReadResponseDto {
     private double likeCount;
     @JsonProperty("isLiked")
     private boolean isLiked;
-    private UserSummary seller;
+    private UserSummaryResponseDto seller;
 
     public static RentalPostReadResponseDto from(RentalPost post, boolean isLiked) {
         return RentalPostReadResponseDto.builder()
@@ -59,7 +59,7 @@ public class RentalPostReadResponseDto {
                 .rating(post.getRating())
                 .likeCount((double) post.getLikeCount())
                 .isLiked(isLiked)
-                .seller(UserSummary.from(post.getUser()))
+                .seller(UserSummaryResponseDto.from(post.getUser()))
                 .build();
     }
 }

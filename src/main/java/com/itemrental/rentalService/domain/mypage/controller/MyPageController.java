@@ -2,12 +2,10 @@ package com.itemrental.rentalService.domain.mypage.controller;
 
 
 import com.itemrental.rentalService.domain.community.dto.response.CommunityPostReadResponseDto;
-import com.itemrental.rentalService.domain.community.service.CommunityPostInteractionService;
 import com.itemrental.rentalService.domain.mypage.dto.MyPageSummaryDto;
 import com.itemrental.rentalService.domain.mypage.service.MyPageService;
 import com.itemrental.rentalService.domain.rental.dto.response.RentalPostListResponseDto;
-import com.itemrental.rentalService.domain.rental.service.PostInteractionService;
-import com.itemrental.rentalService.domain.user.dto.UpdateUserDto;
+import com.itemrental.rentalService.domain.user.dto.request.UserProfileUpdateRequestDto;
 import com.itemrental.rentalService.domain.user.service.UserService;
 import com.itemrental.rentalService.global.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -47,8 +46,8 @@ public class MyPageController {
     }
 
     @GetMapping("/profile")
-    public ResponseEntity<UpdateUserDto> getProfile() {
-        return ResponseEntity.ok(userService.getProfile());
+    public ResponseEntity<UserProfileUpdateRequestDto> getProfile(Principal principal) {
+        return ResponseEntity.ok(userService.getProfile(principal.getName()));
     }
 
     @GetMapping("/products")

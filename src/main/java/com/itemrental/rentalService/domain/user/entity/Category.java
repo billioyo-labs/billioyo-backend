@@ -25,7 +25,6 @@ public class Category {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parentId")
-    @Setter
     private Category parent;
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -34,7 +33,10 @@ public class Category {
 
     public void addChild(Category child) {
         this.children.add(child);
-        child.setParent(this);
+        child.assignParent(this);
     }
 
+    private void assignParent(Category parent){
+        this.parent = parent;
+    }
 }

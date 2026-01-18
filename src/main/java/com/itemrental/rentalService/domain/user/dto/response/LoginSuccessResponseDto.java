@@ -1,4 +1,4 @@
-package com.itemrental.rentalService.domain.user.dto;
+package com.itemrental.rentalService.domain.user.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class LoginSuccessDto {
+public class LoginSuccessResponseDto {
     private String birthDate;
     private String phoneNumber;
     private String email;

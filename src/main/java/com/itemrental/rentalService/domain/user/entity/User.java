@@ -1,15 +1,7 @@
 package com.itemrental.rentalService.domain.user.entity;
 
-import com.itemrental.rentalService.domain.chat.entity.ChattingParticipant;
-import com.itemrental.rentalService.domain.chat.entity.Message;
-import com.itemrental.rentalService.domain.community.entity.CommunityPost;
-import com.itemrental.rentalService.domain.community.entity.CommunityPostBookmark;
-import com.itemrental.rentalService.domain.community.entity.CommunityPostLike;
 import com.itemrental.rentalService.domain.notification.Notification;
-import com.itemrental.rentalService.domain.order.entity.Order;
-import com.itemrental.rentalService.domain.rental.entity.RentalPost;
-import com.itemrental.rentalService.domain.report.entity.Report;
-import com.itemrental.rentalService.domain.user.dto.LoginSuccessDto;
+import com.itemrental.rentalService.domain.user.dto.response.LoginSuccessResponseDto;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,7 +16,6 @@ import java.util.stream.Collectors;
 @Entity
 @Builder
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode(of = "id")
@@ -66,36 +57,6 @@ public class User implements UserDetails {
     @JoinColumn(name = "notificationId")
     private Notification notification;
 
-
-    //외래키 관리
-    @OneToMany(mappedBy = "user")
-    private List<ChattingParticipant> participants;
-
-    @OneToMany(mappedBy = "user")
-    private List<Message> messages;
-
-    @OneToMany(mappedBy = "user")
-    private List<RentalPost> rentalPosts;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<CommunityPost> communityPosts;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<CommunityPostLike> likes;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Getter
-    private List<CommunityPostBookmark> bookmarks;
-
-    @OneToMany(mappedBy = "reporter", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Getter
-    private List<Report> reports;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Getter
-    private List<Order> orders;
-
-
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
     private List<String> roles = new ArrayList<>();
@@ -113,9 +74,7 @@ public class User implements UserDetails {
     }
 
     @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
+    public boolean isAccountNonLocked() { return userState != UserState.BANNED; }
 
     @Override
     public boolean isCredentialsNonExpired() {
@@ -135,15 +94,37 @@ public class User implements UserDetails {
         BANNED
     }
 
-    public LoginSuccessDto toLoginSuccessDto() {
-        LoginSuccessDto loginSuccessDto = new LoginSuccessDto();
-        loginSuccessDto.setId(this.getId());
-        loginSuccessDto.setEmail(this.getEmail());
-        loginSuccessDto.setUsername(this.getUsername());
-        loginSuccessDto.setBirthDate(this.getBirthDate());
-        loginSuccessDto.setPhoneNumber(this.getPhoneNumber());
-        loginSuccessDto.setNickName(this.getNickName());
-        return loginSuccessDto;
+    public LoginSuccessResponseDto toLoginSuccessDto() {
+        LoginSuccessResponseDto loginSuccessResponseDto = new LoginSuccessResponseDto();
+        loginSuccessResponseDto.setId(this.getId());
+        loginSuccessResponseDto.setEmail(this.getEmail());
+        loginSuccessResponseDto.setUsername(this.getUsername());
+        loginSuccessResponseDto.setBirthDate(this.getBirthDate());
+        loginSuccessResponseDto.setPhoneNumber(this.getPhoneNumber());
+        loginSuccessResponseDto.setNickName(this.getNickName());
+        return loginSuccessResponseDto;
+    }
+
+    public void updateProfile(String name, String nickName, String phoneNumber, String birthDate) {
+        this.username = name;
+        this.nickName = nickName;
+        this.phoneNumber = phoneNumber;
+        this.birthDate = birthDate;
+    }
+
+    public void completeRegistration(String encodedPassword, String username, String nickName, String phoneNumber, String birthDate, List<String> roles) {
+        this.password = encodedPassword;
+        updateProfile(username, nickName, phoneNumber, birthDate);
+        this.roles = new ArrayList<>(roles);
+        this.userState = UserState.ACTIVE;
+    }
+
+    public void updatePassword(String encodedPassword) {
+        this.password = encodedPassword;
+    }
+
+    public void changeState(UserState newState) {
+        this.userState = newState;
     }
 
 }

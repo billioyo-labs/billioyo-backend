@@ -1,4 +1,4 @@
-package com.itemrental.rentalService.domain.user.dto;
+package com.itemrental.rentalService.domain.user.dto.response;
 
 import com.itemrental.rentalService.domain.user.entity.User;
 import lombok.*;
@@ -8,15 +8,15 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserSummary {
+public class UserSummaryResponseDto {
     private Long id;
     private String email;
     private String name;
     private String nickname;
 
-    public static UserSummary from(User user) {
+    public static UserSummaryResponseDto from(User user) {
         if (user == null) return null;
-        return UserSummary.builder()
+        return UserSummaryResponseDto.builder()
                 .id(user.getId())
                 .email(user.getEmail())
                 .name(user.getUsername())

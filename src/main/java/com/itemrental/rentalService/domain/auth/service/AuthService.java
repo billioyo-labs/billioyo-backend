@@ -27,7 +27,7 @@ public class AuthService {
         Optional<User> opUser = userRepository.findByEmail(verificationToken.getEmail());
         if (opUser.isEmpty()) return false;
         User user = opUser.orElseThrow(() -> new IllegalArgumentException("없는 사용자"));
-        user.setUserState(User.UserState.PENDING_PROFILE_SETUP);
+        user.changeState(User.UserState.PENDING_PROFILE_SETUP);
         verificationTokenRepository.deleteById(token);
         userRepository.save(user);
         return true;

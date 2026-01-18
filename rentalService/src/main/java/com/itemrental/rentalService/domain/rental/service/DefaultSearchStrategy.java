@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class DefaultSearchStrategy implements PostSearchStrategy {
-    private PostRepository postRepository;
+    private final PostRepository postRepository;
     @Override
     public Page<RentalPost> search(RentalPostSearchRequestDto cond, Pageable pageable){
         return postRepository.findAll((pageable));

@@ -1,10 +1,10 @@
 package com.itemrental.rentalService.domain.user.controller;
 
 import com.itemrental.rentalService.domain.rental.dto.response.RentalPostListResponseDto;
-import com.itemrental.rentalService.domain.user.dto.AdminSignUpRequestDto;
-import com.itemrental.rentalService.domain.user.dto.FindAccountDto;
-import com.itemrental.rentalService.domain.user.dto.SignUpDto;
-import com.itemrental.rentalService.domain.user.dto.UpdateUserDto;
+import com.itemrental.rentalService.domain.user.dto.request.AdminSignUpRequestDto;
+import com.itemrental.rentalService.domain.user.dto.request.UserFindAccountRequestDto;
+import com.itemrental.rentalService.domain.user.dto.request.UserSignUpRequestDto;
+import com.itemrental.rentalService.domain.user.dto.request.UserProfileUpdateRequestDto;
 import com.itemrental.rentalService.domain.user.service.UserService;
 import com.itemrental.rentalService.global.response.ApiResponse;
 import jakarta.validation.Valid;
@@ -17,6 +17,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -26,15 +28,15 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/sign-up")
-    public ResponseEntity<ApiResponse<Void>> signUp(@Valid @RequestBody SignUpDto signUpDto) {
-        String message = userService.signUp(signUpDto);
-        return ResponseEntity.ok(ApiResponse.success(message));
+    public ResponseEntity<ApiResponse<Void>> signUp(@Valid @RequestBody UserSignUpRequestDto userSignUpRequestDto) {
+        userService.signUp(userSignUpRequestDto);
+        return ResponseEntity.ok(ApiResponse.success("회원가입이 완료되었습니다."));
     }
 
     @PostMapping("/sign-up/admin")
     public ResponseEntity<ApiResponse<Void>> signUpAdmin(@Valid @RequestBody AdminSignUpRequestDto signUpDto) {
-        String message = userService.signUpAdmin(signUpDto.getSignUpDto(), signUpDto.getAdminSecret());
-        return ResponseEntity.ok(ApiResponse.success(message));
+        userService.signUpAdmin(signUpDto.getUserSignUpRequestDto(), signUpDto.getAdminSecret());
+        return ResponseEntity.ok(ApiResponse.success("관리자 가입이 완료되었습니다."));
     }
 
     @GetMapping("/duplicate-check")
@@ -44,48 +46,49 @@ public class UserController {
     }
 
     @PostMapping("/find-account")
-    public ResponseEntity<ApiResponse<String>> findAccount(@Valid @RequestBody FindAccountDto findAccountDto) {
-        return ResponseEntity.ok(ApiResponse.success("사용자 아이디", userService.findAccount(findAccountDto.getPhoneNumber())));
+    public ResponseEntity<ApiResponse<String>> findAccount(@Valid @RequestBody UserFindAccountRequestDto userFindAccountRequestDto) {
+        String email = userService.findAccount(userFindAccountRequestDto.getPhoneNumber());
+        return ResponseEntity.ok(ApiResponse.success("계정 찾기 성공", email));
     }
 
     //회원정보 수정
     @PatchMapping("/update")
-    public ResponseEntity<ApiResponse<Void>> updateUser(@Valid @RequestBody UpdateUserDto updateUserDto) {
-        String message = userService.updateUser(updateUserDto);
-        return ResponseEntity.ok(ApiResponse.success(message));
+    public ResponseEntity<ApiResponse<Void>> updateUser(@Valid @RequestBody UserProfileUpdateRequestDto userProfileUpdateRequestDto, Principal principal) {
+        userService.updateUser(principal.getName(), userProfileUpdateRequestDto);
+        return ResponseEntity.ok(ApiResponse.success("회원 정보가 수정되었습니다."));
     }
 
     @GetMapping("/my-products")
     public ResponseEntity<ApiResponse<Page<RentalPostListResponseDto>>> getMyProducts(
-        @PageableDefault(size = 10) Pageable pageable) {
+        @PageableDefault(size = 10) Pageable pageable,
+        Principal principal) {
 
-        Page<RentalPostListResponseDto> myProducts = userService.getMyProducts(pageable);
+        Page<RentalPostListResponseDto> myProducts = userService.getMyProducts(principal.getName(), pageable);
         return ResponseEntity.ok(ApiResponse.success("내 상품 목록 조회 성공", myProducts));
     }
 
     @GetMapping("/my-likes")
     public ResponseEntity<ApiResponse<Page<RentalPostListResponseDto>>> getMyLikedPosts(
-        @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+        @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+        Principal principal
     ) {
-        // userService에서 현재 로그인한 유저 ID를 추출하여 조회 로직 수행
-        Page<RentalPostListResponseDto> likedPosts = userService.getMyLikedPosts(pageable);
+        Page<RentalPostListResponseDto> likedPosts = userService.getMyLikedPosts(principal.getName(), pageable);
         return ResponseEntity.ok(ApiResponse.success("내 찜 목록 조회 성공", likedPosts));
     }
 
-    // 내 북마크 목록 조회
     @GetMapping("/my-bookmarks")
     public ResponseEntity<ApiResponse<Page<RentalPostListResponseDto>>> getMyBookmarkedPosts(
-        @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+        @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+        Principal principal
     ) {
-        Page<RentalPostListResponseDto> bookmarkedPosts = userService.getMyBookmarkedPosts(pageable);
+        Page<RentalPostListResponseDto> bookmarkedPosts = userService.getMyBookmarkedPosts(principal.getName(), pageable);
         return ResponseEntity.ok(ApiResponse.success("내 북마크 목록 조회 성공", bookmarkedPosts));
     }
 
-    //회원정보 삭제
     @DeleteMapping("/delete")
-    public ResponseEntity<ApiResponse<Void>> deleteUser() {
-        String message = userService.deleteUser();
-        return ResponseEntity.ok(ApiResponse.success(message));
+    public ResponseEntity<ApiResponse<Void>> deleteUser(Principal principal) {
+        userService.deleteUser(principal.getName());
+        return ResponseEntity.ok(ApiResponse.success("회원 탈퇴가 처리되었습니다."));
     }
 
 

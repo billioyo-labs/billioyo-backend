@@ -7,18 +7,14 @@ import com.itemrental.rentalService.domain.rental.dto.request.RentalPostSearchRe
 import com.itemrental.rentalService.domain.rental.dto.request.RentalPostUpdateRequestDto;
 import com.itemrental.rentalService.domain.rental.dto.response.RentalPostListResponseDto;
 import com.itemrental.rentalService.domain.rental.dto.response.RentalPostReadResponseDto;
-import com.itemrental.rentalService.domain.rental.entity.Image;
 import com.itemrental.rentalService.domain.rental.entity.RentalPost;
-import com.itemrental.rentalService.domain.rental.repository.PostImageRepository;
 import com.itemrental.rentalService.domain.rental.repository.PostLikeRepository;
 import com.itemrental.rentalService.domain.rental.repository.PostRepository;
 import com.itemrental.rentalService.domain.settlement.entity.SettlementItem;
 import com.itemrental.rentalService.domain.settlement.repository.SettlementItemRepository;
-import com.itemrental.rentalService.domain.user.dto.UserSummary;
 import com.itemrental.rentalService.domain.user.entity.User;
 import com.itemrental.rentalService.domain.user.repository.UserRepository;
 import com.itemrental.rentalService.global.utils.Position;
-import com.itemrental.rentalService.global.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @Service

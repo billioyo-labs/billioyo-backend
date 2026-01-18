@@ -1,4 +1,4 @@
-package com.itemrental.rentalService.domain.user.dto;
+package com.itemrental.rentalService.global.utils;
 
 
 import com.itemrental.rentalService.domain.user.entity.User;

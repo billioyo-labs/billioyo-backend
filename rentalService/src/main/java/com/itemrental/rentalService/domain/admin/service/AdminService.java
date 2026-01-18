@@ -39,7 +39,7 @@ public class AdminService {
         if (user.getUserState() == User.UserState.BANNED) {
             throw new IllegalStateException("이미 차단된 유저입니다.");
         }
-        user.setUserState(User.UserState.BANNED);
+        user.changeState(User.UserState.BANNED);
         userRepository.save(user);
         return "유저가 차단 되었습니다.";
     }

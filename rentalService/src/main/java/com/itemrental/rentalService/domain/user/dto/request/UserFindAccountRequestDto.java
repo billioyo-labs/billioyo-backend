@@ -1,4 +1,4 @@
-package com.itemrental.rentalService.domain.user.dto;
+package com.itemrental.rentalService.domain.user.dto.request;
 
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class FindAccountDto {
+public class UserFindAccountRequestDto {
     @Pattern(regexp = "^010-\\d{4}-\\d{4}$",
         message = "010-0000-0000 형식으로 입력해주세요.")
     private String phoneNumber;

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itemrental.rentalService.domain.auth.entity.RefreshToken;
 import com.itemrental.rentalService.domain.auth.repository.RefreshTokenRepository;
-import com.itemrental.rentalService.domain.user.dto.LoginSuccessDto;
+import com.itemrental.rentalService.domain.user.dto.response.LoginSuccessResponseDto;
 import com.itemrental.rentalService.domain.user.entity.User;
 import com.itemrental.rentalService.domain.user.repository.UserRepository;
 import jakarta.servlet.FilterChain;
@@ -71,11 +71,11 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
 
-        LoginSuccessDto loginSuccessDto = userRepository.findByEmail(userEmail).orElseThrow(() -> new RuntimeException("이메일에 해당하는 사용자가 없음")).toLoginSuccessDto();
+        LoginSuccessResponseDto loginSuccessResponseDto = userRepository.findByEmail(userEmail).orElseThrow(() -> new RuntimeException("이메일에 해당하는 사용자가 없음")).toLoginSuccessDto();
         log.info(userEmail);
 
         ObjectMapper objectMapper = new ObjectMapper();
-        String jsonResponse = objectMapper.writeValueAsString(loginSuccessDto);
+        String jsonResponse = objectMapper.writeValueAsString(loginSuccessResponseDto);
 
         String role = auth.getAuthority();
         //10분

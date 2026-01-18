@@ -23,9 +23,9 @@ public interface PostRepository extends JpaRepository<RentalPost, Long> {
                                         @Param("distance") Double distance,
                                         Pageable pageable);
 
-    @Query("SELECT p FROM RentalPost p JOIN p.likes l WHERE l.user.id = :userId")
+    @Query("SELECT l.rentalPost FROM RentalPostLike l WHERE l.user.id = :userId")
     Page<RentalPost> findByLikesUserId(@Param("userId") Long userId, Pageable pageable);
 
-    @Query("SELECT p FROM RentalPost p JOIN p.bookmarks b WHERE b.user.id = :userId")
+    @Query("SELECT p FROM RentalPost p JOIN RentalPostBookmark b WHERE b.user.id = :userId")
     Page<RentalPost> findByBookmarksUserId(@Param("userId") Long userId, Pageable pageable);
 }

@@ -4,7 +4,7 @@ import com.itemrental.rentalService.domain.payment.dto.PaymentInfo;
 import com.itemrental.rentalService.domain.payment.dto.PortOneDto;
 import com.itemrental.rentalService.domain.payment.service.PaymentService;
 import com.itemrental.rentalService.domain.payment.service.PaymentValidator;
-import com.itemrental.rentalService.global.response.ApiResponse;
+import com.itemrental.rentalService.global.common.ApiResponse;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

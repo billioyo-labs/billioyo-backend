@@ -5,9 +5,8 @@ import com.itemrental.rentalService.domain.rental.repository.PostRepository;
 import com.itemrental.rentalService.domain.user.dto.request.UserProfileUpdateRequestDto;
 import com.itemrental.rentalService.domain.user.dto.request.UserSignUpRequestDto;
 import com.itemrental.rentalService.domain.user.entity.User;
+import com.itemrental.rentalService.domain.user.exception.*;
 import com.itemrental.rentalService.domain.user.repository.UserRepository;
-import com.itemrental.rentalService.global.exceptions.DuplicateUsernameException;
-import com.itemrental.rentalService.global.exceptions.PendingProfileSetupException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -94,8 +93,7 @@ class UserServiceTest {
         given(userRepository.findByEmail(TEST_EMAIL)).willReturn(Optional.of(user));
 
         assertThatThrownBy(() -> userService.signUpAdmin(dto, "wrong_secret"))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessageContaining("관리자 가입 코드가 올바르지 않습니다.");
+                .isInstanceOf(InvalidAdminSecretException.class);
 
         verify(userRepository, never()).existsByNickName(anyString());
     }
@@ -243,8 +241,7 @@ class UserServiceTest {
         given(userRepository.findByEmail(anyString())).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> userService.resetToTemporalPassword("none@test.com", "이름"))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessageContaining("사용자를 찾을 수 없습니다.");
+                .isInstanceOf(UserNotFoundException.class);
     }
 
     @Test
@@ -294,8 +291,7 @@ class UserServiceTest {
         given(userRepository.findByEmail(TEST_EMAIL)).willReturn(Optional.of(user));
 
         assertThatThrownBy(() -> userService.resetToTemporalPassword(TEST_EMAIL, "임꺽정"))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("사용자 정보가 일치하지 않습니다.");
+                .isInstanceOf(UserInformationMismatchException.class);
 
         verify(passwordEncoder, never()).encode(anyString());
     }
@@ -306,6 +302,6 @@ class UserServiceTest {
 
     private User getUserByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다: " + email));
+                .orElseThrow(() -> new UserNotFoundException(email));
     }
 }

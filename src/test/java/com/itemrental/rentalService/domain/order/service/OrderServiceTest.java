@@ -3,10 +3,15 @@ package com.itemrental.rentalService.domain.order.service;
 import com.itemrental.rentalService.domain.order.dto.OrderCreateRequestDto;
 import com.itemrental.rentalService.domain.order.dto.OrderCreateResponseDto;
 import com.itemrental.rentalService.domain.order.entity.Order;
+import com.itemrental.rentalService.domain.order.exception.AlreadyRentedException;
+import com.itemrental.rentalService.domain.order.exception.SelfRentalNotAllowedException;
 import com.itemrental.rentalService.domain.order.repository.OrderRepository;
+import com.itemrental.rentalService.domain.payment.exception.PaymentMismatchException;
 import com.itemrental.rentalService.domain.rental.entity.RentalPost;
+import com.itemrental.rentalService.domain.rental.exception.PostNotFoundException;
 import com.itemrental.rentalService.domain.rental.repository.PostRepository;
 import com.itemrental.rentalService.domain.user.entity.User;
+import com.itemrental.rentalService.domain.user.exception.UserNotFoundException;
 import com.itemrental.rentalService.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -76,8 +81,7 @@ class OrderServiceTest {
 
         // when & then
         assertThatThrownBy(() -> orderService.createOrder(requestDto, email))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("유저를 찾을 수 없습니다.");
+                .isInstanceOf(UserNotFoundException.class);
     }
 
     @Test
@@ -93,8 +97,7 @@ class OrderServiceTest {
 
         // when & then
         assertThatThrownBy(() -> orderService.createOrder(requestDto, email))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("게시글을 찾을 수 없습니다.");
+                .isInstanceOf(PostNotFoundException.class);
     }
     @Test
     @DisplayName("실패: 본인이 등록한 물건을 대여하려고 하면 예외가 발생한다")
@@ -110,8 +113,7 @@ class OrderServiceTest {
 
         // when & then
         assertThatThrownBy(() -> orderService.createOrder(new OrderCreateRequestDto(10L, 5000L), email))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessageContaining("본인이 등록한 물품은 대여할 수 없습니다.");
+                .isInstanceOf(SelfRentalNotAllowedException.class);
     }
 
     @Test
@@ -128,8 +130,7 @@ class OrderServiceTest {
 
         // when & then
         assertThatThrownBy(() -> orderService.createOrder(new OrderCreateRequestDto(10L, 5000L), email))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessageContaining("이미 대여 중인 물품");
+                .isInstanceOf(AlreadyRentedException.class);
     }
 
     @Test
@@ -150,8 +151,7 @@ class OrderServiceTest {
 
         // when & then
         assertThatThrownBy(() -> orderService.createOrder(new OrderCreateRequestDto(10L, 5000L), renterEmail))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("결제 요청 금액이 물품 가격과 일치하지 않습니다.");
+                .isInstanceOf(PaymentMismatchException.class);
     }
 
     @Test
@@ -173,7 +173,6 @@ class OrderServiceTest {
 
         // when & then
         assertThatThrownBy(() -> orderService.createOrder(requestDto, email))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("주문 금액은 0보다 커야 합니다.");
+                .isInstanceOf(PaymentMismatchException.class);
     }
 }

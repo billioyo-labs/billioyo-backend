@@ -6,9 +6,8 @@ import com.itemrental.rentalService.domain.rental.repository.PostRepository;
 import com.itemrental.rentalService.domain.user.dto.request.UserSignUpRequestDto;
 import com.itemrental.rentalService.domain.user.dto.request.UserProfileUpdateRequestDto;
 import com.itemrental.rentalService.domain.user.entity.User;
+import com.itemrental.rentalService.domain.user.exception.*;
 import com.itemrental.rentalService.domain.user.repository.UserRepository;
-import com.itemrental.rentalService.global.exceptions.DuplicateUsernameException;
-import com.itemrental.rentalService.global.exceptions.PendingProfileSetupException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,7 +51,7 @@ public class UserService {
 
     public void validateAdminSignupSecret(String adminSecret) {
         if (!Objects.equals(adminSecret, adminSignupSecret)) {
-            throw new RuntimeException("관리자 가입 코드가 올바르지 않습니다.");
+            throw new InvalidAdminSecretException();
         }
     }
 
@@ -105,18 +104,18 @@ public class UserService {
 
     public void duplicateCheck(String nickName) {
         if (userRepository.existsByNickName(nickName)) {
-            throw new DuplicateUsernameException("이미 존재하는 아이디입니다.");
+            throw new DuplicateUsernameException(nickName);
         }
     }
 
     private User getUserByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다: " + email));
+                .orElseThrow(() -> new UserNotFoundException(email));
     }
 
     public String findAccount(String phoneNumber) {
         return userRepository.findByPhoneNumber(phoneNumber)
-                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다: " + phoneNumber)).getEmail();
+                .orElseThrow(() -> new UserNotFoundException(phoneNumber)).getEmail();
     }
 
     public User makeInitialUser(String email) {
@@ -155,10 +154,10 @@ public class UserService {
     @Transactional
     public String resetToTemporalPassword(String email, String name) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new UserNotFoundException(email));
 
         if (!user.getUsername().equals(name)) {
-            throw new IllegalArgumentException("사용자 정보가 일치하지 않습니다.");
+            throw new UserInformationMismatchException();
         }
 
         String temporalPassword = UUID.randomUUID().toString().substring(0, 8);
@@ -174,7 +173,7 @@ public class UserService {
         if (user.isEmpty()) {
             makeInitialUser(email);
         } else if (user.get().getUserState() != User.UserState.UNVERIFIED) {
-            throw new PendingProfileSetupException("이미 초기 가입 절차가 완료된 계정입니다.");
+            throw new PendingProfileSetupException(email);
         }
     }
 

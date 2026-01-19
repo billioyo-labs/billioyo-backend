@@ -1,12 +1,17 @@
 package com.itemrental.rentalService.domain.payment.service;
 
 import com.itemrental.rentalService.domain.order.entity.Order;
+import com.itemrental.rentalService.domain.order.exception.OrderNotFoundException;
+import com.itemrental.rentalService.domain.order.exception.UnauthorizedOrderAccessException;
 import com.itemrental.rentalService.domain.order.repository.OrderRepository;
 import com.itemrental.rentalService.domain.payment.dto.PaymentInfo;
 import com.itemrental.rentalService.domain.payment.dto.PortOneDto;
 import com.itemrental.rentalService.domain.payment.entity.PaymentHistory;
+import com.itemrental.rentalService.domain.payment.exception.AlreadyPaidException;
+import com.itemrental.rentalService.domain.payment.exception.PaymentMismatchException;
 import com.itemrental.rentalService.domain.payment.repository.PaymentHistoryRepository;
 import com.itemrental.rentalService.domain.rental.entity.RentalPost;
+import com.itemrental.rentalService.domain.rental.exception.PostNotFoundException;
 import com.itemrental.rentalService.domain.rental.repository.PostRepository;
 import com.itemrental.rentalService.domain.user.entity.User;
 import org.junit.jupiter.api.DisplayName;
@@ -80,7 +85,7 @@ class PaymentServiceTest {
     @DisplayName("실패: 포트원 조회 결과가 null이면 예외가 발생한다")
     void processPaymentDone_PaymentNull() {
         assertThatThrownBy(() -> paymentService.processPaymentDone(null, createDto(), TEST_EMAIL))
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(PaymentMismatchException.class)
                 .hasMessageContaining("포트원 결제 조회 결과가 없습니다.");
     }
 
@@ -91,7 +96,7 @@ class PaymentServiceTest {
         PaymentInfo payment = PaymentInfo.builder().impUid("wrong_uid").build();
 
         assertThatThrownBy(() -> paymentService.processPaymentDone(payment, dto, TEST_EMAIL))
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(PaymentMismatchException.class)
                 .hasMessageContaining("impUid 불일치");
     }
 
@@ -102,7 +107,7 @@ class PaymentServiceTest {
         PaymentInfo payment = PaymentInfo.builder().impUid("imp_123").merchantUid("wrong_uid").build();
 
         assertThatThrownBy(() -> paymentService.processPaymentDone(payment, dto, TEST_EMAIL))
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(PaymentMismatchException.class)
                 .hasMessageContaining("merchantUid 불일치");
     }
 
@@ -113,7 +118,7 @@ class PaymentServiceTest {
         PaymentInfo payment = createPaymentInfo("failed", 10000L);
 
         assertThatThrownBy(() -> paymentService.processPaymentDone(payment, dto, TEST_EMAIL))
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(PaymentMismatchException.class)
                 .hasMessageContaining("결제 미완료");
     }
 
@@ -123,8 +128,7 @@ class PaymentServiceTest {
         given(orderRepository.findById(anyLong())).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> paymentService.processPaymentDone(createPaymentInfo("paid", 10000L), createDto(), TEST_EMAIL))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessageContaining("주문을 찾을 수 없습니다");
+                .isInstanceOf(OrderNotFoundException.class);
     }
 
     @Test
@@ -140,8 +144,7 @@ class PaymentServiceTest {
 
         // when & then
         assertThatThrownBy(() -> paymentService.processPaymentDone(payment, dto, "stranger@test.com"))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessageContaining("해당 주문에 대한 결제 권한이 없습니다.");
+                .isInstanceOf(UnauthorizedOrderAccessException.class);
     }
 
     @Test
@@ -157,8 +160,7 @@ class PaymentServiceTest {
 
         // when & then
         assertThatThrownBy(() -> paymentService.processPaymentDone(payment, dto, TEST_EMAIL))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessageContaining("이미 결제가 완료된 주문입니다.");
+                .isInstanceOf(AlreadyPaidException.class);
     }
 
     @Test
@@ -175,7 +177,7 @@ class PaymentServiceTest {
 
         // when & then
         assertThatThrownBy(() -> paymentService.processPaymentDone(payment, dto, TEST_EMAIL))
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(PaymentMismatchException.class)
                 .hasMessageContaining("주문 merchantUid 불일치");
     }
 
@@ -192,7 +194,7 @@ class PaymentServiceTest {
 
         // when & then
         assertThatThrownBy(() -> paymentService.processPaymentDone(payment, dto, TEST_EMAIL))
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(PaymentMismatchException.class)
                 .hasMessageContaining("결제 금액 불일치");
     }
 
@@ -210,7 +212,6 @@ class PaymentServiceTest {
 
         // when & then
         assertThatThrownBy(() -> paymentService.processPaymentDone(payment, dto, TEST_EMAIL))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("게시글을 찾을 수 없습니다");
+                .isInstanceOf(PostNotFoundException.class);
     }
 }

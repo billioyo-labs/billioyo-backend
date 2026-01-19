@@ -6,7 +6,7 @@ import com.itemrental.rentalService.domain.user.dto.request.UserFindAccountReque
 import com.itemrental.rentalService.domain.user.dto.request.UserSignUpRequestDto;
 import com.itemrental.rentalService.domain.user.dto.request.UserProfileUpdateRequestDto;
 import com.itemrental.rentalService.domain.user.service.UserService;
-import com.itemrental.rentalService.global.response.ApiResponse;
+import com.itemrental.rentalService.global.common.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

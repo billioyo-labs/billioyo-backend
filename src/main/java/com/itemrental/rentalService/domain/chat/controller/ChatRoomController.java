@@ -1,10 +1,11 @@
 package com.itemrental.rentalService.domain.chat.controller;
 
-import com.itemrental.rentalService.domain.chat.dto.ChatRoomCreateRequest;
-import com.itemrental.rentalService.domain.chat.dto.ChatRoomResponse;
-import com.itemrental.rentalService.domain.chat.dto.MessageResponse;
+import com.itemrental.rentalService.domain.chat.dto.request.ChatRoomCreateRequest;
+import com.itemrental.rentalService.domain.chat.dto.response.ChatRoomResponse;
+import com.itemrental.rentalService.domain.chat.dto.response.MessageResponse;
 import com.itemrental.rentalService.domain.chat.service.ChatService;
 import com.itemrental.rentalService.domain.chat.service.MessageService;
+import com.itemrental.rentalService.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -20,22 +21,30 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ChatRoomController {
     private final ChatService chatService;
-    private final MessageService messageService;
 
     @GetMapping("/rooms")
-    public ResponseEntity<List<ChatRoomResponse>> getMyRooms(Principal principal) {
-        return ResponseEntity.ok(chatService.getMyRooms(principal.getName()));
+    public ResponseEntity<ApiResponse<List<ChatRoomResponse>>> getMyRooms(Principal principal) {
+        List<ChatRoomResponse> rooms = chatService.getMyRooms(principal.getName());
+        return ResponseEntity.ok(ApiResponse.success("조회 성공", rooms));
     }
 
     @GetMapping("/rooms/{roomId}/messages")
-    public ResponseEntity<Slice<MessageResponse>> getHistory(
-        @PathVariable Long roomId,
-        @PageableDefault(size = 30) Pageable pageable) {
-        return ResponseEntity.ok(chatService.getMessageHistory(roomId, pageable));
+    public ResponseEntity<ApiResponse<Slice<MessageResponse>>> getHistory(
+            @PathVariable Long roomId,
+            @PageableDefault(size = 30) Pageable pageable) {
+        Slice<MessageResponse> history = chatService.getMessageHistory(roomId, pageable);
+        return ResponseEntity.ok(ApiResponse.success("메시지 내역 조회 성공", history));
     }
 
     @PostMapping("/rooms")
-    public ResponseEntity<Long> createRoom(@RequestBody ChatRoomCreateRequest request) {
-        return ResponseEntity.ok(chatService.createRoom(request.getTitle(), request.getUserIds()));
+    public ResponseEntity<ApiResponse<Long>> createRoom(@RequestBody ChatRoomCreateRequest request) {
+        Long roomId = chatService.createRoom(request.getTitle(), request.getUserIds());
+        return ResponseEntity.ok(ApiResponse.success("채팅방 생성 성공", roomId));
+    }
+
+    @PatchMapping("/rooms/{roomId}/read")
+    public ResponseEntity<ApiResponse<Void>> markAsRead(@PathVariable Long roomId, Principal principal) {
+        chatService.markAsRead(roomId, principal.getName());
+        return ResponseEntity.ok(ApiResponse.success("읽음 처리 완료"));
     }
 }

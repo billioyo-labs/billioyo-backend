@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Builder
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -16,15 +15,32 @@ public class ChattingParticipant {
     @Column(name = "chattingParticipantId", updatable = false, nullable = false, unique = true)
     private Long id;
 
-    private Long unreadCount;
+    @Column(nullable = false)
+    private Long unreadCount = 0L;
 
     private Long lastReadMessageId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "chattingRoomId")
+    @JoinColumn(name = "chatting_room_id", nullable = false)
     private ChattingRoom chattingRoom;
+
+    @Builder
+    private ChattingParticipant(User user, ChattingRoom chattingRoom) {
+        this.user = user;
+        this.chattingRoom = chattingRoom;
+        this.unreadCount = 0L;
+    }
+
+    public void incrementUnreadCount() {
+        this.unreadCount++;
+    }
+
+    public void markAsRead(Long messageId) {
+        this.lastReadMessageId = messageId;
+        this.unreadCount = 0L;
+    }
 }

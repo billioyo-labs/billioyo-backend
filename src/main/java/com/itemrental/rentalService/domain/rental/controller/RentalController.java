@@ -10,7 +10,7 @@ import com.itemrental.rentalService.domain.rental.dto.response.RentalPostReadRes
 import com.itemrental.rentalService.domain.rental.service.ImageAnalysisService;
 import com.itemrental.rentalService.domain.rental.service.PostInteractionService;
 import com.itemrental.rentalService.domain.rental.service.RentalService;
-import com.itemrental.rentalService.global.response.ApiResponse;
+import com.itemrental.rentalService.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

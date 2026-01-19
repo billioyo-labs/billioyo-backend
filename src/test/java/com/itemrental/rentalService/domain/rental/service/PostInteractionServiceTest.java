@@ -6,11 +6,13 @@ import com.itemrental.rentalService.domain.rental.entity.RentalPost;
 import com.itemrental.rentalService.domain.rental.entity.RentalPostBookmark;
 import com.itemrental.rentalService.domain.rental.entity.RentalPostLike;
 import com.itemrental.rentalService.domain.rental.entity.Review;
+import com.itemrental.rentalService.domain.rental.exception.PostNotFoundException;
 import com.itemrental.rentalService.domain.rental.repository.PostBookmarkRepository;
 import com.itemrental.rentalService.domain.rental.repository.PostLikeRepository;
 import com.itemrental.rentalService.domain.rental.repository.PostRepository;
 import com.itemrental.rentalService.domain.rental.repository.PostReviewRepository;
 import com.itemrental.rentalService.domain.user.entity.User;
+import com.itemrental.rentalService.domain.user.exception.UserNotFoundException;
 import com.itemrental.rentalService.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -79,7 +81,7 @@ class PostInteractionServiceTest {
         given(userRepository.findByEmail(email)).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> interactionService.createPostReview(new ReviewCreateRequestDto("내용", 5), postId, email))
-                .isInstanceOf(UsernameNotFoundException.class);
+                .isInstanceOf(UserNotFoundException.class);
     }
 
 
@@ -176,7 +178,6 @@ class PostInteractionServiceTest {
 
         // when & then
         assertThatThrownBy(() -> interactionService.toggleLike(999L, "test@test.com"))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("게시글을 찾을 수 없습니다");
+                .isInstanceOf(PostNotFoundException.class);
     }
 }

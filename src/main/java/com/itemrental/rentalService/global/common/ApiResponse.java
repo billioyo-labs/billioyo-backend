@@ -1,4 +1,4 @@
-package com.itemrental.rentalService.global.response;
+package com.itemrental.rentalService.global.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,6 +16,10 @@ public class ApiResponse<T> {
     }
 
     public static ApiResponse<Void> success(String message) {
+        return new ApiResponse<>(message, null);
+    }
+
+    public static ApiResponse<Void> fail(String message) {
         return new ApiResponse<>(message, null);
     }
 }

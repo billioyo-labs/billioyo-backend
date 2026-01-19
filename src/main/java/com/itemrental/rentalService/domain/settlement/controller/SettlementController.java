@@ -5,7 +5,7 @@ import com.itemrental.rentalService.domain.settlement.dto.SettlementCreateReques
 import com.itemrental.rentalService.domain.settlement.dto.SettlementCreateResponse;
 import com.itemrental.rentalService.domain.settlement.dto.SettlementItemResponse;
 import com.itemrental.rentalService.domain.settlement.service.SettlementService;
-import com.itemrental.rentalService.global.response.ApiResponse;
+import com.itemrental.rentalService.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

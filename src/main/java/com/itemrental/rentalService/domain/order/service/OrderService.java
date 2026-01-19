@@ -3,10 +3,15 @@ package com.itemrental.rentalService.domain.order.service;
 import com.itemrental.rentalService.domain.order.dto.OrderCreateRequestDto;
 import com.itemrental.rentalService.domain.order.dto.OrderCreateResponseDto;
 import com.itemrental.rentalService.domain.order.entity.Order;
+import com.itemrental.rentalService.domain.order.exception.AlreadyRentedException;
+import com.itemrental.rentalService.domain.order.exception.SelfRentalNotAllowedException;
 import com.itemrental.rentalService.domain.order.repository.OrderRepository;
+import com.itemrental.rentalService.domain.payment.exception.PaymentMismatchException;
 import com.itemrental.rentalService.domain.rental.entity.RentalPost;
+import com.itemrental.rentalService.domain.rental.exception.PostNotFoundException;
 import com.itemrental.rentalService.domain.rental.repository.PostRepository;
 import com.itemrental.rentalService.domain.user.entity.User;
+import com.itemrental.rentalService.domain.user.exception.UserNotFoundException;
 import com.itemrental.rentalService.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,25 +30,25 @@ public class OrderService {
     @Transactional
     public OrderCreateResponseDto createOrder(OrderCreateRequestDto dto, String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
+                .orElseThrow(() -> new UserNotFoundException(email));
 
         RentalPost rentalPost = postRepository.findById(dto.getPostId())
-                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+                .orElseThrow(() -> new PostNotFoundException(dto.getPostId()));
 
         if (rentalPost.getUser().getEmail().equals(email)) {
-            throw new IllegalStateException("본인이 등록한 물품은 대여할 수 없습니다.");
+            throw new SelfRentalNotAllowedException();
         }
 
         if (rentalPost.isStatus()) {
-            throw new IllegalStateException("이미 대여 중인 물품입니다.");
+            throw new AlreadyRentedException();
         }
 
         if (!rentalPost.getPrice().equals(dto.getAmount())) {
-            throw new IllegalArgumentException("결제 요청 금액이 물품 가격과 일치하지 않습니다.");
+            throw new PaymentMismatchException("결제 요청 금액이 물품 가격과 일치하지 않습니다.");
         }
 
         if (dto.getAmount() <= 0) {
-            throw new IllegalArgumentException("주문 금액은 0보다 커야 합니다.");
+            throw new PaymentMismatchException("주문 금액은 0보다 커야 합니다.");
         }
 
         Order order = Order.builder()

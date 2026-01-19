@@ -4,7 +4,7 @@ import com.itemrental.rentalService.domain.user.dto.request.EmailVerificationReq
 import com.itemrental.rentalService.domain.user.dto.request.PasswordResetRequestDto;
 import com.itemrental.rentalService.domain.user.service.MailService;
 import com.itemrental.rentalService.domain.user.service.UserService;
-import com.itemrental.rentalService.global.response.ApiResponse;
+import com.itemrental.rentalService.global.common.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -7,7 +7,7 @@ import com.itemrental.rentalService.domain.mypage.service.MyPageService;
 import com.itemrental.rentalService.domain.rental.dto.response.RentalPostListResponseDto;
 import com.itemrental.rentalService.domain.user.dto.request.UserProfileUpdateRequestDto;
 import com.itemrental.rentalService.domain.user.service.UserService;
-import com.itemrental.rentalService.global.response.ApiResponse;
+import com.itemrental.rentalService.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

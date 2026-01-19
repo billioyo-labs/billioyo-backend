@@ -2,7 +2,7 @@ package com.itemrental.rentalService.domain.admin.controller;
 
 import com.itemrental.rentalService.domain.admin.dto.ReportListResponseDto;
 import com.itemrental.rentalService.domain.admin.service.AdminService;
-import com.itemrental.rentalService.global.response.ApiResponse;
+import com.itemrental.rentalService.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -2,7 +2,7 @@ package com.itemrental.rentalService.domain.report.controller;
 
 import com.itemrental.rentalService.domain.report.dto.ReportRequestDto;
 import com.itemrental.rentalService.domain.report.service.ReportService;
-import com.itemrental.rentalService.global.response.ApiResponse;
+import com.itemrental.rentalService.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

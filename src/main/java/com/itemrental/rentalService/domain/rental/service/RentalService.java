@@ -1,6 +1,7 @@
 package com.itemrental.rentalService.domain.rental.service;
 
 import com.itemrental.rentalService.domain.order.entity.Order;
+import com.itemrental.rentalService.domain.order.exception.OrderNotFoundException;
 import com.itemrental.rentalService.domain.order.repository.OrderRepository;
 import com.itemrental.rentalService.domain.rental.dto.request.RentalPostCreateRequestDto;
 import com.itemrental.rentalService.domain.rental.dto.request.RentalPostSearchRequestDto;
@@ -8,18 +9,19 @@ import com.itemrental.rentalService.domain.rental.dto.request.RentalPostUpdateRe
 import com.itemrental.rentalService.domain.rental.dto.response.RentalPostListResponseDto;
 import com.itemrental.rentalService.domain.rental.dto.response.RentalPostReadResponseDto;
 import com.itemrental.rentalService.domain.rental.entity.RentalPost;
+import com.itemrental.rentalService.domain.rental.exception.PostNotFoundException;
+import com.itemrental.rentalService.domain.rental.exception.UnauthorizedAccessException;
 import com.itemrental.rentalService.domain.rental.repository.PostLikeRepository;
 import com.itemrental.rentalService.domain.rental.repository.PostRepository;
 import com.itemrental.rentalService.domain.settlement.entity.SettlementItem;
 import com.itemrental.rentalService.domain.settlement.repository.SettlementItemRepository;
 import com.itemrental.rentalService.domain.user.entity.User;
+import com.itemrental.rentalService.domain.user.exception.UserNotFoundException;
 import com.itemrental.rentalService.domain.user.repository.UserRepository;
 import com.itemrental.rentalService.global.utils.Position;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,7 +43,7 @@ public class RentalService {
     @Transactional
     public Long createRentalPost(RentalPostCreateRequestDto dto, String loginEmail) {
         User user = userRepository.findByEmail(loginEmail)
-                .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다."));
+                .orElseThrow(() -> new UserNotFoundException(loginEmail));
 
         RentalPost rentalPost = RentalPost.create(
                 user, dto.getTitle(), dto.getDescription(), dto.getPrice(),
@@ -59,7 +61,7 @@ public class RentalService {
     @Transactional
     public RentalPostReadResponseDto getRentalPost(Long postId, String loginEmail) {
         RentalPost rentalPost = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
+                .orElseThrow(() -> new PostNotFoundException(postId));
 
         rentalPost.incrementViewCount();
 
@@ -77,7 +79,7 @@ public class RentalService {
     @Transactional
     public void updateRentalPost(Long postId, RentalPostUpdateRequestDto dto, String loginEmail) {
         RentalPost rentalPost = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
+                .orElseThrow(() -> new PostNotFoundException(postId));
 
         validateAuthor(rentalPost, loginEmail);
 
@@ -94,7 +96,7 @@ public class RentalService {
     @Transactional
     public void deleteRentalPost(Long postId, String loginEmail) {
         RentalPost rentalPost = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
+                .orElseThrow(() -> new PostNotFoundException(postId));
 
         validateAuthor(rentalPost, loginEmail);
 
@@ -122,17 +124,17 @@ public class RentalService {
     @Transactional
     public void returnRental(Long orderId, String loginEmail) {
         User user = userRepository.findByEmail(loginEmail)
-                .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다."));
+                .orElseThrow(() -> new UserNotFoundException(loginEmail));
 
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new IllegalArgumentException("주문이 존재하지 않습니다"));
+                .orElseThrow(() -> new OrderNotFoundException(orderId));
 
         if (!user.getId().equals(order.getUser().getId())) {
-            throw new AccessDeniedException("반납 권한이 없습니다.");
+            throw new UnauthorizedAccessException();
         }
 
         RentalPost post = postRepository.findById(order.getPostId())
-                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
+                .orElseThrow(() -> new PostNotFoundException(order.getPostId()));
 
         post.changeStatus(false);
         order.setStatus(Order.OrderStatus.RETURNED);
@@ -148,7 +150,7 @@ public class RentalService {
 
     private void validateAuthor(RentalPost post, String email) {
         if (!post.getUser().getEmail().equals(email)) {
-            throw new AccessDeniedException("작성자만 수정/삭제할 수 있습니다.");
+            throw new UnauthorizedAccessException();
         }
     }
 }

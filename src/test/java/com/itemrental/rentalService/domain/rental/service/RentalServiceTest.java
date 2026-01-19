@@ -1,12 +1,15 @@
 package com.itemrental.rentalService.domain.rental.service;
 
 import com.itemrental.rentalService.domain.order.entity.Order;
+import com.itemrental.rentalService.domain.order.exception.UnauthorizedOrderAccessException;
 import com.itemrental.rentalService.domain.order.repository.OrderRepository;
 import com.itemrental.rentalService.domain.rental.dto.request.RentalPostCreateRequestDto;
 import com.itemrental.rentalService.domain.rental.dto.request.RentalPostSearchRequestDto;
 import com.itemrental.rentalService.domain.rental.dto.request.RentalPostUpdateRequestDto;
 import com.itemrental.rentalService.domain.rental.dto.response.RentalPostReadResponseDto;
 import com.itemrental.rentalService.domain.rental.entity.RentalPost;
+import com.itemrental.rentalService.domain.rental.exception.PostNotFoundException;
+import com.itemrental.rentalService.domain.rental.exception.UnauthorizedAccessException;
 import com.itemrental.rentalService.domain.rental.repository.PostLikeRepository;
 import com.itemrental.rentalService.domain.rental.repository.PostRepository;
 import com.itemrental.rentalService.domain.settlement.repository.SettlementItemRepository;
@@ -143,8 +146,7 @@ class RentalServiceTest {
         given(postRepository.findById(999L)).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> rentalService.getRentalPost(999L, "user@test.com"))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("게시글을 찾을 수 없습니다");
+                .isInstanceOf(PostNotFoundException.class);
     }
 
     @Test
@@ -179,7 +181,7 @@ class RentalServiceTest {
         RentalPostUpdateRequestDto dto = new RentalPostUpdateRequestDto("수정", "내용", 2000L, "인천", "가구");
 
         assertThatThrownBy(() -> rentalService.updateRentalPost(1L, dto, "wrong@email.com"))
-                .isInstanceOf(AccessDeniedException.class);
+                .isInstanceOf(UnauthorizedAccessException.class);
     }
 
     @Test
@@ -252,7 +254,7 @@ class RentalServiceTest {
         given(orderRepository.findById(1L)).willReturn(Optional.of(order));
 
         assertThatThrownBy(() -> rentalService.returnRental(1L, email))
-                .isInstanceOf(AccessDeniedException.class);
+                .isInstanceOf(UnauthorizedAccessException.class);
     }
 
     @Test
@@ -280,7 +282,6 @@ class RentalServiceTest {
 
         // when & then
         assertThatThrownBy(() -> rentalService.deleteRentalPost(999L, "any@test.com"))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("게시글을 찾을 수 없습니다");
+                .isInstanceOf(PostNotFoundException.class);
     }
 }

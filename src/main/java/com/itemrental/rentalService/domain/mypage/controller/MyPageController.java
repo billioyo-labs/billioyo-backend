@@ -2,6 +2,7 @@ package com.itemrental.rentalService.domain.mypage.controller;
 
 
 import com.itemrental.rentalService.domain.community.dto.response.CommunityPostReadResponseDto;
+import com.itemrental.rentalService.domain.mypage.dto.MyOrderPostListResponseDto;
 import com.itemrental.rentalService.domain.mypage.dto.MyPageSummaryDto;
 import com.itemrental.rentalService.domain.mypage.service.MyPageService;
 import com.itemrental.rentalService.domain.rental.dto.response.RentalPostListResponseDto;
@@ -84,10 +85,10 @@ public class MyPageController {
     }
     //내 주문 목록 조회
     @GetMapping( "/my-orders")
-    public ResponseEntity<ApiResponse<Page<RentalPostListResponseDto>>> getMyOrders(
+    public ResponseEntity<ApiResponse<Page<MyOrderPostListResponseDto>>> getMyOrders(
         @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ){
-        Page<RentalPostListResponseDto> orderPosts = myPageService.getMyOrderPosts(pageable);
+        Page<MyOrderPostListResponseDto> orderPosts = myPageService.getMyOrderPosts(pageable);
         return ResponseEntity.ok((ApiResponse.success("내 주문 목록 조회 성공", orderPosts)));
     }
 }

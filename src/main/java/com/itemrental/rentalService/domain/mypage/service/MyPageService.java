@@ -6,6 +6,7 @@ import com.itemrental.rentalService.domain.community.entity.CommunityPost;
 import com.itemrental.rentalService.domain.community.repository.CommunityPostBookmarkRepository;
 import com.itemrental.rentalService.domain.community.repository.CommunityPostLikeRepository;
 import com.itemrental.rentalService.domain.community.repository.CommunityPostRepository;
+import com.itemrental.rentalService.domain.mypage.dto.MyOrderPostListResponseDto;
 import com.itemrental.rentalService.domain.mypage.dto.MyPageSummaryDto;
 import com.itemrental.rentalService.domain.order.entity.Order;
 import com.itemrental.rentalService.domain.order.repository.OrderRepository;
@@ -120,7 +121,7 @@ public class MyPageService {
             });
     }
     @Transactional(readOnly = true)
-    public Page<RentalPostListResponseDto> getMyOrderPosts(Pageable pageable) {
+    public Page<MyOrderPostListResponseDto> getMyOrderPosts(Pageable pageable) {
         String email = securityUtil.getCurrentUserEmail();
         User user = userRepository.findByEmail(email)
             .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
@@ -135,7 +136,7 @@ public class MyPageService {
             String firstImageUrl = post.getImages().isEmpty()
                 ? null
                 : post.getImages().get(0).getImageUrl();
-            return new RentalPostListResponseDto(
+            return new MyOrderPostListResponseDto(
                 post.getId(),
                 post.getUser().getNickName(),
                 post.getTitle(),
@@ -144,29 +145,11 @@ public class MyPageService {
                 post.getCreatedAt(),
                 firstImageUrl,
                 post.getRating(),
-                post.getReviewsCount()
+                post.getReviewsCount(),
+                order.getId()
                 );
             }
         );
-//
-//        return postRepository.findByBookmarksUserId(user.getId(), pageable)
-//            .map(post -> {
-//                String firstImageUrl = post.getImages().isEmpty()
-//                    ? null
-//                    : post.getImages().get(0).getImageUrl();
-//
-//                return new RentalPostListResponseDto(
-//                    post.getId(),
-//                    post.getUser().getNickName(),
-//                    post.getTitle(),
-//                    post.getPrice(),
-//                    post.isStatus(),
-//                    post.getCreatedAt(),
-//                    firstImageUrl,
-//                    post.getRating(),
-//                    post.getReviewsCount()
-//                );
-//            });
     }
 
 

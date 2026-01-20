@@ -28,7 +28,9 @@ public class SettlementController {
     // 정산 요청(정산 테이블 생성 + SettlementItem에 settlementId 묶기)
     // POST /settlements/{ownerId}
     @PostMapping("/{ownerId}")
-    public ResponseEntity<ApiResponse<SettlementCreateResponse>> createSettlement(@PathVariable Long ownerId, SettlementCreateRequest dto) {
+    public ResponseEntity<ApiResponse<SettlementCreateResponse>> createSettlement(
+        @PathVariable Long ownerId,
+        @RequestBody SettlementCreateRequest dto) {
         SettlementCreateResponse result = settlementService.createSettlement(ownerId, dto);
         return ResponseEntity.ok(ApiResponse.success("정산 테이블 생성", result));
     }

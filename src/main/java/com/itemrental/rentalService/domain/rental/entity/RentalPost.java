@@ -67,6 +67,16 @@ public class RentalPost {
 
     @OneToMany(mappedBy = "rentalPost", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
+    private List<RentalPostLike> likes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "rentalPost", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<RentalPostBookmark> bookmarks = new ArrayList<>();
+
+
+
+    @OneToMany(mappedBy = "rentalPost", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<Image> images = new ArrayList<>();
 
     @OneToMany(mappedBy = "rentalPost", cascade = CascadeType.ALL)

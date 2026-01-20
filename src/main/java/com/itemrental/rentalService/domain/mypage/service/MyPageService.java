@@ -6,6 +6,7 @@ import com.itemrental.rentalService.domain.community.entity.CommunityPost;
 import com.itemrental.rentalService.domain.community.repository.CommunityPostBookmarkRepository;
 import com.itemrental.rentalService.domain.community.repository.CommunityPostLikeRepository;
 import com.itemrental.rentalService.domain.community.repository.CommunityPostRepository;
+import com.itemrental.rentalService.domain.mypage.dto.MyOrderPostListResponseDto;
 import com.itemrental.rentalService.domain.mypage.dto.MyPageSummaryDto;
 import com.itemrental.rentalService.domain.order.entity.Order;
 import com.itemrental.rentalService.domain.order.repository.OrderRepository;
@@ -42,79 +43,16 @@ public class MyPageService {
     private final OrderRepository orderRepository;
 
 
-    // 좋아요한 게시글
+
     @Transactional(readOnly = true)
-    public List<CommunityPostReadResponseDto> getLikedPosts() {
-        String username = securityUtil.getCurrentUserEmail();
-        User user = userRepository.findByEmail(username)
-            .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다"));
+    public Page<RentalPostListResponseDto> getMyProducts(Pageable pageable) {
+        String email = securityUtil.getCurrentUserEmail();
+        User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
+        Page<RentalPost> posts = postRepository.findByUserId(user.getId(), pageable);
 
-        return likeRepo.findAllByUser(user).stream()
-            .map(like -> {
-                CommunityPost post = like.getPost();
-                List<CommentResponseDto> comments = post.getComments().stream().map(comment -> new CommentResponseDto(
-                    comment.getId(),
-                    comment.getUser().getUsername(),
-                    comment.getComment(),
-                    comment.getCreatedAt()
-                )).toList();
-                return new CommunityPostReadResponseDto(
-                    post.getCategory(),
-                    user.getUsername(),
-                    post.getTitle(),
-                    post.getContent(),
-                    post.getCreatedAt(),
-                    post.getImages(),
-                    post.getViewCount(),
-                    post.getLikeCount(),
-                    comments,
-                    post.getLocation()
-                );
-            }).toList();
-    }
-
-    //북마크한 게시글
-    @Transactional
-    public List<CommunityPostReadResponseDto> getBmPosts() {
-        String username = securityUtil.getCurrentUserEmail();
-        User user = userRepository.findByEmail(username)
-            .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다"));
-
-        return bmRepo.findAllByUser(user).stream()
-            .map(bm -> {
-                CommunityPost post = bm.getPost();
-                List<CommentResponseDto> comments = post.getComments().stream().map(comment -> new CommentResponseDto(
-                    comment.getId(),
-                    comment.getUser().getUsername(),
-                    comment.getComment(),
-                    comment.getCreatedAt()
-                )).toList();
-                return new CommunityPostReadResponseDto(
-                    post.getCategory(),
-                    user.getUsername(),
-                    post.getTitle(),
-                    post.getContent(),
-                    post.getCreatedAt(),
-                    post.getImages(),
-                    post.getViewCount(),
-                    post.getLikeCount(),
-                    comments,
-                    post.getLocation()
-                );
-            }).toList();
-
-    }
-
-    @Transactional
-    public Page<RentalPostListResponseDto> getMyPosts(Pageable pageable) {
-        String username = securityUtil.getCurrentUserEmail();
-        User user = userRepository.findByEmail(username)
-            .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다"));
-
-        Page<RentalPost> page = postRepository.findByUserId(user.getId(), pageable);
-
-        return page.map(post -> {
+        return posts.map(post -> {
             String firstImageUrl = post.getImages().isEmpty() ? null : post.getImages().get(0).getImageUrl();
 
             return new RentalPostListResponseDto(
@@ -130,6 +68,90 @@ public class MyPageService {
             );
         });
     }
+
+    @Transactional(readOnly = true)
+    public Page<RentalPostListResponseDto> getMyLikedPosts(Pageable pageable) {
+        String email = securityUtil.getCurrentUserEmail();
+        User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+
+        return postRepository.findByLikesUserId(user.getId(), pageable)
+            .map(post -> {
+                String firstImageUrl = post.getImages().isEmpty()
+                    ? null
+                    : post.getImages().get(0).getImageUrl();
+
+                return new RentalPostListResponseDto(
+                    post.getId(),
+                    post.getUser().getNickName(),
+                    post.getTitle(),
+                    post.getPrice(),
+                    post.isStatus(),
+                    post.getCreatedAt(),
+                    firstImageUrl,
+                    post.getRating(),
+                    post.getReviewsCount()
+                );
+            });
+    }
+
+    @Transactional(readOnly = true)
+    public Page<RentalPostListResponseDto> getMyBookmarkedPosts(Pageable pageable) {
+        String email = securityUtil.getCurrentUserEmail();
+        User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+
+        return postRepository.findByBookmarksUserId(user.getId(), pageable)
+            .map(post -> {
+                String firstImageUrl = post.getImages().isEmpty()
+                    ? null
+                    : post.getImages().get(0).getImageUrl();
+
+                return new RentalPostListResponseDto(
+                    post.getId(),
+                    post.getUser().getNickName(),
+                    post.getTitle(),
+                    post.getPrice(),
+                    post.isStatus(),
+                    post.getCreatedAt(),
+                    firstImageUrl,
+                    post.getRating(),
+                    post.getReviewsCount()
+                );
+            });
+    }
+    @Transactional(readOnly = true)
+    public Page<MyOrderPostListResponseDto> getMyOrderPosts(Pageable pageable) {
+        String email = securityUtil.getCurrentUserEmail();
+        User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+        Page<Order> orders = orderRepository.findByUserAndStatus(
+            user,
+            Order.OrderStatus.PAID,
+            pageable
+        );
+        return orders.map(order->{
+            RentalPost post = postRepository.findById(order.getPostId())
+                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
+            String firstImageUrl = post.getImages().isEmpty()
+                ? null
+                : post.getImages().get(0).getImageUrl();
+            return new MyOrderPostListResponseDto(
+                post.getId(),
+                post.getUser().getNickName(),
+                post.getTitle(),
+                post.getPrice(),
+                post.isStatus(),
+                post.getCreatedAt(),
+                firstImageUrl,
+                post.getRating(),
+                post.getReviewsCount(),
+                order.getId()
+                );
+            }
+        );
+    }
+
 
     @Transactional
     public MyPageSummaryDto getMyPageSummary(){

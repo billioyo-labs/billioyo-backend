@@ -50,6 +50,8 @@ class MessageServiceTest {
         User receiver = User.builder().id(2L).email(receiverEmail).nickName("수신자").build();
 
         ChattingRoom room = ChattingRoom.create("테스트방");
+        ReflectionTestUtils.setField(room, "id", 1L);
+
         room.addParticipant(sender);
         room.addParticipant(receiver);
 
@@ -79,15 +81,15 @@ class MessageServiceTest {
 
         ChattingParticipant receiverParticipant = room.getParticipants().stream()
                 .filter(p -> p.getUser().getEmail().equals(receiverEmail))
-                .findFirst().get();
+                .findFirst().orElseThrow();
         assertEquals(1, receiverParticipant.getUnreadCount());
 
-        verify(messagingTemplate, atLeastOnce())
-                .convertAndSendToUser(eq(senderEmail), eq("/queue/messages"), any(MessageResponse.class));
-        verify(messagingTemplate, atLeastOnce())
-                .convertAndSendToUser(eq(receiverEmail), eq("/queue/messages"), any(MessageResponse.class));
-        verify(messagingTemplate, atLeastOnce())
-                .convertAndSendToUser(eq(receiverEmail), eq("/queue/notifications"), any(MessageResponse.class));
+        verify(messagingTemplate, times(1))
+                .convertAndSend(eq("/topic/chat/1"), any(MessageResponse.class));
+        verify(messagingTemplate, times(2))
+                .convertAndSendToUser(anyString(), eq("/queue/notifications"), any(MessageResponse.class));
+        verify(messagingTemplate).convertAndSendToUser(eq(senderEmail), eq("/queue/notifications"), any(MessageResponse.class));
+        verify(messagingTemplate).convertAndSendToUser(eq(receiverEmail), eq("/queue/notifications"), any(MessageResponse.class));
     }
 
     @Test

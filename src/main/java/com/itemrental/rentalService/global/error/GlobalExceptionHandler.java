@@ -1,6 +1,7 @@
 package com.itemrental.rentalService.global.error;
 
 import com.itemrental.rentalService.domain.chat.exception.ParticipantNotFoundException;
+import com.itemrental.rentalService.domain.rental.exception.PostNotFoundException;
 import com.itemrental.rentalService.global.common.ApiResponse;
 import com.itemrental.rentalService.global.error.exceptions.*;
 import jakarta.persistence.EntityNotFoundException;
@@ -15,7 +16,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ParticipantNotFoundException.class)
     public ResponseEntity<ApiResponse<Void>> handleParticipantNotFound(ParticipantNotFoundException e) {
         return ResponseEntity
-                .status(HttpStatus.NOT_FOUND) // 404
+                .status(HttpStatus.NOT_FOUND)
+                .body(ApiResponse.fail(e.getMessage()));
+    }
+
+    @ExceptionHandler(PostNotFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handlePostNotFound(PostNotFoundException e) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
                 .body(ApiResponse.fail(e.getMessage()));
     }
 

@@ -43,6 +43,12 @@ public class CommunityPostLike {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    public CommunityPostLike(User user, CommunityPost post) {
+        this.user = user;
+        this.post = post;
+        this.createdAt = LocalDateTime.now();
+    }
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();

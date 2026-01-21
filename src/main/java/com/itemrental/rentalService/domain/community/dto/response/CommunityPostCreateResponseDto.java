@@ -1,5 +1,6 @@
 package com.itemrental.rentalService.domain.community.dto.response;
 
+import com.itemrental.rentalService.domain.community.entity.CommunityPost;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -11,5 +12,13 @@ public class CommunityPostCreateResponseDto {
     private String username;
     private String title;
     private String content;
+
+    public CommunityPostCreateResponseDto(CommunityPost post) {
+        this.id = post.getId();
+        this.category = post.getCategory();
+        this.username = post.getUser().getUsername();
+        this.title = post.getTitle();
+        this.content = post.getContent();
+    }
 }
 

@@ -71,7 +71,8 @@ class ChatRoomControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andExpect(content().string("1"));
+                .andExpect(jsonPath("$.message").value("채팅방 생성 성공"))
+                .andExpect(jsonPath("$.data").value(1));
     }
 
     @Test

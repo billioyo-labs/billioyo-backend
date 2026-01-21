@@ -1,78 +1,97 @@
 package com.itemrental.rentalService.domain.community.entity;
 
+import com.itemrental.rentalService.domain.rental.exception.UnauthorizedAccessException;
 import com.itemrental.rentalService.domain.user.entity.User;
 import com.itemrental.rentalService.global.utils.Position;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class CommunityPost {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId", nullable = false)
-    @Getter
-    @Setter
     private User user;
 
-    @Getter
-    @Setter
     @Column(nullable = false)
     private String title;
 
-    @Getter
-    @Setter
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
-    @Getter
-    @Setter
     @Column(nullable = false)
     private String location;
 
-    @Getter
-    @Setter
     @Column(nullable = false)
     @Embedded
     private Position position;
 
-    @Getter
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @Getter
-    @Setter
     @Column(nullable = false)
     private int viewCount = 0;
 
-    @Getter
-    @Setter
     @Column(nullable = false)
     private int likeCount = 0;
 
-    @Getter
-    @Setter
     @Column(nullable = false)
     private int commentCount = 0;
 
-
-    @Getter
-    @Setter
     @Column(nullable = false)
     private String category = "FREE";
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CommunityPostImage> images = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CommunityComment> comments = new ArrayList<>();
+
+    public static CommunityPost createPost(User user, String title, String content, String category, String location, Position position) {
+        CommunityPost post = new CommunityPost();
+        post.user = user;
+        post.title = title;
+        post.content = content;
+        post.category = category;
+        post.location = location;
+        post.position = position;
+        return post;
+    }
+
+    public void update(String title, String content, List<String> imageUrls) {
+        this.title = title;
+        this.content = content;
+        updateImages(imageUrls);
+    }
+
+    public void updateImages(List<String> imageUrls) {
+        this.images.clear();
+        if (imageUrls != null) {
+            imageUrls.forEach(url -> this.images.add(new CommunityPostImage(url, this)));
+        }
+    }
+
+    public void increaseViewCount() { this.viewCount++; }
+    public void increaseCommentCount() { this.commentCount++; }
+    public void addLike() { this.likeCount++; }
+    public void removeLike() { if(this.likeCount > 0) this.likeCount--; }
+
+    public void validateAuthor(String currentUserEmail) {
+        if (!this.user.getEmail().equals(currentUserEmail)) {
+            throw new UnauthorizedAccessException();
+        }
+    }
 
 
     @PrePersist
@@ -80,19 +99,4 @@ public class CommunityPost {
         this.createdAt = LocalDateTime.now();
     }
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Getter
-    private List<CommunityPostImage> images;
-
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Getter
-    private List<CommunityPostLike> likes;
-
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Getter
-    private List<CommunityPostBookmark> bookmarks;
-
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Getter
-    private List<CommunityComment> comments;
 }

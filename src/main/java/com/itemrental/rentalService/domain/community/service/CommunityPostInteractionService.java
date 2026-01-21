@@ -1,81 +1,64 @@
 package com.itemrental.rentalService.domain.community.service;
 
 
-import com.itemrental.rentalService.domain.community.dto.response.CommentResponseDto;
-import com.itemrental.rentalService.domain.community.dto.response.CommunityPostReadResponseDto;
 import com.itemrental.rentalService.domain.community.entity.CommunityPost;
 import com.itemrental.rentalService.domain.community.entity.CommunityPostBookmark;
 import com.itemrental.rentalService.domain.community.entity.CommunityPostLike;
 import com.itemrental.rentalService.domain.community.repository.CommunityPostBookmarkRepository;
 import com.itemrental.rentalService.domain.community.repository.CommunityPostLikeRepository;
 import com.itemrental.rentalService.domain.community.repository.CommunityPostRepository;
-import com.itemrental.rentalService.domain.report.repository.ReportRepository;
+import com.itemrental.rentalService.domain.rental.exception.PostNotFoundException;
 import com.itemrental.rentalService.domain.user.entity.User;
+import com.itemrental.rentalService.domain.user.exception.UserNotFoundException;
 import com.itemrental.rentalService.domain.user.repository.UserRepository;
-import com.itemrental.rentalService.global.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.security.Principal;
 
 @Service
 @RequiredArgsConstructor
 public class CommunityPostInteractionService {
 
-    private final CommunityPostRepository repository;
+    private final CommunityPostRepository postRepository;
     private final UserRepository userRepository;
     private final CommunityPostLikeRepository likeRepo;
     private final CommunityPostBookmarkRepository bmRepo;
-    private final ReportRepository postReportRepository;
-    private final SecurityUtil securityUtil;
 
 
     //게시글 좋아요
     @Transactional
-    public int toggleLike(Long postId) {
-        String username = securityUtil.getCurrentUserEmail();
-        User user = userRepository.findByEmail(username)
-            .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다"));
+    public int toggleLike(Long postId, Principal principal) {
+        User user = userRepository.findByEmail(principal.getName())
+                .orElseThrow(() -> new UserNotFoundException(principal.getName()));
+        CommunityPost post = postRepository.findById(postId)
+                .orElseThrow(() -> new PostNotFoundException(postId));
 
-        CommunityPost post = repository.findById(postId)
-            .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
-        ;
         if (likeRepo.existsByUser_IdAndPost_Id(user.getId(), post.getId())) {
-            // 이미 좋아요 → 삭제
             likeRepo.deleteByUser_IdAndPost_Id(user.getId(), post.getId());
-            post.setLikeCount(post.getLikeCount() - 1);
+            post.removeLike();
         } else {
-            // 없으니까 추가
-            CommunityPostLike postLike = new CommunityPostLike();
-            postLike.setUser(user);
-            postLike.setPost(post);
-            likeRepo.save(postLike);
-            post.setLikeCount(post.getLikeCount() + 1);
+            likeRepo.save(new CommunityPostLike(user, post));
+            post.addLike();
         }
         return post.getLikeCount();
     }
 
     //게시글 북마크
     @Transactional
-    public String toggleBookmark(Long postId) {
-        String username = securityUtil.getCurrentUserEmail();
-        User user = userRepository.findByEmail(username)
-            .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다"));
+    public String toggleBookmark(Long postId, Principal principal) {
+        User user = userRepository.findByEmail(principal.getName())
+            .orElseThrow(() -> new UserNotFoundException(principal.getName()));
 
-        CommunityPost post = repository.findById(postId)
-            .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
-        ;
+        CommunityPost post = postRepository.findById(postId)
+            .orElseThrow(() -> new PostNotFoundException(postId));
+
         if (bmRepo.existsByUser_IdAndPost_Id(user.getId(), post.getId())) {
-            // 이미 좋아요 → 삭제
             bmRepo.deleteByUser_IdAndPost_Id(user.getId(), post.getId());
             return "북마크 취소";
         } else {
-            // 없으니까 추가
-            CommunityPostBookmark postBm = new CommunityPostBookmark();
-            postBm.setUser(user);
-            postBm.setPost(post);
-            bmRepo.save(postBm);
+            bmRepo.save(new CommunityPostBookmark(user, post));
             return "북마크";
         }
     }

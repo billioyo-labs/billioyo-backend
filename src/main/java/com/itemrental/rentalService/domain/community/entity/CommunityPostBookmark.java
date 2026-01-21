@@ -48,4 +48,9 @@ public class CommunityPostBookmark {
         this.createdAt = LocalDateTime.now();
     }
 
+    public CommunityPostBookmark(User user, CommunityPost post) {
+        this.user = user;
+        this.post = post;
+        this.createdAt = LocalDateTime.now();
+    }
 }

@@ -1,6 +1,7 @@
 package com.itemrental.rentalService.domain.community.dto.response;
 
 
+import com.itemrental.rentalService.domain.community.entity.CommunityComment;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -13,5 +14,12 @@ public class CommentResponseDto {
     private String username;
     private String comment;
     private LocalDateTime createdAt;
-
+    public static CommentResponseDto from(CommunityComment comment) {
+        return new CommentResponseDto(
+                comment.getId(),
+                comment.getUser().getUsername(),
+                comment.getComment(),
+                comment.getCreatedAt()
+        );
+    }
 }

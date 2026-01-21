@@ -10,7 +10,9 @@ import com.itemrental.rentalService.domain.community.dto.response.CommunityPostR
 import com.itemrental.rentalService.domain.community.service.CommunityCommentService;
 import com.itemrental.rentalService.domain.community.service.CommunityPostInteractionService;
 import com.itemrental.rentalService.domain.community.service.CommunityPostService;
+import com.itemrental.rentalService.global.common.ApiResponse;
 import com.itemrental.rentalService.global.infra.S3Service;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +21,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -33,8 +36,10 @@ public class CommunityController {
 
     //커뮤니티 생성
     @PostMapping
-    public ResponseEntity<CommunityPostCreateResponseDto> createCommunityPost(@RequestBody CommunityPostCreateRequestDto dto) {
-        return ResponseEntity.ok(postService.createCommunityPost(dto));
+    public ResponseEntity<ApiResponse<CommunityPostCreateResponseDto>> createCommunityPost(
+            @RequestBody CommunityPostCreateRequestDto dto, Principal principal) {
+        CommunityPostCreateResponseDto response = postService.createCommunityPost(dto, principal);
+        return ResponseEntity.ok(ApiResponse.success("게시글이 생성되었습니다.", response));
     }
 
     //커뮤니티 상세 조회
@@ -45,28 +50,34 @@ public class CommunityController {
 
     //커뮤니티 수정
     @PutMapping("/{postId}")
-    public ResponseEntity<String> updatePost(@PathVariable Long postId, @RequestBody CommunityPostUpdateRequestDto dto) {
-        postService.updateCommunityPost(postId, dto);
-        return ResponseEntity.ok("게시글 수정 완료");
+    public ResponseEntity<ApiResponse<Void>> updatePost(
+            @PathVariable Long postId,
+            @RequestBody @Valid CommunityPostUpdateRequestDto dto,
+            Principal principal) {
+        postService.updateCommunityPost(postId, dto, principal);
+        return ResponseEntity.ok(ApiResponse.success("게시글 수정을 완료했습니다."));
     }
 
     //커뮤니티 삭제
     @DeleteMapping("/{postId}")
-    public ResponseEntity<String> deletePost(@PathVariable Long postId) {
-        postService.deleteCommunityPost(postId);
-        return ResponseEntity.ok("게시글 삭제 완료");
+    public ResponseEntity<ApiResponse<Void>> deletePost(
+            @PathVariable Long postId, Principal principal) {
+        postService.deleteCommunityPost(postId, principal);
+        return ResponseEntity.ok(ApiResponse.success("게시글 삭제를 완료했습니다."));
     }
 
     @PostMapping("/{postId}/like")
-    public ResponseEntity<Integer> likePost(@PathVariable Long postId) {
-        int likeCount = interactionService.toggleLike(postId);
-        return ResponseEntity.ok(likeCount);
+    public ResponseEntity<ApiResponse<Integer>> likePost(
+            @PathVariable Long postId, Principal principal) {
+        int likeCount = interactionService.toggleLike(postId, principal);
+        return ResponseEntity.ok(ApiResponse.success("좋아요 상태가 변경되었습니다.", likeCount));
     }
 
     @PostMapping("/{postId}/bm")
-    public ResponseEntity<String> bmPost(@PathVariable Long postId) {
-        String message = interactionService.toggleBookmark(postId);
-        return ResponseEntity.ok(message);
+    public ResponseEntity<ApiResponse<String>> bmPost(
+            @PathVariable Long postId, Principal principal) {
+        String message = interactionService.toggleBookmark(postId, principal);
+        return ResponseEntity.ok(ApiResponse.success(message, null));
     }
 
 
@@ -79,14 +90,18 @@ public class CommunityController {
     }
 
     @PostMapping("/comment/{postId}")
-    public ResponseEntity<String> creatComment(@RequestBody CommentCreateRequestDto dto, @PathVariable Long postId) {
-        commentService.createCommunityComment(dto, postId);
-        return ResponseEntity.ok("댓글 생성됨");
+    public ResponseEntity<ApiResponse<Void>> createComment(
+            @RequestBody @Valid CommentCreateRequestDto dto,
+            @PathVariable Long postId,
+            Principal principal) {
+        commentService.createCommunityComment(dto, postId, principal);
+        return ResponseEntity.ok(ApiResponse.success("댓글이 등록되었습니다."));
     }
 
     @GetMapping("/posts/search")
-    public ResponseEntity<List<CommunityPostListResponseDto>> searchPosts(@RequestParam String keyword) {
-        return ResponseEntity.ok(postService.searchPosts(keyword));
+    public ResponseEntity<ApiResponse<List<CommunityPostListResponseDto>>> searchPosts(@RequestParam String keyword) {
+        List<CommunityPostListResponseDto> response = postService.searchPosts(keyword);
+        return ResponseEntity.ok(ApiResponse.success("검색 결과를 반환합니다.", response));
     }
 
 

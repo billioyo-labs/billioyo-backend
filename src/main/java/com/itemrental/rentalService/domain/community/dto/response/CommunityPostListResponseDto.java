@@ -1,6 +1,7 @@
 package com.itemrental.rentalService.domain.community.dto.response;
 
 
+import com.itemrental.rentalService.domain.community.entity.CommunityPost;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -19,4 +20,20 @@ public class CommunityPostListResponseDto {
     private LocalDateTime createdAt;
     private String thumbnailUrl;
     private String location;
+
+    public CommunityPostListResponseDto(CommunityPost post) {
+        this.id = post.getId();
+        this.category = post.getCategory();
+        this.title = post.getTitle();
+        this.authorName = post.getUser().getUsername();
+        this.likeCount = post.getLikeCount();
+        this.viewCount = post.getViewCount();
+        this.commentCount = post.getCommentCount();
+        this.createdAt = post.getCreatedAt();
+        this.location = post.getLocation();
+
+        this.thumbnailUrl = (post.getImages() != null && !post.getImages().isEmpty())
+                ? post.getImages().get(0).getImageUrl()
+                : null;
+    }
 }

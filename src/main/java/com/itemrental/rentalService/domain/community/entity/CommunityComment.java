@@ -46,4 +46,11 @@ public class CommunityComment {
         this.createdAt = LocalDateTime.now();
     }
 
+    public CommunityComment(User user, CommunityPost post, String comment) {
+        this.user = user;
+        this.post = post;
+        this.comment = comment;
+        this.createdAt = LocalDateTime.now();
+    }
+
 }

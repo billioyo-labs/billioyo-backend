@@ -11,4 +11,8 @@ public class CommunityPostSearchRequestDto {
     private Double lat;
     private Double lng;
     private Double distance;
+
+    public boolean hasLocationInfo() {
+        return lat != null && lng != null && distance != null;
+    }
 }

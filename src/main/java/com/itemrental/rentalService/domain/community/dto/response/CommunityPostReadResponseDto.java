@@ -4,6 +4,7 @@ import com.itemrental.rentalService.domain.community.entity.CommunityPost;
 import com.itemrental.rentalService.domain.community.entity.CommunityPostImage;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.List;

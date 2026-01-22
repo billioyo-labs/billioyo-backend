@@ -47,7 +47,7 @@ public class CommunityPostInteractionService {
 
     //게시글 북마크
     @Transactional
-    public String toggleBookmark(Long postId, Principal principal) {
+    public void toggleBookmark(Long postId, Principal principal) {
         User user = userRepository.findByEmail(principal.getName())
             .orElseThrow(() -> new UserNotFoundException(principal.getName()));
 
@@ -56,10 +56,8 @@ public class CommunityPostInteractionService {
 
         if (bmRepo.existsByUser_IdAndPost_Id(user.getId(), post.getId())) {
             bmRepo.deleteByUser_IdAndPost_Id(user.getId(), post.getId());
-            return "북마크 취소";
         } else {
             bmRepo.save(new CommunityPostBookmark(user, post));
-            return "북마크";
         }
     }
 

@@ -24,7 +24,7 @@ import java.security.Principal;
 import java.util.List;
 
 @RestController
-@RequestMapping("/community")
+@RequestMapping("/api/community-posts")
 @RequiredArgsConstructor
 public class CommunityController {
 

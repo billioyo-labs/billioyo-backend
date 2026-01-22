@@ -18,7 +18,7 @@ import java.security.Principal;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/payment")
+@RequestMapping("/api/payments")
 public class PaymentController {
     private final PaymentValidator paymentValidator;
     private final PaymentService paymentService;

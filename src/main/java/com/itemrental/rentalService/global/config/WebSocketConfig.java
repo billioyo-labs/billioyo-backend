@@ -20,7 +20,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws-stomp")
+        registry.addEndpoint("/api/ws-stomp")
                 .setAllowedOriginPatterns(
                     "http://localhost:3000",
                     "https://*.vercel.app",

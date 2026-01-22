@@ -1,7 +1,6 @@
 package com.itemrental.rentalService.domain.mypage.controller;
 
 
-import com.itemrental.rentalService.domain.community.dto.response.CommunityPostReadResponseDto;
 import com.itemrental.rentalService.domain.mypage.dto.MyOrderPostListResponseDto;
 import com.itemrental.rentalService.domain.mypage.dto.MyPageSummaryDto;
 import com.itemrental.rentalService.domain.mypage.service.MyPageService;
@@ -20,10 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
-import java.util.List;
 
 @RestController
-@RequestMapping("/mypage")
+@RequestMapping("/api/mypage")
 @RequiredArgsConstructor
 public class MyPageController {
 
@@ -34,28 +32,11 @@ public class MyPageController {
     public ResponseEntity<ApiResponse<MyPageSummaryDto>> getMyPage(){
         return ResponseEntity.ok(ApiResponse.success("조회 성공",myPageService.getMyPageSummary()));
     }
-//
-//
-//    @GetMapping("/likes")
-//    public ResponseEntity<List<CommunityPostReadResponseDto>> getLikePosts() {
-//        return ResponseEntity.ok(myPageService.getLikedPosts());
-//    }
-//
-//    @GetMapping("/bms")
-//    public ResponseEntity<List<CommunityPostReadResponseDto>> getBmPosts() {
-//        return ResponseEntity.ok(myPageService.getBmPosts());
-//    }
 
     @GetMapping("/profile")
     public ResponseEntity<UserProfileUpdateRequestDto> getProfile(Principal principal) {
         return ResponseEntity.ok(userService.getProfile(principal.getName()));
     }
-//
-//    @GetMapping("/products")
-//    public ResponseEntity<Page<RentalPostListResponseDto>> getProducts(
-//        @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-//        return ResponseEntity.ok(myPageService.getMyPosts(pageable));
-//    }
 
 
     @GetMapping("/my-products")

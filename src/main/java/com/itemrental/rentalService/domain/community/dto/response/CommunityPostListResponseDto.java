@@ -23,7 +23,7 @@ public class CommunityPostListResponseDto {
 
     public CommunityPostListResponseDto(CommunityPost post) {
         this.id = post.getId();
-        this.category = post.getCategory();
+        this.category = post.getCategory().name();
         this.title = post.getTitle();
         this.authorName = post.getUser().getUsername();
         this.likeCount = post.getLikeCount();

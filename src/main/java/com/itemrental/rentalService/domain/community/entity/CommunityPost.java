@@ -49,8 +49,9 @@ public class CommunityPost {
     @Column(nullable = false)
     private int commentCount = 0;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String category = "FREE";
+    private CommunityCategory category;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommunityPostImage> images = new ArrayList<>();
@@ -58,7 +59,7 @@ public class CommunityPost {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommunityComment> comments = new ArrayList<>();
 
-    public static CommunityPost createPost(User user, String title, String content, String category, String location, Position position) {
+    public static CommunityPost createPost(User user, String title, String content, CommunityCategory category, String location, Position position) {
         CommunityPost post = new CommunityPost();
         post.user = user;
         post.title = title;
@@ -97,6 +98,14 @@ public class CommunityPost {
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
+    }
+
+    public enum CommunityCategory {
+        INFO,
+        TIP,
+        PET,
+        BBANG,
+        LOST
     }
 
 }

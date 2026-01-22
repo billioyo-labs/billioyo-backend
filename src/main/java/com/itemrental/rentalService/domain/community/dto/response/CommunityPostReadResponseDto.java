@@ -25,7 +25,7 @@ public class CommunityPostReadResponseDto {
 
     public static CommunityPostReadResponseDto from(CommunityPost post) {
         return new CommunityPostReadResponseDto(
-                post.getCategory(),
+                post.getCategory().name(),
                 post.getUser().getUsername(),
                 post.getTitle(),
                 post.getContent(),

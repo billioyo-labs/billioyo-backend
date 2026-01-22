@@ -9,6 +9,7 @@ import com.itemrental.rentalService.domain.community.dto.response.CommentRespons
 import com.itemrental.rentalService.domain.community.dto.response.CommunityPostCreateResponseDto;
 import com.itemrental.rentalService.domain.community.dto.response.CommunityPostListResponseDto;
 import com.itemrental.rentalService.domain.community.dto.response.CommunityPostReadResponseDto;
+import com.itemrental.rentalService.domain.community.entity.CommunityPost;
 import com.itemrental.rentalService.domain.community.service.CommunityCommentService;
 import com.itemrental.rentalService.domain.community.service.CommunityPostInteractionService;
 import com.itemrental.rentalService.domain.community.service.CommunityPostService;
@@ -30,6 +31,7 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -58,7 +60,7 @@ class CommunityControllerTest {
     @WithMockUser
     @DisplayName("게시글 생성 성공")
     void createCommunityPost_Success() throws Exception {
-        CommunityPostCreateRequestDto request = new CommunityPostCreateRequestDto("FREE", "제목", "내용", "서울", 37.0, 127.0, List.of());
+        CommunityPostCreateRequestDto request = new CommunityPostCreateRequestDto(CommunityPost.CommunityCategory.INFO, "제목", "내용", "서울", 37.0, 127.0, List.of());
         CommunityPostCreateResponseDto response = new CommunityPostCreateResponseDto(1L, "FREE", "user1", "제목", "내용");
 
         when(postService.createCommunityPost(any(), any())).thenReturn(response);
@@ -140,7 +142,7 @@ class CommunityControllerTest {
     @WithMockUser
     @DisplayName("좋아요 토글 성공")
     void likePost_Success() throws Exception {
-        when(interactionService.toggleLike(anyLong(), any())).thenReturn(5);
+        when(interactionService.toggleCommunityPostLike(anyLong(), any())).thenReturn(5);
 
         mockMvc.perform(post("/community/1/like").with(csrf()))
                 .andExpect(status().isOk())
@@ -151,7 +153,8 @@ class CommunityControllerTest {
     @WithMockUser
     @DisplayName("북마크 토글 성공")
     void bmPost_Success() throws Exception {
-        when(interactionService.toggleBookmark(anyLong(), any())).thenReturn("북마크");
+        doNothing().when(interactionService).toggleCommunityPostBookmark(anyLong(), any());
+
 
         mockMvc.perform(post("/community/1/bm").with(csrf()))
                 .andExpect(status().isOk())
@@ -163,7 +166,7 @@ class CommunityControllerTest {
     @DisplayName("게시글 목록 조회 성공")
     void getPosts_Success() throws Exception {
         Page<CommunityPostListResponseDto> page = new PageImpl<>(List.of());
-        when(postService.getPostList(any(), any())).thenReturn(page);
+        when(postService.getCommunityPosts(any(), any(),any())).thenReturn(page);
 
         mockMvc.perform(get("/community/posts")
                         .param("page", "0")
@@ -190,7 +193,7 @@ class CommunityControllerTest {
     @WithMockUser
     @DisplayName("키워드 검색 성공")
     void searchPosts_Success() throws Exception {
-        when(postService.searchPosts("키워드")).thenReturn(List.of());
+        when(postService.searchCommunityPosts("키워드")).thenReturn(List.of());
 
         mockMvc.perform(get("/community/posts/search")
                         .param("keyword", "키워드"))

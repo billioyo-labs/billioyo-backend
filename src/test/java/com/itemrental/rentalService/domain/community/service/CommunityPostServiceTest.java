@@ -58,7 +58,7 @@ class CommunityPostServiceTest {
     @BeforeEach
     void setUp() {
         user = User.builder().id(1L).email("test@test.com").username("tester").build();
-        post = CommunityPost.createPost(user, "제목", "내용", "FREE", "서울", new Position(37.0, 127.0));
+        post = CommunityPost.createPost(user, "제목", "내용", CommunityPost.CommunityCategory.INFO, "서울", new Position(37.0, 127.0));
         lenient().when(principal.getName()).thenReturn("test@test.com");
         ReflectionTestUtils.setField(post, "id", 1L);
     }
@@ -67,7 +67,7 @@ class CommunityPostServiceTest {
     @DisplayName("게시글 생성 성공")
     void createPost_Success() {
         // given
-        CommunityPostCreateRequestDto dto = new CommunityPostCreateRequestDto("FREE", "제목", "내용", "서울", 37.0, 127.0, List.of());
+        CommunityPostCreateRequestDto dto = new CommunityPostCreateRequestDto(CommunityPost.CommunityCategory.INFO, "제목", "내용", "서울", 37.0, 127.0, List.of());
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(user));
         when(postRepository.save(any(CommunityPost.class))).thenReturn(post);
 
@@ -161,7 +161,7 @@ class CommunityPostServiceTest {
                 .willReturn(mockPage);
 
         // when
-        Page<CommunityPostListResponseDto> result = postService.getPostList(pageable, searchDto);
+        Page<CommunityPostListResponseDto> result = postService.getCommunityPosts(pageable, searchDto,anyString());
 
         // then
         assertThat(result.getContent()).hasSize(1);
@@ -177,7 +177,7 @@ class CommunityPostServiceTest {
         given(postRepository.findAll(pageable)).willReturn(new PageImpl<>(List.of(post)));
 
         // when
-        postService.getPostList(pageable, searchDto);
+        postService.getCommunityPosts(pageable, searchDto, "All");
 
         // then
         verify(postRepository).findAll(pageable);
@@ -193,7 +193,7 @@ class CommunityPostServiceTest {
                 .willReturn(List.of(post));
 
         // when
-        List<CommunityPostListResponseDto> result = postService.searchPosts(keyword);
+        List<CommunityPostListResponseDto> result = postService.searchCommunityPosts(keyword);
 
         // then
         assertThat(result).isNotEmpty();

@@ -16,7 +16,9 @@ import com.itemrental.rentalService.domain.user.repository.UserRepository;
 import com.itemrental.rentalService.global.utils.Position;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -73,16 +75,30 @@ public class CommunityPostService {
     }
 
     @Transactional(readOnly = true)
-    public Page<CommunityPostListResponseDto> getPostList(Pageable pageable, CommunityPostSearchRequestDto searchDto) {
+    public Page<CommunityPostListResponseDto> getCommunityPosts(Pageable pageable, CommunityPostSearchRequestDto searchDto, String tab) {
+        Pageable effectivePageable = pageable;
+
+        if ("HOT".equalsIgnoreCase(tab)) {
+            effectivePageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                Sort.by(
+                    Sort.Order.desc("likeCount"),
+                    Sort.Order.desc("viewCount"),
+                    Sort.Order.desc("createdAt")
+                )
+            );
+        }
+
         Page<CommunityPost> page = (searchDto.hasLocationInfo())
                 ? postRepository.findWithinDistance(searchDto.getLat(), searchDto.getLng(), searchDto.getDistance(), pageable)
-                : postRepository.findAll(pageable);
+                : postRepository.findAll(effectivePageable);
         return page.map(CommunityPostListResponseDto::new);
     }
 
     //게시글 검색
     @Transactional(readOnly = true)
-    public List<CommunityPostListResponseDto> searchPosts(String keyword) {
+    public List<CommunityPostListResponseDto> searchCommunityPosts(String keyword) {
 
         return postRepository.findByTitleContainingOrContentContaining(keyword, keyword)
                 .stream()

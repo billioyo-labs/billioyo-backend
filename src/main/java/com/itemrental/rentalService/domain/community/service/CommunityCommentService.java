@@ -26,7 +26,7 @@ public class CommunityCommentService {
 
     //커뮤니티 댓글 생성
     @Transactional
-    public void createCommunityComment(CommentCreateRequestDto dto, Long postId, Principal principal) {
+    public void createCommunityPostComment(CommentCreateRequestDto dto, Long postId, Principal principal) {
         User user = userRepository.findByEmail(principal.getName())
                 .orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다."));
         CommunityPost post = postRepository.findById(postId)

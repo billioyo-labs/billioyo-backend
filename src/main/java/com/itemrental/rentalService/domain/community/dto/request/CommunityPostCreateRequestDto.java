@@ -1,5 +1,6 @@
 package com.itemrental.rentalService.domain.community.dto.request;
 
+import com.itemrental.rentalService.domain.community.entity.CommunityPost;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -8,7 +9,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class CommunityPostCreateRequestDto {
-    private String category;
+    private CommunityPost.CommunityCategory category;
     private String title;
     private String content;
     private String location;
@@ -16,7 +17,7 @@ public class CommunityPostCreateRequestDto {
     private Double longitude;
     private List<String> imageUrls;
 
-    public CommunityPostCreateRequestDto(String category, String title, String content, String location, double latitude, double longitude, List<String> imageUrls) {
+    public CommunityPostCreateRequestDto(CommunityPost.CommunityCategory category, String title, String content, String location, double latitude, double longitude, List<String> imageUrls) {
         this.category = category;
         this.title = title;
         this.content = content;

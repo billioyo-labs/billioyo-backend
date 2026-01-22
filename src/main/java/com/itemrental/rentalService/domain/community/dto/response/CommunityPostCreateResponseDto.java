@@ -15,7 +15,7 @@ public class CommunityPostCreateResponseDto {
 
     public CommunityPostCreateResponseDto(CommunityPost post) {
         this.id = post.getId();
-        this.category = post.getCategory();
+        this.category = post.getCategory().name();
         this.username = post.getUser().getUsername();
         this.title = post.getTitle();
         this.content = post.getContent();

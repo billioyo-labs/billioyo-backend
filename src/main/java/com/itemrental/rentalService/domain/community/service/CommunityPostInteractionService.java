@@ -29,7 +29,7 @@ public class CommunityPostInteractionService {
 
     //게시글 좋아요
     @Transactional
-    public int toggleLike(Long postId, Principal principal) {
+    public int toggleCommunityPostLike(Long postId, Principal principal) {
         User user = userRepository.findByEmail(principal.getName())
                 .orElseThrow(() -> new UserNotFoundException(principal.getName()));
         CommunityPost post = postRepository.findById(postId)
@@ -47,7 +47,7 @@ public class CommunityPostInteractionService {
 
     //게시글 북마크
     @Transactional
-    public void toggleBookmark(Long postId, Principal principal) {
+    public void toggleCommunityPostBookmark(Long postId, Principal principal) {
         User user = userRepository.findByEmail(principal.getName())
             .orElseThrow(() -> new UserNotFoundException(principal.getName()));
 

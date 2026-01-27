@@ -2,7 +2,7 @@ package com.itemrental.rentalService.domain.rental.entity;
 
 
 import com.itemrental.rentalService.domain.user.entity.User;
-import com.itemrental.rentalService.global.utils.Position;
+import com.itemrental.rentalService.domain.user.entity.Position;
 import jakarta.persistence.*;
 import lombok.*;
 

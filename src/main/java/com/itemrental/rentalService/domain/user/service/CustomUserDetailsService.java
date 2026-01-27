@@ -1,4 +1,4 @@
-package com.itemrental.rentalService.global.utils;
+package com.itemrental.rentalService.domain.user.service;
 
 import com.itemrental.rentalService.domain.user.entity.User;
 import com.itemrental.rentalService.domain.user.repository.UserRepository;

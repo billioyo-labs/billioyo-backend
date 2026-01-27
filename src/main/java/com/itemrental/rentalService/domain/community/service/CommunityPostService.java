@@ -13,7 +13,7 @@ import com.itemrental.rentalService.domain.rental.exception.PostNotFoundExceptio
 import com.itemrental.rentalService.domain.user.entity.User;
 import com.itemrental.rentalService.domain.user.exception.UserNotFoundException;
 import com.itemrental.rentalService.domain.user.repository.UserRepository;
-import com.itemrental.rentalService.global.utils.Position;
+import com.itemrental.rentalService.domain.user.entity.Position;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

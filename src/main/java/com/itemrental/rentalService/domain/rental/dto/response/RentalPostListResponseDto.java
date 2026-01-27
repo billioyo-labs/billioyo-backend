@@ -3,6 +3,7 @@ package com.itemrental.rentalService.domain.rental.dto.response;
 import com.itemrental.rentalService.domain.rental.entity.RentalPost;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 

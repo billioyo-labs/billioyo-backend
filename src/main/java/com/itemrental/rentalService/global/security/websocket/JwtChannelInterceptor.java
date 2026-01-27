@@ -1,6 +1,7 @@
-package com.itemrental.rentalService.global.security;
+package com.itemrental.rentalService.global.security.websocket;
 
-import com.itemrental.rentalService.global.utils.JwtAuthenticationUtil;
+import com.itemrental.rentalService.global.security.jwt.JwtTokenProvider;
+import com.itemrental.rentalService.global.security.jwt.JwtAuthenticationUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;

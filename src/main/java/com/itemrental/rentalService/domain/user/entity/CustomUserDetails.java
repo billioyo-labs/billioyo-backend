@@ -1,7 +1,6 @@
-package com.itemrental.rentalService.global.utils;
+package com.itemrental.rentalService.domain.user.entity;
 
 
-import com.itemrental.rentalService.domain.user.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

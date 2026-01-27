@@ -1,6 +1,6 @@
 package com.itemrental.rentalService.domain.auth.controller;
 
-import com.itemrental.rentalService.global.utils.JwtService;
+import com.itemrental.rentalService.global.security.jwt.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

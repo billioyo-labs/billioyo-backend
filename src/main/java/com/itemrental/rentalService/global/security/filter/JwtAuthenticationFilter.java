@@ -1,6 +1,7 @@
-package com.itemrental.rentalService.global.security;
+package com.itemrental.rentalService.global.security.filter;
 
-import com.itemrental.rentalService.global.utils.CustomUserDetailsService;
+import com.itemrental.rentalService.global.security.jwt.JwtTokenProvider;
+import com.itemrental.rentalService.domain.user.service.CustomUserDetailsService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.MalformedJwtException;

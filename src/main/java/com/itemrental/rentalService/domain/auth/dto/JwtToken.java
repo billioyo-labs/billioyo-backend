@@ -1,4 +1,4 @@
-package com.itemrental.rentalService.domain.auth;
+package com.itemrental.rentalService.domain.auth.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

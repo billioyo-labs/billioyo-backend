@@ -1,4 +1,4 @@
-package com.itemrental.rentalService.global.utils;
+package com.itemrental.rentalService.global.security.jwt;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

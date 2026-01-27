@@ -1,7 +1,6 @@
 package com.itemrental.rentalService.domain.rental.service;
 
 import com.itemrental.rentalService.domain.order.entity.Order;
-import com.itemrental.rentalService.domain.order.exception.UnauthorizedOrderAccessException;
 import com.itemrental.rentalService.domain.order.repository.OrderRepository;
 import com.itemrental.rentalService.domain.rental.dto.request.RentalPostCreateRequestDto;
 import com.itemrental.rentalService.domain.rental.dto.request.RentalPostSearchRequestDto;
@@ -15,7 +14,7 @@ import com.itemrental.rentalService.domain.rental.repository.PostRepository;
 import com.itemrental.rentalService.domain.settlement.repository.SettlementItemRepository;
 import com.itemrental.rentalService.domain.user.entity.User;
 import com.itemrental.rentalService.domain.user.repository.UserRepository;
-import com.itemrental.rentalService.global.utils.Position;
+import com.itemrental.rentalService.domain.user.entity.Position;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,13 +22,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

@@ -1,4 +1,4 @@
-package com.itemrental.rentalService.domain.user;
+package com.itemrental.rentalService.domain.user.entity;
 
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;

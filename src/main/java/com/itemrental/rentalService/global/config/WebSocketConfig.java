@@ -1,7 +1,7 @@
 package com.itemrental.rentalService.global.config;
 
-import com.itemrental.rentalService.global.utils.CustomHandshakeInterceptor;
-import com.itemrental.rentalService.global.utils.JwtChannelInterceptor;
+import com.itemrental.rentalService.global.security.websocket.CustomHandshakeInterceptor;
+import com.itemrental.rentalService.global.security.websocket.JwtChannelInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;

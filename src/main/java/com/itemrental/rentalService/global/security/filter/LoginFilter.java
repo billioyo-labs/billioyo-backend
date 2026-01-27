@@ -1,4 +1,4 @@
-package com.itemrental.rentalService.global.security;
+package com.itemrental.rentalService.global.security.filter;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -8,6 +8,7 @@ import com.itemrental.rentalService.domain.auth.repository.RefreshTokenRepositor
 import com.itemrental.rentalService.domain.user.dto.response.LoginSuccessResponseDto;
 import com.itemrental.rentalService.domain.user.entity.User;
 import com.itemrental.rentalService.domain.user.repository.UserRepository;
+import com.itemrental.rentalService.global.security.jwt.JwtTokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

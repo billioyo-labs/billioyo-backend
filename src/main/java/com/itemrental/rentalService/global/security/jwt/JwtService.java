@@ -1,4 +1,4 @@
-package com.itemrental.rentalService.global.security;
+package com.itemrental.rentalService.global.security.jwt;
 
 
 import com.itemrental.rentalService.domain.auth.entity.RefreshToken;

@@ -12,7 +12,7 @@ import com.itemrental.rentalService.domain.rental.exception.PostNotFoundExceptio
 import com.itemrental.rentalService.domain.rental.exception.UnauthorizedAccessException;
 import com.itemrental.rentalService.domain.user.entity.User;
 import com.itemrental.rentalService.domain.user.repository.UserRepository;
-import com.itemrental.rentalService.global.utils.Position;
+import com.itemrental.rentalService.domain.user.entity.Position;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

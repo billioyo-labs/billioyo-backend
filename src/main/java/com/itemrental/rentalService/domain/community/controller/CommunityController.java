@@ -106,8 +106,8 @@ public class CommunityController {
     @Operation(
         summary = "커뮤니티 게시글 목록 조회",
         description =
-            "위치 기반 조건과 페이징 정보에 따라 커뮤니티 게시글 목록을 조회합니다.\n\n" +
-                "예시:\n" +
+            "위치 기반 조건과 페이징 정보에 따라 커뮤니티 게시글 목록을 조회합니다." +
+                "예시:" +
                 "- 전체 게시글: /api/community-posts/posts?lat=37.5&lng=126.9&distance=3&page=0&size=10\n" +
                 "- 인기글: /api/community-posts/posts?tab=HOT&lat=37.5&lng=126.9&distance=3&page=0&size=10"
     )

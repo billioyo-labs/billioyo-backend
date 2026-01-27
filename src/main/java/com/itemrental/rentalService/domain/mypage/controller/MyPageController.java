@@ -8,6 +8,8 @@ import com.itemrental.rentalService.domain.rental.dto.response.RentalPostListRes
 import com.itemrental.rentalService.domain.user.dto.request.UserProfileUpdateRequestDto;
 import com.itemrental.rentalService.domain.user.service.UserService;
 import com.itemrental.rentalService.global.common.ApiResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,22 +25,34 @@ import java.security.Principal;
 @RestController
 @RequestMapping("/api/mypage")
 @RequiredArgsConstructor
+@Tag(name = "MyPage", description = "마이페이지 API")
 public class MyPageController {
 
     private final MyPageService myPageService;
     private final UserService userService;
 
+    @Operation(
+        summary = "마이페이지 요약 조회",
+        description = "로그인한 사용자의 마이페이지 요약 정보를 조회합니다."
+    )
     @GetMapping
     public ResponseEntity<ApiResponse<MyPageSummaryDto>> getMyPage(){
         return ResponseEntity.ok(ApiResponse.success("조회 성공",myPageService.getMyPageSummary()));
     }
 
+    @Operation(
+        summary = "내 프로필 조회",
+        description = "로그인한 사용자의 프로필 정보를 조회합니다."
+    )
     @GetMapping("/profile")
     public ResponseEntity<UserProfileUpdateRequestDto> getProfile(Principal principal) {
         return ResponseEntity.ok(userService.getProfile(principal.getName()));
     }
 
-
+    @Operation(
+        summary = "내 상품 목록 조회",
+        description = "로그인한 사용자가 등록한 렌탈 상품 목록을 페이징 조회합니다."
+    )
     @GetMapping("/my-products")
     public ResponseEntity<ApiResponse<Page<RentalPostListResponseDto>>> getMyProducts(
         @PageableDefault(size = 10) Pageable pageable) {
@@ -47,6 +61,10 @@ public class MyPageController {
         return ResponseEntity.ok(ApiResponse.success("내 상품 목록 조회 성공", myProducts));
     }
 
+    @Operation(
+        summary = "내 좋아요 목록 조회",
+        description = "로그인한 사용자가 좋아요한 렌탈 게시글 목록을 페이징 조회합니다."
+    )
     @GetMapping("/my-likes")
     public ResponseEntity<ApiResponse<Page<RentalPostListResponseDto>>> getMyLikedPosts(
         @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
@@ -56,7 +74,10 @@ public class MyPageController {
         return ResponseEntity.ok(ApiResponse.success("내 찜 목록 조회 성공", likedPosts));
     }
 
-    // 내 북마크 목록 조회
+    @Operation(
+        summary = "내 북마크 목록 조회",
+        description = "로그인한 사용자가 북마크한 렌탈 게시글 목록을 페이징 조회합니다."
+    )
     @GetMapping("/my-bookmarks")
     public ResponseEntity<ApiResponse<Page<RentalPostListResponseDto>>> getMyBookmarkedPosts(
         @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
@@ -64,7 +85,11 @@ public class MyPageController {
         Page<RentalPostListResponseDto> bookmarkedPosts = myPageService.getMyBookmarkedPosts(pageable);
         return ResponseEntity.ok(ApiResponse.success("내 북마크 목록 조회 성공", bookmarkedPosts));
     }
-    //내 주문 목록 조회
+
+    @Operation(
+        summary = "내 주문 목록 조회",
+        description = "로그인한 사용자의 주문 목록을 페이징 조회합니다."
+    )
     @GetMapping( "/my-orders")
     public ResponseEntity<ApiResponse<Page<MyOrderPostListResponseDto>>> getMyOrders(
         @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable

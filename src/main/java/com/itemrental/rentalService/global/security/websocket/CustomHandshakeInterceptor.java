@@ -1,5 +1,6 @@
-package com.itemrental.rentalService.global.utils;
+package com.itemrental.rentalService.global.security;
 
+import com.itemrental.rentalService.global.utils.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.server.ServerHttpRequest;

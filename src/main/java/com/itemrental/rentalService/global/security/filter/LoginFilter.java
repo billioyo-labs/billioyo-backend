@@ -1,4 +1,4 @@
-package com.itemrental.rentalService.global.utils;
+package com.itemrental.rentalService.global.security;
 
 
 import com.fasterxml.jackson.databind.JsonNode;

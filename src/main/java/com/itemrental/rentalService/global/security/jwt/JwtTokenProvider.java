@@ -1,5 +1,6 @@
-package com.itemrental.rentalService.global.utils;
+package com.itemrental.rentalService.global.security;
 
+import com.itemrental.rentalService.global.utils.RedisUtil;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.io.DecodingException;

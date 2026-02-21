@@ -1,0 +1,100 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PW}
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    properties:
+      hibernate:
+        show-sql: true
+        format-sql: true
+    hibernate:
+      ddl-auto: update
+  sql:
+    init:
+      platform: postgres
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PW}
+  mail:
+    host: ${SMTP_HOST}
+    port: ${SMTP_PORT}
+    username: ${EMAIL_FROM}
+    password: ${APP_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: ${SMTP_CONNECTION_TIMEOUT}
+          timeout: ${SMTP_TIMEOUT}
+          writetimeout: ${SMTP_WRITE_TIMEOUT}
+      auth-code-expiration-millis: ${SMTP_AUTH_CODE_EXPIRATION}
+  ai:
+    vertex:
+      ai:
+        gemini:
+          project-id: solar-galaxy-463716-s3
+          location: asia-northeast3
+          chat:
+            options:
+              model: gemini-2.5-flash
+#          credentials:
+#            location: ${GOOGLE_CLOUD_KEY}
+
+logging:
+  file:
+    name: /var/log/rentalService/rentalService.log
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.web.servlet.mvc.method.annotation.HttpEntityMethodProcessor: DEBUG
+    com.fasterxml.jackson: DEBUG
+
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_ACCESS_KEY_ID}
+      secret-key: ${AWS_SECRET_ACCESS_KEY}
+    region:
+      static: ${AWS_REGION}
+    s3:
+      bucket: ${AWS_S3_BUCKET}
+
+jwt:
+  header: Authorization
+  secret: ${TOKEN_SECRET}
+  accessTokenExpiresIn: ${ACCESSTOKEN_VALIDTIME}
+  refreshTokenExpiresIn: ${REFRESHTOKEN_VALIDTIME}
+
+admin:
+  signup-secret: ${ADMIN_SIGNUP_SECRET}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "prometheus,health,info"
+  endpoint:
+    prometheus:
+      access: read_only
+    health:
+      show-details: always
+
+imp:
+  api:
+    key: ${IMP_API_KEY}
+    secretkey: ${IMP_API_SECRET}
+
+
+server:
+  port: 8081
+
+fcm:
+  key:
+    path: ${FCM_KEY_PATH:dummy}

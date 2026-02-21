@@ -1,0 +1,39 @@
+package com.itemrental.billioyo.domain.community.dto.response;
+
+import com.itemrental.billioyo.domain.community.entity.CommunityPost;
+import com.itemrental.billioyo.domain.community.entity.CommunityPostImage;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Getter
+@AllArgsConstructor
+public class CommunityPostReadResponseDto {
+    private String category;
+    private String username;
+    private String title;
+    private String content;
+    private LocalDateTime createdAt;
+    private List<String> imageUrls;
+    private int viewCount;
+    private int likeCount;
+    private List<CommentResponseDto> comments;
+    private String location;
+
+    public static CommunityPostReadResponseDto from(CommunityPost post) {
+        return new CommunityPostReadResponseDto(
+                post.getCategory().name(),
+                post.getUser().getUsername(),
+                post.getTitle(),
+                post.getContent(),
+                post.getCreatedAt(),
+                post.getImages().stream().map(CommunityPostImage::getImageUrl).toList(),
+                post.getViewCount(),
+                post.getLikeCount(),
+                post.getComments().stream().map(CommentResponseDto::from).toList(),
+                post.getLocation()
+        );
+    }
+}
